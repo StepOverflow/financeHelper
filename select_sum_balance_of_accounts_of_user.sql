@@ -1,3 +1,4 @@
-SELECT SUM(balance) AS total_balance
+SELECT users.email, SUM(balance) AS total_balance
 FROM accounts
-         JOIN users ON user.id = accounts.user_id;
+         JOIN users ON users.id = accounts.user_id
+group by users.email;
