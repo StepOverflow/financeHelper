@@ -1,3 +1,5 @@
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.sql.*;
 import java.util.Scanner;
 
@@ -22,7 +24,7 @@ public class Main {
 
                 int choice = scanner.nextInt();
                 switch (choice) {
-                    case 1 -> {
+                    case 1:
                         System.out.println("Enter email:");
                         String email = scanner.next();
                         System.out.println("Enter password:");
@@ -41,53 +43,52 @@ public class Main {
 
                                 int choice2 = scanner.nextInt();
                                 switch (choice2) {
-                                    case 1 -> {
+                                    case 1:
                                         if (account != null) {
                                             account.getAccounts();
                                         }
-                                    }
-                                    case 2 -> {
+                                        break;
+                                    case 2:
                                         System.out.println("Enter account name:");
                                         String accountName = scanner.next();
                                         if (account != null) {
                                             account.createAccount(accountName);
                                         }
-                                    }
-                                    case 3 -> {
+                                        break;
+                                    case 3:
                                         System.out.println("Enter account ID to delete:");
                                         int accountId = scanner.nextInt();
                                         if (account != null) {
                                             account.deleteAccount(accountId);
                                         }
-                                    }
-                                    case 0 -> exit2 = true;
-                                    default -> System.out.println("Invalid choice!");
+                                        break;
+                                    case 0:
+                                        exit2 = true;
+                                        break;
+                                    default:
+                                        System.out.println("Invalid choice!");
                                 }
                             }
                         } else {
                             System.out.println("Log in failed!");
                         }
-                    }
-                    case 2 -> {
+                        break;
+                    case 2:
                         System.out.println("Enter email:");
                         String newEmail = scanner.next();
                         System.out.println("Enter password:");
                         String newPassword = scanner.next();
                         SignUp.doSignUp(newEmail, newPassword, conn);
-                    }
-                    case 0 -> exit = true;
-                    default -> System.out.println("Invalid choice!");
+                        break;
+                    case 0:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Invalid choice!");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 }
-
-
-
-
-
-

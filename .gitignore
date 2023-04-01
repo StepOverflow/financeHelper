@@ -1,40 +1,40 @@
-.idea
-out
-*.iml
-.DS_Store
-src/.DS_Store
-target
+     .idea
+     out
+     *.iml
+     .DS_Store
+     src/.DS_Store
+     target
 
-# игнорировать файлы, содержащие пароли или ключи доступа
-*.key
-*.pem
-*.pass
-*.passwd
+     # игнорировать файлы, содержащие пароли или ключи доступа
+     *.key
+     *.pem
+     *.pass
+     *.passwd
 
-# игнорировать директории, содержащие временные файлы или логи
-logs/
-temp/
-cache/
-.tmp/
-*.log
-*.log.*
+     # игнорировать директории, содержащие временные файлы или логи
+     logs/
+     temp/
+     cache/
+     .tmp/
+     *.log
+     *.log.*
 
-# игнорировать скомпилированные файлы
-*.class
-*.jar
+     # игнорировать скомпилированные файлы
+     *.class
+     *.jar
 
-# игнорировать файлы, созданные IDE
-.idea/
-.vscode/
-.project
-.classpath
+     # игнорировать файлы, созданные IDE
+     .idea/
+     .vscode/
+     .project
+     .classpath
 
-# игнорировать файлы конфигурации и зависимостей
-*.cfg
-*.conf
-*.properties
-*.xml
-*.yml
-*.yaml
-*.json
-*.lock
+     # игнорировать файлы конфигурации и зависимостей
+     *.cfg
+     *.conf
+     *.properties
+     *.xml
+     *.yml
+     *.yaml
+     *.json
+     *.lock
