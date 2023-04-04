@@ -1,6 +1,6 @@
 package service;
 
-public class AccountDTO {
+public class AccountDto {
     private int id;
     private int userId;
     private String accountName;
@@ -40,7 +40,7 @@ public class AccountDTO {
 
     @Override
     public String toString() {
-        return "AccountDTO{" +
+        return "AccountDto{" +
                 "id=" + id +
                 ", userId=" + userId +
                 ", accountName='" + accountName + '\'' +

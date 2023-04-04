@@ -1,14 +1,14 @@
 package converter;
 
 import dao.UserModel;
-import service.UserDTO;
+import service.UserDto;
 
-public class UserModelToUserDtoConverter<S, T> implements Converter<UserModel, UserDTO> {
+public class UserModelToUserDtoConverter<S, T> implements Converter<UserModel, UserDto> {
     @Override
-    public UserDTO convert(UserModel source) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(source.getId());
-        userDTO.setEmail(source.getEmail());
-        return userDTO;
+    public UserDto convert(UserModel source) {
+        UserDto userDto = new UserDto();
+        userDto.setId(source.getId());
+        userDto.setEmail(source.getEmail());
+        return userDto;
     }
 }

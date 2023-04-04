@@ -19,20 +19,20 @@ public class AccountService {
         this.accountDtoConverter = new AccountModelToAccountDtoConverter();
     }
 
-    public List<AccountDTO> getAllAccountsByUserId(int userId) {
-        List<AccountDTO> accountDTOs = new ArrayList<>();
+    public List<AccountDto> getAllAccountsByUserId(int userId) {
+        List<AccountDto> accountDtos = new ArrayList<>();
         List<AccountModel> accountModels = accountDao.getAllByUserId(userId);
         for (AccountModel accountModel : accountModels) {
-            AccountDTO accountDTO = new AccountDTO();
-            accountDTO.setAccountName(accountModel.getAccountName());
-            accountDTO.setBalance(accountModel.getBalance());
-            accountDTO.setId(accountModel.getId());
-            accountDTOs.add(accountDTO);
+            AccountDto accountDto = new AccountDto();
+            accountDto.setAccountName(accountModel.getAccountName());
+            accountDto.setBalance(accountModel.getBalance());
+            accountDto.setId(accountModel.getId());
+            accountDtos.add(accountDto);
         }
-        return accountDTOs;
+        return accountDtos;
     }
 
-    public AccountDTO createAccount(String accountName, int userId) {
+    public AccountDto createAccount(String accountName, int userId) {
         AccountModel accountModel = accountDao.insert(accountName, userId);
         if (accountModel == null) {
             return null;
@@ -40,8 +40,8 @@ public class AccountService {
         return accountDtoConverter.convert(accountModel);
     }
 
-    public boolean deleteAccount(int accountId, int id) {
-        return accountDao.delete(accountId, id);
+    public boolean deleteAccount(int accountId, int userId) {
+        return accountDao.delete(accountId, userId);
     }
 }
 

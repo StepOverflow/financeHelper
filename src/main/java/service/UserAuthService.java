@@ -4,19 +4,19 @@ import converter.UserModelToUserDtoConverter;
 import dao.UserDao;
 import dao.UserModel;
 
-public class AuthService {
+public class UserAuthService {
     private final UserDao userDao;
     private final DigestService digestService;
     private final UserModelToUserDtoConverter userDtoConverter;
 
-    public AuthService() {
+    public UserAuthService() {
         this.userDtoConverter = new UserModelToUserDtoConverter();
         this.digestService = new Md5DigestService();
         this.userDao = new UserDao();
 
     }
 
-    public UserDTO auth(String email, String password) {
+    public UserDto auth(String email, String password) {
         String hash = digestService.hex(password);
 
         UserModel userModel = userDao.findByEmailAndHash(email, hash);
@@ -25,7 +25,7 @@ public class AuthService {
         }
         return userDtoConverter.convert(userModel);
     }
-    public UserDTO registration (String email, String password) {
+    public UserDto registration (String email, String password) {
         String hash = digestService.hex(password);
 
         UserModel userModel = userDao.insert(email, hash);

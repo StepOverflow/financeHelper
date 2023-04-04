@@ -1,6 +1,6 @@
 package service;
 
-public class UserDTO {
+public class UserDto {
     private int id;
     private String email;
 

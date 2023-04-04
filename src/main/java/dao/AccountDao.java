@@ -69,15 +69,14 @@ public class AccountDao {
         }
     }
 
-    public boolean delete(int accountId, int id) {
-        try {
-            Connection conn = dataSource.getConnection();
+    public boolean delete(int accountId, int userId) {
+        try (Connection conn = dataSource.getConnection();){
             PreparedStatement ps = conn.prepareStatement("SELECT user_id FROM accounts WHERE id = ?");
             ps.setInt(1, accountId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    int userId = rs.getInt("user_id");
-                    if (userId != id) {
+                    int id = rs.getInt("user_id");
+                    if (id != userId) {
                         return false;
                     }
                 } else {

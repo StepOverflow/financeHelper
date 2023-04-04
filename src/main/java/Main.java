@@ -1,14 +1,11 @@
-import service.AccountDTO;
-import service.AccountService;
-import service.AuthService;
-import service.UserDTO;
+import service.*;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        AuthService authService = new AuthService();
+        UserAuthService userAuthService = new UserAuthService();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -21,52 +18,78 @@ public class Main {
                 case 1:
                     String email = request("Enter email:");
                     String password = request("Enter password:");
-                    UserDTO userDTO = authService.auth(email, password);
-                    if (userDTO != null) {
+                    UserDto userDto = userAuthService.auth(email, password);
+                    if (userDto != null) {
                         System.out.println("Log in successful!");
-                        System.out.println(userDTO);
+                        System.out.println(userDto);
 
-                        boolean exit2 = false;
-                        while (!exit2) {
+                        boolean exit2 = true;
+                        while (exit2) {
                             System.out.println("Select an action:");
                             System.out.println("1. View all accounts");
                             System.out.println("2. Create an account");
                             System.out.println("3. Delete an account");
+                            System.out.println("4. Create transaction category");
+                            System.out.println("5. Delete transaction category");
+                            System.out.println("6. Edit transaction category");
                             System.out.println("0. Log out");
 
                             AccountService accountService = new AccountService();
+                            CategoryService categoryService = new CategoryService();
                             int choice2 = scanner.nextInt();
                             switch (choice2) {
                                 case 1:
-                                    List<AccountDTO> accountDTOs = accountService.getAllAccountsByUserId(userDTO.getId());
-                                    if (accountDTOs != null) {
-                                        for (AccountDTO account : accountDTOs) {
+                                    List<AccountDto> accountDtos = accountService.getAllAccountsByUserId(userDto.getId());
+                                    if (accountDtos != null) {
+                                        for (AccountDto account : accountDtos) {
                                             System.out.println(account);
                                         }
                                     }
                                     break;
                                 case 2:
                                     String accountName = request("Enter name for new account: ");
-                                    AccountDTO accountDTO = accountService.createAccount(accountName, userDTO.getId());
-                                    System.out.println(accountDTO);
+                                    AccountDto accountDto = accountService.createAccount(accountName, userDto.getId());
+                                    System.out.println(accountDto);
                                     break;
                                 case 3:
                                     System.out.println("Enter account id to delete: ");
                                     int accountId = scanner.nextInt();
-                                    boolean isDeleted = accountService.deleteAccount(accountId, userDTO.getId());
+                                    boolean isDeleted = accountService.deleteAccount(accountId, userDto.getId());
                                     if (isDeleted) {
                                         System.out.println("Account " + accountId + " successfully deleted!");
                                     } else {
                                         System.out.println("Account not found or no rights to delete");
                                     }
-                                    accountDTOs = accountService.getAllAccountsByUserId(userDTO.getId());
-                                    if (accountDTOs != null) {
-                                        for (AccountDTO account : accountDTOs) {
+                                    accountDtos = accountService.getAllAccountsByUserId(userDto.getId());
+                                    if (accountDtos != null) {
+                                        for (AccountDto account : accountDtos) {
                                             System.out.println(account);
                                         }
                                     }
                                     break;
+                                case 4:
+                                    String categoryName = request("Enter name for new transaction category: ");
+                                    CategoryDto categoryDto = categoryService.createCategory(categoryName, userDto.getId());
+                                    System.out.println(categoryDto);
+                                    break;
+                                case 5:
+                                    isDeleted = false;
+                                    int categoryId = requestInt("Enter category id for delete: ");
+                                    isDeleted = categoryService.deleteCategory(categoryId, userDto.getId());
+                                    if (isDeleted) {
+                                        System.out.println("Category '" + categoryId + "' successfully deleted!");
+                                    } else {
+                                        System.out.println("Category not found");
+                                    }
+                                    break;
+                                case 6:
+                                    categoryId = requestInt("Enter category id for edit:");
+                                    String newCategoryName = request("Enter new name for " + categoryId + " transaction category:");
+                                    categoryDto = categoryService.editCategory(categoryId, newCategoryName, userDto.getId());
+                                    System.out.println(categoryDto);
+                                    break;
                                 case 0:
+                                    exit2 = false;
                                     break;
                                 default:
                                     System.out.println("Invalid choice!");
@@ -82,10 +105,10 @@ public class Main {
                 case 2:
                     email = request("Enter email:");
                     password = request("Enter password:");
-                    userDTO = authService.registration(email, password);
-                    if (userDTO != null) {
+                    userDto = userAuthService.registration(email, password);
+                    if (userDto != null) {
                         System.out.println("Registration is successful!");
-                        System.out.println(userDTO);
+                        System.out.println(userDto);
                     } else {
                         System.out.println("Registration is failed!");
                     }
@@ -102,5 +125,11 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.println(title);
         return scanner.next();
+    }
+
+    private static int requestInt(String title) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(title);
+        return scanner.nextInt();
     }
 }
