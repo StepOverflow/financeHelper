@@ -1,4 +1,6 @@
-package service;
+package ru.shapovalov.service;
+
+import java.util.Objects;
 
 public class UserDto {
     private int id;
@@ -26,6 +28,19 @@ public class UserDto {
                 "id=" + id +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDto userDto = (UserDto) o;
+        return id == userDto.id && Objects.equals(email, userDto.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email);
     }
 }
 

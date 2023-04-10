@@ -1,37 +1,30 @@
-package service;
+package ru.shapovalov.service;
 
-import converter.UserModelToUserDtoConverter;
-import dao.UserDao;
-import dao.UserModel;
+import ru.shapovalov.converter.UserModelToUserDtoConverter;
+import ru.shapovalov.dao.UserDao;
+import ru.shapovalov.dao.UserModel;
 
 public class UserAuthService {
     private final UserDao userDao;
     private final DigestService digestService;
     private final UserModelToUserDtoConverter userDtoConverter;
 
-    public UserAuthService() {
-        this.userDtoConverter = new UserModelToUserDtoConverter();
-        this.digestService = new Md5DigestService();
-        this.userDao = new UserDao();
-
+    public UserAuthService(UserDao userDao, DigestService digestService, UserModelToUserDtoConverter userDtoConverter) {
+        this.userDao = userDao;
+        this.digestService = digestService;
+        this.userDtoConverter = userDtoConverter;
     }
 
     public UserDto auth(String email, String password) {
         String hash = digestService.hex(password);
-
         UserModel userModel = userDao.findByEmailAndHash(email, hash);
-        if (userModel == null) {
-            return null;
-        }
         return userDtoConverter.convert(userModel);
     }
-    public UserDto registration (String email, String password) {
+
+    public UserDto registration(String email, String password) {
         String hash = digestService.hex(password);
 
         UserModel userModel = userDao.insert(email, hash);
-        if (userModel == null) {
-            return null;
-        }
         return userDtoConverter.convert(userModel);
     }
 }

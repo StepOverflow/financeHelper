@@ -1,8 +1,8 @@
-package dao;
+package ru.shapovalov.dao;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import exception.CustomException;
+import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;

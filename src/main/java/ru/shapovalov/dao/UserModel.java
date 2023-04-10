@@ -1,4 +1,6 @@
-package dao;
+package ru.shapovalov.dao;
+
+import java.util.Objects;
 
 public class UserModel {
     private int id;
@@ -27,5 +29,18 @@ public class UserModel {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserModel userModel = (UserModel) o;
+        return id == userModel.id && Objects.equals(email, userModel.email) && Objects.equals(password, userModel.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password);
     }
 }

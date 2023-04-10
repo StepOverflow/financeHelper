@@ -1,6 +1,6 @@
-package service;
+package ru.shapovalov.dao;
 
-public class AccountDto {
+public class AccountModel {
     private int id;
     private int userId;
     private String accountName;
@@ -37,15 +37,4 @@ public class AccountDto {
     public void setBalance(int balance) {
         this.balance = balance;
     }
-
-    @Override
-    public String toString() {
-        return "AccountDto{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", accountName='" + accountName + '\'' +
-                ", balance=" + balance +
-                '}';
-    }
 }
-

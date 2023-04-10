@@ -1,7 +1,7 @@
-package converter;
+package ru.shapovalov.converter;
 
-import dao.AccountModel;
-import service.AccountDto;
+import ru.shapovalov.dao.AccountModel;
+import ru.shapovalov.service.AccountDto;
 
 public class AccountModelToAccountDtoConverter implements Converter<AccountModel, AccountDto> {
     @Override

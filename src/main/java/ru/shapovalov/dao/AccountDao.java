@@ -1,8 +1,8 @@
-package dao;
+package ru.shapovalov.dao;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import exception.CustomException;
+import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -70,22 +70,10 @@ public class AccountDao {
     }
 
     public boolean delete(int accountId, int userId) {
-        try (Connection conn = dataSource.getConnection();){
-            PreparedStatement ps = conn.prepareStatement("SELECT user_id FROM accounts WHERE id = ?");
+        try (Connection conn = dataSource.getConnection()){
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM accounts WHERE id = ? and user_id = ?");
             ps.setInt(1, accountId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    int id = rs.getInt("user_id");
-                    if (id != userId) {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            }
-
-            ps = conn.prepareStatement("DELETE FROM accounts WHERE id = ?");
-            ps.setInt(1, accountId);
+            ps.setInt(2, userId);
             int rowsAffected = ps.executeUpdate();
 
             return rowsAffected > 0;

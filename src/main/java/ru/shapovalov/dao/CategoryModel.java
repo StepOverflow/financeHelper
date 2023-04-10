@@ -1,4 +1,4 @@
-package dao;
+package ru.shapovalov.dao;
 
 public class CategoryModel {
     private int id;

@@ -1,9 +1,9 @@
-package converter;
+package ru.shapovalov.converter;
 
-import dao.UserModel;
-import service.UserDto;
+import ru.shapovalov.dao.UserModel;
+import ru.shapovalov.service.UserDto;
 
-public class UserModelToUserDtoConverter<S, T> implements Converter<UserModel, UserDto> {
+public class UserModelToUserDtoConverter implements Converter<UserModel, UserDto> {
     @Override
     public UserDto convert(UserModel source) {
         UserDto userDto = new UserDto();

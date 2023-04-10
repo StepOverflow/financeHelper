@@ -1,4 +1,4 @@
-package service;
+package ru.shapovalov.service;
 
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 

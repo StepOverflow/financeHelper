@@ -1,4 +1,4 @@
-package service;
+package ru.shapovalov.service;
 
 public class CategoryDto {
     private int id;

@@ -1,8 +1,8 @@
-package dao;
+package ru.shapovalov.dao;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import exception.CustomException;
+import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -45,23 +45,11 @@ public class CategoryDao {
         }
     }
 
-    public boolean delete(int categoryId, int userId) {
+    public boolean delete(String name, int userId) {
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT user_id FROM categories WHERE id = ?");
-            ps.setInt(1, categoryId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    int id = rs.getInt("user_id");
-                    if (id != userId) {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            }
-
-            ps = conn.prepareStatement("DELETE FROM categories WHERE id = ?");
-            ps.setInt(1, categoryId);
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM categories WHERE id = ? and user_id = ?");
+            ps.setString(1, name);
+            ps.setInt(2, userId);
             int rowsAffected = ps.executeUpdate();
 
             return rowsAffected > 0;
@@ -71,39 +59,28 @@ public class CategoryDao {
         }
     }
 
-    public CategoryModel edit(int categoryId, String newCategoryName, int userId) {
+    public CategoryModel edit(String name, String newCategoryName, int userId) {
+        CategoryModel categoryModel = new CategoryModel();
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT user_id FROM categories WHERE id = ?");
-            ps.setInt(1, categoryId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    int id = rs.getInt("user_id");
-                    if (id != userId) {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-                ps = conn.prepareStatement("update categories set name = ? where id = ?");
-                ps.setString(1, newCategoryName);
-                ps.setInt(2, categoryId);
-                ps.executeUpdate();
-            } catch (SQLException e) {
-                throw new CustomException(e);
-            }
+            PreparedStatement ps = conn.prepareStatement(
+                    "update categories set name = ? where name = ? and user_id = ?",
+                    Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, newCategoryName);
+            ps.setString(2, name);
+            ps.setInt(3, userId);
+
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {
-                CategoryModel categoryModel = new CategoryModel();
-                categoryModel.setId(categoryId);
                 categoryModel.setName(newCategoryName);
                 categoryModel.setUserId(userId);
-
-                return categoryModel;
-
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    categoryModel.setId(rs.getInt(1));
+                }
             }
         } catch (SQLException e) {
             throw new CustomException(e);
         }
-        return null;
+        return categoryModel;
     }
 }

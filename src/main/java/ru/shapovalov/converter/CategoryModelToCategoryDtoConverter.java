@@ -1,8 +1,7 @@
-package converter;
+package ru.shapovalov.converter;
 
-import dao.CategoryModel;
-import service.AccountDto;
-import service.CategoryDto;
+import ru.shapovalov.dao.CategoryModel;
+import ru.shapovalov.service.CategoryDto;
 
 public class CategoryModelToCategoryDtoConverter implements Converter<CategoryModel, CategoryDto>{
     @Override
