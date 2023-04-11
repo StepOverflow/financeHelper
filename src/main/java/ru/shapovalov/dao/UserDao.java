@@ -40,8 +40,6 @@ public class UserDao {
     }
 
     public UserModel insert(String email, String hash) {
-
-
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement ps = conn.prepareStatement("insert into users (email, password) values (?,?)",
                     Statement.RETURN_GENERATED_KEYS);
@@ -61,7 +59,6 @@ public class UserDao {
             } else {
                 throw new CustomException("Can`t generate !");
             }
-
         } catch (SQLException e) {
             throw new CustomException(e);
         }

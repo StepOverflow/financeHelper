@@ -24,7 +24,7 @@ public class AccountDao {
     public List<AccountModel> getAllByUserId(int userId) {
         List<AccountModel> accountModels = new ArrayList<>();
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select * from accounts where user_id = ?");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM accounts WHERE user_id = ?");
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
@@ -44,7 +44,7 @@ public class AccountDao {
 
     public AccountModel insert(String accountName, int userId) {
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("insert into accounts (account_name, user_id, balance) values (?,?,0)",
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO accounts (account_name, user_id, balance) VALUES (?,?,0)",
                     Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, accountName);
@@ -61,26 +61,22 @@ public class AccountDao {
 
                 return accountModel;
             } else {
-                throw new CustomException("Can`t generate !");
+                throw new CustomException("Can't generate!");
             }
-
         } catch (SQLException e) {
             throw new CustomException(e);
         }
     }
 
     public boolean delete(int accountId, int userId) {
-        try (Connection conn = dataSource.getConnection()){
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM accounts WHERE id = ? and user_id = ?");
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM accounts WHERE id = ? AND user_id = ?");
             ps.setInt(1, accountId);
             ps.setInt(2, userId);
-            int rowsAffected = ps.executeUpdate();
 
-            return rowsAffected > 0;
-
+            return ps.executeUpdate() == 1;
         } catch (SQLException e) {
             throw new CustomException(e);
         }
     }
-
 }

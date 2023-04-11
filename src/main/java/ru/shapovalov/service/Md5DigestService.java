@@ -8,4 +8,3 @@ public class Md5DigestService implements DigestService {
         return md5Hex(str);
     }
 }
-

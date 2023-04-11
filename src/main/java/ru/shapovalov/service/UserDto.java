@@ -43,5 +43,3 @@ public class UserDto {
         return Objects.hash(id, email);
     }
 }
-
-

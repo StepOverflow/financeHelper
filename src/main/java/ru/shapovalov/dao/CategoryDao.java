@@ -39,7 +39,6 @@ public class CategoryDao {
             } else {
                 throw new CustomException("Can`t generate !");
             }
-
         } catch (SQLException e) {
             throw new CustomException(e);
         }
@@ -47,13 +46,11 @@ public class CategoryDao {
 
     public boolean delete(String name, int userId) {
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM categories WHERE id = ? and user_id = ?");
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM categories WHERE name = ? and user_id = ?");
             ps.setString(1, name);
             ps.setInt(2, userId);
-            int rowsAffected = ps.executeUpdate();
 
-            return rowsAffected > 0;
-
+            return ps.executeUpdate() == 1;
         } catch (SQLException e) {
             throw new CustomException(e);
         }

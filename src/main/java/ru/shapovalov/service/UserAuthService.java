@@ -18,9 +18,11 @@ public class UserAuthService {
     public UserDto auth(String email, String password) {
         String hash = digestService.hex(password);
         UserModel userModel = userDao.findByEmailAndHash(email, hash);
-        return userDtoConverter.convert(userModel);
+        if (userModel != null) {
+            return userDtoConverter.convert(userModel);
+        }
+        return null;
     }
-
     public UserDto registration(String email, String password) {
         String hash = digestService.hex(password);
 
