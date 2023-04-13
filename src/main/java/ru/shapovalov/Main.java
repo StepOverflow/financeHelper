@@ -1,16 +1,15 @@
 package ru.shapovalov;
 
-import ru.shapovalov.converter.UserModelToUserDtoConverter;
 import ru.shapovalov.service.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
-import static ru.shapovalov.service.ServiceFactory.getUserAuthService;
 
 public class Main {
     public static void main(String[] args) {
-        UserAuthService userAuthService = getUserAuthService();
+        UserAuthService userAuthService = new UserAuthService();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -23,8 +22,10 @@ public class Main {
                 case 1:
                     String email = request("Enter email:");
                     String password = request("Enter password:");
-                    UserDto userDto = userAuthService.auth(email, password);
-                    if (userDto != null) {
+                    Optional<UserDto> optUserDto = userAuthService.auth(email, password);
+                    UserDto userDto;
+                    if (optUserDto.isPresent()) {
+                        userDto = optUserDto.get();
                         System.out.println("Log in successful!");
                         System.out.println(userDto);
                         boolean exit2 = true;
@@ -79,18 +80,18 @@ public class Main {
                                     }
                                     break;
                                 case 5:
-                                    String name = request("Enter category name for delete: ");
-                                    isDeleted = categoryService.delete(name, userDto.getId());
+                                    int id = requestInt("Enter category id for delete: ");
+                                    isDeleted = categoryService.delete(id, userDto.getId());
                                     if (isDeleted) {
-                                        System.out.println("Category '" + name + "' successfully deleted!");
+                                        System.out.println("Category '" + id + "' successfully deleted!");
                                     } else {
                                         System.out.println("Category not found");
                                     }
                                     break;
                                 case 6:
-                                    name = request("Enter category name for edit:");
-                                    String newCategoryName = request("Enter new name for " + name + " transaction category:");
-                                    categoryDto = categoryService.edit(name, newCategoryName, userDto.getId());
+                                    id = requestInt("Enter category id for edit:");
+                                    String newCategoryName = request("Enter new name for " + id + " transaction category:");
+                                    categoryDto = categoryService.edit(id, newCategoryName, userDto.getId());
                                     System.out.println(categoryDto);
                                     break;
                                 case 0:
@@ -105,7 +106,6 @@ public class Main {
                         System.out.println("Log in failed!");
                         break;
                     }
-
                 case 2:
                     email = request("Enter email:");
                     password = request("Enter password:");

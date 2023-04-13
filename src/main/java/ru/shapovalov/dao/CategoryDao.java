@@ -21,8 +21,7 @@ public class CategoryDao {
 
     public CategoryModel insert(String categoryName, int userId) {
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("insert into categories (name, user_id) values (?,?)",
-                    Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = conn.prepareStatement("insert into categories (name, user_id) values (?,?)", Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, categoryName);
             ps.setInt(2, userId);
@@ -44,10 +43,10 @@ public class CategoryDao {
         }
     }
 
-    public boolean delete(String name, int userId) {
+    public boolean delete(int id, int userId) {
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM categories WHERE name = ? and user_id = ?");
-            ps.setString(1, name);
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM categories WHERE id = ? and user_id = ?");
+            ps.setInt(1, id);
             ps.setInt(2, userId);
 
             return ps.executeUpdate() == 1;
@@ -56,14 +55,12 @@ public class CategoryDao {
         }
     }
 
-    public CategoryModel edit(String name, String newCategoryName, int userId) {
+    public CategoryModel edit(int id, String newCategoryName, int userId) {
         CategoryModel categoryModel = new CategoryModel();
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(
-                    "update categories set name = ? where name = ? and user_id = ?",
-                    Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = conn.prepareStatement("update categories set name = ? where id = ? and user_id = ?", Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, newCategoryName);
-            ps.setString(2, name);
+            ps.setInt(2, id);
             ps.setInt(3, userId);
 
             int rowsAffected = ps.executeUpdate();

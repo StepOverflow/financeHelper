@@ -41,8 +41,7 @@ public class UserDao {
 
     public UserModel insert(String email, String hash) {
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("insert into users (email, password) values (?,?)",
-                    Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = conn.prepareStatement("insert into users (email, password) values (?,?)", Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, email);
             ps.setString(2, hash);

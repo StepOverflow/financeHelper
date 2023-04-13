@@ -3,12 +3,10 @@ package ru.shapovalov.service;
 import ru.shapovalov.converter.AccountModelToAccountDtoConverter;
 import ru.shapovalov.dao.AccountDao;
 import ru.shapovalov.dao.AccountModel;
-import ru.shapovalov.dao.UserDao;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 public class AccountService {
     private final AccountDao accountDao;
@@ -20,9 +18,7 @@ public class AccountService {
     }
 
     public List<AccountDto> getAll(int userId) {
-        return accountDao.getAllByUserId(userId).stream()
-                .map(accountDtoConverter::convert)
-                .collect(toList());
+        return accountDao.getAllByUserId(userId).stream().map(accountDtoConverter::convert).collect(toList());
     }
 
     public AccountDto create(String accountName, int userId) {

@@ -24,10 +24,7 @@ public class UserDto {
 
     @Override
     public String toString() {
-        return "UserDTO{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                '}';
+        return "UserDTO{" + "id=" + id + ", email='" + email + '\'' + '}';
     }
 
     @Override

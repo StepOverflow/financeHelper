@@ -28,6 +28,4 @@ public class CategoryModel {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-
-
 }

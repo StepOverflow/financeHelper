@@ -44,8 +44,7 @@ public class AccountDao {
 
     public AccountModel insert(String accountName, int userId) {
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO accounts (account_name, user_id, balance) VALUES (?,?,0)",
-                    Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO accounts (account_name, user_id, balance) VALUES (?,?,0)", Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, accountName);
             ps.setInt(2, userId);
