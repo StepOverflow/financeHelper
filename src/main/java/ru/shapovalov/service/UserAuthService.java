@@ -19,7 +19,13 @@ public class UserAuthService {
 
     public Optional<UserDto> auth(String email, String password) {
         String hash = digestService.hex(password);
-        return Optional.ofNullable(userDao.findByEmailAndHash(email, hash)).flatMap(source -> Optional.ofNullable(userDtoConverter.convert(source)));
+        UserModel source = userDao.findByEmailAndHash(email, hash);
+        if (source != null) {
+            UserDto userDto = userDtoConverter.convert(source);
+            return Optional.ofNullable(userDto);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public UserDto registration(String email, String password) {

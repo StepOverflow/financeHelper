@@ -18,7 +18,9 @@ public class AccountService {
     }
 
     public List<AccountDto> getAll(int userId) {
-        return accountDao.getAllByUserId(userId).stream().map(accountDtoConverter::convert).collect(toList());
+        return accountDao.getAllByUserId(userId).stream()
+                .map(accountDtoConverter::convert)
+                .collect(toList());
     }
 
     public AccountDto create(String accountName, int userId) {
