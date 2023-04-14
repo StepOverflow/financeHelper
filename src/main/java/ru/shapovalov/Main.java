@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-
 public class Main {
     public static void main(String[] args) {
         UserAuthService userAuthService = new UserAuthService();
@@ -45,8 +44,12 @@ public class Main {
                             switch (choice2) {
                                 case 1:
                                     List<AccountDto> accountDtos = accountService.getAll(userDto.getId());
-                                    for (AccountDto account : accountDtos) {
-                                        System.out.println(account);
+                                    if (!accountDtos.isEmpty()) {
+                                        for (AccountDto account : accountDtos) {
+                                            System.out.println(account);
+                                        }
+                                    } else {
+                                        System.out.println("No available accounts found!");
                                     }
                                     break;
                                 case 2:
@@ -102,6 +105,7 @@ public class Main {
                                     break;
                             }
                         }
+                        continue; //возврат в главное меню
                     } else {
                         System.out.println("Log in failed!");
                         break;
