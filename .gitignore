@@ -38,3 +38,6 @@
      *.yaml
      *.json
      *.lock
+/JBorn_Web_11_Shapovalov.iml
+/target/
+/.idea/
