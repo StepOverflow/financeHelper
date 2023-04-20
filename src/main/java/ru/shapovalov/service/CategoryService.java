@@ -9,6 +9,10 @@ public class CategoryService {
     private final CategoryDao categoryDao;
     private final CategoryModelToCategoryDtoConverter categoryDtoConverter;
 
+    private CategoryService(CategoryDao categoryDao, CategoryModelToCategoryDtoConverter categoryDtoConverter) { //конструктор для тестов
+       this.categoryDao = categoryDao;
+       this.categoryDtoConverter =categoryDtoConverter;
+    }
     public CategoryService() {
         categoryDtoConverter = new CategoryModelToCategoryDtoConverter();
         categoryDao = new CategoryDao();

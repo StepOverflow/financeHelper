@@ -1,0 +1,7 @@
+image: maven
+
+test:
+  script:
+    - mvn clean test
+  only:
+    - branches

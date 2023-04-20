@@ -1,14 +1,18 @@
 package ru.shapovalov;
 
+import ru.shapovalov.dao.TransactionDao;
 import ru.shapovalov.service.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import static ru.shapovalov.service.ServiceFactory.*;
+
 public class Main {
     public static void main(String[] args) {
-        UserAuthService userAuthService = new UserAuthService();
+        UserAuthService userAuthService = getUserAuthService();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
