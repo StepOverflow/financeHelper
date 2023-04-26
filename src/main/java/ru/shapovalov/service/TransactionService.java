@@ -1,5 +1,6 @@
 package ru.shapovalov.service;
 
+import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.TransactionModelToTransactionDtoConverter;
 import ru.shapovalov.dao.TransactionDao;
 
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-
+@Service
 public class TransactionService {
     private final TransactionDao transactionDao;
     private final TransactionModelToTransactionDtoConverter transactionDtoConverter;

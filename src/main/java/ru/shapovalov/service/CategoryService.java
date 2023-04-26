@@ -1,21 +1,17 @@
 package ru.shapovalov.service;
 
-import ru.shapovalov.converter.CategoryModelToCategoryDtoConverter;
+import org.springframework.stereotype.Service;
+import ru.shapovalov.converter.Converter;
 import ru.shapovalov.dao.CategoryDao;
 import ru.shapovalov.dao.CategoryModel;
-import ru.shapovalov.dao.UserDao;
-
+@Service
 public class CategoryService {
     private final CategoryDao categoryDao;
-    private final CategoryModelToCategoryDtoConverter categoryDtoConverter;
+    private final Converter<CategoryModel, CategoryDto> categoryDtoConverter;
 
-    private CategoryService(CategoryDao categoryDao, CategoryModelToCategoryDtoConverter categoryDtoConverter) { //конструктор для тестов
-       this.categoryDao = categoryDao;
-       this.categoryDtoConverter =categoryDtoConverter;
-    }
-    public CategoryService() {
-        categoryDtoConverter = new CategoryModelToCategoryDtoConverter();
-        categoryDao = new CategoryDao();
+    public CategoryService(CategoryDao categoryDao, Converter<CategoryModel, CategoryDto> categoryDtoConverter) {
+        this.categoryDao = categoryDao;
+        this.categoryDtoConverter = categoryDtoConverter;
     }
 
     public CategoryDto create(String categoryName, int userId) {

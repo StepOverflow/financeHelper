@@ -1,18 +1,18 @@
 package ru.shapovalov;
 
-import ru.shapovalov.dao.TransactionDao;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.shapovalov.service.*;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-import static ru.shapovalov.service.ServiceFactory.*;
 
 public class Main {
     public static void main(String[] args) {
-        UserAuthService userAuthService = getUserAuthService();
+        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
+        UserAuthServiceImpl userAuthService = context.getBean(UserAuthServiceImpl.class);
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -42,8 +42,8 @@ public class Main {
                             System.out.println("6. Edit transaction category");
                             System.out.println("0. Log out");
 
-                            AccountService accountService = new AccountService();
-                            CategoryService categoryService = new CategoryService();
+                            AccountService accountService = context.getBean(AccountService.class);
+                            CategoryService categoryService = context.getBean(CategoryService.class);
                             int choice2 = scanner.nextInt();
                             switch (choice2) {
                                 case 1:

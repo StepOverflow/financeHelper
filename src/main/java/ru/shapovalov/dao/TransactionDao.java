@@ -2,13 +2,14 @@ package ru.shapovalov.dao;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.stereotype.Service;
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class TransactionDao {
     private final DataSource dataSource;
 
@@ -36,7 +37,7 @@ public class TransactionDao {
             ps.setInt(4, userId);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 TransactionModel tm = new TransactionModel();
                 tm.setId(rs.getInt("id"));
                 tm.setSender(rs.getInt("from_account_id"));
@@ -46,12 +47,12 @@ public class TransactionDao {
                 transactionModels.add(tm);
 
             }
-
         } catch (SQLException e) {
             throw new CustomException(e);
         }
         return transactionModels;
     }
+
     public List<TransactionModel> getAllExpensesInPeriod(int categoryId, int userId, Timestamp startDate, Timestamp endDate) {
         List<TransactionModel> transactionModels = new ArrayList<>();
         try (Connection conn = dataSource.getConnection()) {
@@ -67,7 +68,7 @@ public class TransactionDao {
             ps.setInt(4, userId);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 TransactionModel tm = new TransactionModel();
                 tm.setId(rs.getInt("id"));
                 tm.setSender(rs.getInt("from_account_id"));
@@ -77,7 +78,6 @@ public class TransactionDao {
                 transactionModels.add(tm);
 
             }
-
         } catch (SQLException e) {
             throw new CustomException(e);
         }

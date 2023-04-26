@@ -1,28 +1,23 @@
 package ru.shapovalov.service;
 
-import ru.shapovalov.converter.AccountModelToAccountDtoConverter;
+import org.springframework.stereotype.Service;
+import ru.shapovalov.converter.Converter;
 import ru.shapovalov.dao.AccountDao;
 import ru.shapovalov.dao.AccountModel;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-
+@Service
 public class AccountService {
     private final AccountDao accountDao;
-    private final AccountModelToAccountDtoConverter accountDtoConverter;
+    private final Converter<AccountModel, AccountDto> accountDtoConverter;
 
 
-    private AccountService(AccountDao accountDao, AccountModelToAccountDtoConverter accountDtoConverter) { //конструктор для тестов
+    public AccountService(AccountDao accountDao, Converter<AccountModel, AccountDto> accountDtoConverter) {
         this.accountDao = accountDao;
         this.accountDtoConverter = accountDtoConverter;
     }
-
-    public AccountService() {
-        this.accountDao = new AccountDao();
-        this.accountDtoConverter = new AccountModelToAccountDtoConverter();
-    }
-
     public List<AccountDto> getAll(int userId) {
         return accountDao.getAllByUserId(userId).stream()
                 .map(accountDtoConverter::convert)

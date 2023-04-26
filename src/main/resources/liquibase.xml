@@ -1,0 +1,82 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="create_table_users" author="stepan">
+        <createTable tableName="users">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_table_accounts" author="stepan">
+        <createTable tableName="accounts">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="fk_user_id" references="users(id)"/>
+            </column>
+            <column name="account_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_table_transactions" author="stepan">
+        <createTable tableName="transactions">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="from_account_id" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="fk_from_accounts" references="accounts(id)"/>
+            </column>
+            <column name="to_account_id" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="fk_to_accounts" references="accounts(id)"/>
+            </column>
+            <column name="amount_paid" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_table_categories" author="stepan">
+        <createTable tableName="categories">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints foreignKeyName="fk_categories_user_id" references="users(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_table_transactions_categories" author="stepan">
+        <createTable tableName="transactions_categories">
+            <column name="transaction_id" type="INTEGER">
+                <constraints foreignKeyName="fk_transaction_id" references="transactions(id)"/>
+            </column>
+            <column name="category_id" type="INTEGER">
+                <constraints foreignKeyName="fk_category_id" references="categories(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

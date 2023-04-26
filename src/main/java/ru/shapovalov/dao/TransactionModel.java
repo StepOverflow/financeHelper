@@ -3,7 +3,7 @@ package ru.shapovalov.dao;
 import java.sql.Timestamp;
 
 public class TransactionModel {
-   private int id;
+    private int id;
     private int sender;
     private int recipient;
     private int sum;

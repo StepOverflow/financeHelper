@@ -1,6 +1,5 @@
 package ru.shapovalov.service;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -19,7 +18,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class UserAuthServiceTest {
     @InjectMocks
-    UserAuthService subj;
+    UserAuthServiceImpl subj;
     @Mock
     UserDao userDao;
     @Mock
@@ -95,7 +94,7 @@ public class UserAuthServiceTest {
         DigestService digestServiceMock = mock(DigestService.class);
         UserModelToUserDtoConverter userDtoConverterMock = mock(UserModelToUserDtoConverter.class);
 
-        UserAuthService userAuthService = new UserAuthService(userDaoMock, digestServiceMock, userDtoConverterMock);
+        UserAuthServiceImpl userAuthService = new UserAuthServiceImpl(userDaoMock, digestServiceMock, userDtoConverterMock);
 
         when(digestServiceMock.hex(password)).thenReturn(hashedPassword);
         when(userDaoMock.insert(email, hashedPassword)).thenReturn(userModel);
