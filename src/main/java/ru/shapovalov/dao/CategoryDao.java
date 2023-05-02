@@ -1,12 +1,13 @@
 package ru.shapovalov.dao;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class CategoryDao {
     private final DataSource dataSource;
@@ -72,5 +73,25 @@ public class CategoryDao {
             throw new CustomException(e);
         }
         return categoryModel;
+    }
+
+    public List<CategoryModel> getAllByUserId(int userId) {
+        List<CategoryModel> categoryModels = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM categories WHERE user_id = ?");
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                CategoryModel categoryModel = new CategoryModel();
+                categoryModel.setUserId(rs.getInt("user_id"));
+                categoryModel.setName(rs.getString("name"));
+                categoryModel.setId(rs.getInt("id"));
+                categoryModels.add(categoryModel);
+            }
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+        return categoryModels;
     }
 }

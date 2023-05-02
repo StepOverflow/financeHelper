@@ -1,18 +1,18 @@
 package ru.shapovalov;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.shapovalov.service.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import static ru.shapovalov.SpringContext.getContext;
 
 public class Main {
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
-        UserAuthServiceImpl userAuthService = context.getBean(UserAuthServiceImpl.class);
+        ApplicationContext context = getContext();
+        UserAuthService userAuthService = context.getBean(UserAuthService.class);
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -100,6 +100,16 @@ public class Main {
                                     String newCategoryName = request("Enter new name for " + id + " transaction category:");
                                     categoryDto = categoryService.edit(id, newCategoryName, userDto.getId());
                                     System.out.println(categoryDto);
+                                    break;
+                                case 7:
+                                    List<CategoryDto> categoryDtos = categoryService.getAll(userDto.getId());
+                                    if (!categoryDtos.isEmpty()) {
+                                        for (CategoryDto category : categoryDtos) {
+                                            System.out.println(category);
+                                        }
+                                    } else {
+                                        System.out.println("No available accounts found!");
+                                    }
                                     break;
                                 case 0:
                                     exit2 = false;

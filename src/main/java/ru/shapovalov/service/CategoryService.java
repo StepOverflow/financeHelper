@@ -4,6 +4,11 @@ import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.Converter;
 import ru.shapovalov.dao.CategoryDao;
 import ru.shapovalov.dao.CategoryModel;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class CategoryService {
     private final CategoryDao categoryDao;
@@ -26,5 +31,10 @@ public class CategoryService {
     public CategoryDto edit(int id, String newCategoryName, int userId) {
         CategoryModel categoryModel = categoryDao.edit(id, newCategoryName, userId);
         return categoryDtoConverter.convert(categoryModel);
+    }
+    public List<CategoryDto> getAll(int userId) {
+        return categoryDao.getAllByUserId(userId).stream()
+                .map(categoryDtoConverter::convert)
+                .collect(toList());
     }
 }
