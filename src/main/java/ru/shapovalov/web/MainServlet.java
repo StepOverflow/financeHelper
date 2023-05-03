@@ -34,6 +34,9 @@ public class MainServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String uri = req.getRequestURI();
+
+        res.setContentType("application/json");
+
         try {
             Controller controller = controllers.get(uri);
             if (controller != null) {

@@ -9,7 +9,7 @@ import ru.shapovalov.service.UserDto;
 
 import java.util.Optional;
 
-@Service("login")
+@Service("/login")
 @RequiredArgsConstructor
 public class AuthController implements Controller<AuthRequest, AuthResponse> {
     private final UserAuthService authService;

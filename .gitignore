@@ -1,5 +1,4 @@
-     .idea
-     out
+
      *.iml
      .DS_Store
      src/.DS_Store
@@ -41,3 +40,9 @@
 /JBorn_Web_11_Shapovalov.iml
 /target/
 /.idea/
+/out/
+/src/.DS_Store
+/.DS_Store
+/src/main/.DS_Store
+
+

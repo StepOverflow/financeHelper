@@ -28,7 +28,10 @@ public class JacksonTest {
 
     @Test
     public void testJackson_read() throws Exception {
-        Transaction transaction = subj.readValue("{\n" + "  \"date\": 1683009795636,\n" + "  \"in\": {\n" + "    \"id\": 123,\n" + "    \"name\": \"AlfaBank\"\n" + "  },\n" + "  \"out\": null,\n" + "  \"sum\": 35.05,\n" + "  \"categories\": [\n" + "    {\n" + "      \"id\": 1,\n" + "      \"name\": \"ЗП\"\n" + "    }\n" + "  ]\n" + "} ", Transaction.class);
+        Transaction transaction = subj.readValue("{\n" + "  \"date\": 1683009795636,\n"
+                + "  \"in\": {\n" + "    \"id\": 123,\n" + "    \"name\": \"AlfaBank\"\n" + "  },\n"
+                + "  \"out\": null,\n" + "  \"sum\": 35.05,\n" + "  \"categories\": [\n" + "    {\n"
+                + "      \"id\": 1,\n" + "      \"name\": \"ЗП\"\n" + "    }\n" + "  ]\n" + "} ", Transaction.class);
 
         System.out.println(transaction);
     }
@@ -46,9 +49,11 @@ public class JacksonTest {
     @Data
     @Accessors(chain = true)
     @AllArgsConstructor
+    @NoArgsConstructor
     static class Category {
         private Long id;
         private String name;
+
     }
 
     @Data
@@ -57,6 +62,10 @@ public class JacksonTest {
     static class Account {
         private Long id;
         private String name;
+
+        public Account() {
+        }
     }
+
 }
 
