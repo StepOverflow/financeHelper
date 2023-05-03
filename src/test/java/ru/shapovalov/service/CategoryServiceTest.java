@@ -11,13 +11,16 @@ import ru.shapovalov.dao.CategoryModel;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static ru.shapovalov.service.ServiceFactory.getCategoryService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CategoryServiceTest {
     @InjectMocks
     CategoryService subj;
+
     @Mock
     CategoryDao categoryDao;
+
     @Mock
     CategoryModelToCategoryDtoConverter categoryDtoConverter;
 
@@ -89,14 +92,11 @@ public class CategoryServiceTest {
         when(categoryDao.edit(id, name, userId)).thenReturn(categoryModel);
         when(categoryDtoConverter.convert(categoryModel)).thenReturn(exceptedCategoryDto);
 
-        CategoryService categoryService = new CategoryService();
         CategoryDto actualCategoryDto = subj.edit(id, name, userId);
 
         assertEquals(exceptedCategoryDto, actualCategoryDto);
 
         verify(categoryDao, times(1)).edit(id, name, userId);
         verify(categoryDtoConverter, times(1)).convert(categoryModel);
-
-
     }
 }

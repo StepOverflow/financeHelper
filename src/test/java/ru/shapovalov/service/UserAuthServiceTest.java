@@ -20,10 +20,13 @@ import static org.mockito.Mockito.*;
 public class UserAuthServiceTest {
     @InjectMocks
     UserAuthService subj;
+
     @Mock
     UserDao userDao;
+
     @Mock
     DigestService digestService;
+
     @Mock
     UserModelToUserDtoConverter userDtoConverter;
 

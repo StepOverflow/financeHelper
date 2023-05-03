@@ -21,66 +21,47 @@ public class TransactionDao {
         dataSource = new HikariDataSource(config);
     }
 
-    public List<TransactionModel> getAllIncomeInPeriod(int categoryId, int userId, Timestamp startDate, Timestamp endDate) {
-        List<TransactionModel> transactionModels = new ArrayList<>();
+    public int getResultIncomeInPeriod(int userId, Timestamp startDate, Timestamp endDate) {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
-                    "SELECT * FROM transactions t " +
-                            " JOIN transactions_categories tc ON t.id = tc.transaction_id " +
+                    "SELECT SUM(amount_paid) FROM transactions t " +
                             " JOIN accounts a ON a.id = t.to_account_id " +
-                            " WHERE tc.category_id = ? AND t.created_date BETWEEN ? AND ? " +
+                            " WHERE t.created_date BETWEEN ? AND ? " +
                             " AND a.user_id = ? ");
-            ps.setInt(1, categoryId);
-            ps.setTimestamp(2, startDate);
-            ps.setTimestamp(3, endDate);
-            ps.setInt(4, userId);
+            ps.setTimestamp(1, startDate);
+            ps.setTimestamp(2, endDate);
+            ps.setInt(3, userId);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
-                TransactionModel tm = new TransactionModel();
-                tm.setId(rs.getInt("id"));
-                tm.setSender(rs.getInt("from_account_id"));
-                tm.setRecipient(rs.getInt("to_account_id"));
-                tm.setSum(rs.getInt("amount_paid"));
-                tm.setTimestamp(rs.getTimestamp("created_date"));
-                transactionModels.add(tm);
-
+            if (rs.next()) {
+                return rs.getInt(1);
+            } else {
+                return 0;
             }
-
         } catch (SQLException e) {
             throw new CustomException(e);
         }
-        return transactionModels;
     }
-    public List<TransactionModel> getAllExpensesInPeriod(int categoryId, int userId, Timestamp startDate, Timestamp endDate) {
-        List<TransactionModel> transactionModels = new ArrayList<>();
+
+    public int getResultExpensesInPeriod(int userId, Timestamp startDate, Timestamp endDate) {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
-                    "SELECT * FROM transactions t " +
-                            " JOIN transactions_categories tc ON t.id = tc.transaction_id " +
-                            " JOIN accounts a ON a.id = t.from_account_id " +
-                            " WHERE tc.category_id = ? AND t.created_date BETWEEN ? AND ? " +
+                    "SELECT SUM(amount_paid) FROM transactions t " +
+                            " JOIN accounts a ON a.id = t.to_account_id " +
+                            " WHERE t.created_date BETWEEN ? AND ? " +
                             " AND a.user_id = ? ");
-            ps.setInt(1, categoryId);
-            ps.setTimestamp(2, startDate);
-            ps.setTimestamp(3, endDate);
-            ps.setInt(4, userId);
+            ps.setTimestamp(1, startDate);
+            ps.setTimestamp(2, endDate);
+            ps.setInt(3, userId);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
-                TransactionModel tm = new TransactionModel();
-                tm.setId(rs.getInt("id"));
-                tm.setSender(rs.getInt("from_account_id"));
-                tm.setRecipient(rs.getInt("to_account_id"));
-                tm.setSum(rs.getInt("amount_paid"));
-                tm.setTimestamp(rs.getTimestamp("created_date"));
-                transactionModels.add(tm);
-
+            if (rs.next()) {
+                return rs.getInt(1);
+            } else {
+                return 0;
             }
-
         } catch (SQLException e) {
             throw new CustomException(e);
         }
-        return transactionModels;
     }
 }

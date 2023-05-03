@@ -42,8 +42,8 @@ public class Main {
                             System.out.println("6. Edit transaction category");
                             System.out.println("0. Log out");
 
-                            AccountService accountService = new AccountService();
-                            CategoryService categoryService = new CategoryService();
+                            AccountService accountService = getAccountService();
+                            CategoryService categoryService = getCategoryService();
                             int choice2 = scanner.nextInt();
                             switch (choice2) {
                                 case 1:

@@ -12,15 +12,9 @@ public class AccountService {
     private final AccountDao accountDao;
     private final AccountModelToAccountDtoConverter accountDtoConverter;
 
-
-    private AccountService(AccountDao accountDao, AccountModelToAccountDtoConverter accountDtoConverter) { //конструктор для тестов
+    public AccountService(AccountDao accountDao, AccountModelToAccountDtoConverter accountDtoConverter) {
         this.accountDao = accountDao;
         this.accountDtoConverter = accountDtoConverter;
-    }
-
-    public AccountService() {
-        this.accountDao = new AccountDao();
-        this.accountDtoConverter = new AccountModelToAccountDtoConverter();
     }
 
     public List<AccountDto> getAll(int userId) {

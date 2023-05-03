@@ -10,6 +10,7 @@ import ru.shapovalov.dao.AccountDao;
 import ru.shapovalov.dao.AccountModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -19,8 +20,10 @@ import static org.mockito.Mockito.*;
 public class AccountServiceTest {
     @InjectMocks
     AccountService subj;
+
     @Mock
     AccountDao accountDao;
+
     @Mock
     AccountModelToAccountDtoConverter accountDtoConverter;
 
@@ -48,13 +51,9 @@ public class AccountServiceTest {
         accountDto2.setName(accountModel2.getName());
         accountDto2.setUserId(accountModel2.getUserId());
 
-        List<AccountModel> accountModels = new ArrayList<>();
-        accountModels.add(accountModel1);
-        accountModels.add(accountModel2);
+        List <AccountModel> accountModels = Arrays.asList(accountModel1, accountModel2);
 
-        List<AccountDto> expectedAccountDtos = new ArrayList<>();
-        expectedAccountDtos.add(accountDto1);
-        expectedAccountDtos.add(accountDto2);
+        List<AccountDto> expectedAccountDtos = Arrays.asList(accountDto1, accountDto2);
 
         when(accountDao.getAllByUserId(userId)).thenReturn(accountModels);
         when(accountDtoConverter.convert(accountModel1)).thenReturn(accountDto1);
@@ -85,9 +84,9 @@ public class AccountServiceTest {
         when(accountDao.insert(accountName, userId)).thenReturn(accountModel1);
         when(accountDtoConverter.convert(accountModel1)).thenReturn(exceptedAccountDto);
 
-       AccountDto actualAccountDto = subj.create(accountName, userId);
+        AccountDto actualAccountDto = subj.create(accountName, userId);
 
-       assertEquals(exceptedAccountDto, actualAccountDto);
+        assertEquals(exceptedAccountDto, actualAccountDto);
 
         verify(accountDao, times(1)).insert(accountName, userId);
         verify(accountDtoConverter, times(1)).convert(any(AccountModel.class));
@@ -104,6 +103,7 @@ public class AccountServiceTest {
 
         verify(accountDao, times(1)).delete(accountId, userId);
     }
+
     @Test
     public void delete_accountNotDelete() {
         int accountId = 2;
