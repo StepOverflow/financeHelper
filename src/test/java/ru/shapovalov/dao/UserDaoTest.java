@@ -12,7 +12,7 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
-        System.setProperty("jdncUrl", "jdbc:h2:mem:test_mem");
+        System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem");
         System.setProperty("jdbcUser", "sa");
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");

@@ -18,10 +18,11 @@ import java.sql.SQLException;
 
 @Configuration
 public class DaoConfiguration {
-@Bean
+
+    @Bean
     public DataSource getDataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(System.getProperty("jdncUrl", "jdbc:postgresql://localhost:5433/postgres"));
+        config.setJdbcUrl(System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5433/postgres"));
         config.setUsername(System.getProperty("jdbcUser", "postgres"));
         config.setPassword(System.getProperty("jdbcPassword", "Pattaya2023"));
 
