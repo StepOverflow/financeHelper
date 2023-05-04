@@ -3,7 +3,6 @@ package ru.shapovalov.service;
 import ru.shapovalov.converter.CategoryModelToCategoryDtoConverter;
 import ru.shapovalov.dao.CategoryDao;
 import ru.shapovalov.dao.CategoryModel;
-import ru.shapovalov.dao.UserDao;
 
 public class CategoryService {
     private final CategoryDao categoryDao;
