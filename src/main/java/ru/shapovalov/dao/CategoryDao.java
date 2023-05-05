@@ -6,6 +6,8 @@ import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CategoryDao {
     private final DataSource dataSource;
@@ -76,5 +78,61 @@ public class CategoryDao {
             throw new CustomException(e);
         }
         return categoryModel;
+    }
+
+    public Map<String, Integer> getResultIncomeInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT c.name, SUM(t.amount_paid) " +
+                            "FROM transactions t " +
+                            "JOIN accounts a ON a.id = t.to_account_id " +
+                            "JOIN transactions_categories tc ON tc.transaction_id = t.id " +
+                            "JOIN categories c ON c.id = tc.category_id " +
+                            "WHERE t.created_date BETWEEN ? AND ? " +
+                            "AND a.user_id = ? " +
+                            "GROUP BY c.name"
+            );
+            ps.setTimestamp(1, startDate);
+            ps.setTimestamp(2, endDate);
+            ps.setInt(3, userId);
+            ResultSet rs = ps.executeQuery();
+            Map<String, Integer> result = new HashMap<>();
+            while (rs.next()) {
+                String categoryName = rs.getString(1);
+                int amount = rs.getInt(2);
+                result.put(categoryName, amount);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+    }
+
+    public Map<String, Integer> getResultExpenseInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT c.name, SUM(t.amount_paid) " +
+                            "FROM transactions t " +
+                            "JOIN accounts a ON a.id = t.from_account_id " +
+                            "JOIN transactions_categories tc ON tc.transaction_id = t.id " +
+                            "JOIN categories c ON c.id = tc.category_id " +
+                            "WHERE t.created_date BETWEEN ? AND ? " +
+                            "AND a.user_id = ? " +
+                            "GROUP BY c.name"
+            );
+            ps.setTimestamp(1, startDate);
+            ps.setTimestamp(2, endDate);
+            ps.setInt(3, userId);
+            ResultSet rs = ps.executeQuery();
+            Map<String, Integer> result = new HashMap<>();
+            while (rs.next()) {
+                String categoryName = rs.getString(1);
+                int amount = rs.getInt(2);
+                result.put(categoryName, amount);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
     }
 }

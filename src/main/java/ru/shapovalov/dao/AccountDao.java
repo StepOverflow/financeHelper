@@ -31,7 +31,7 @@ public class AccountDao {
             while (rs.next()) {
                 AccountModel accountModel = new AccountModel();
                 accountModel.setUserId(rs.getInt("user_id"));
-                accountModel.setAccountName(rs.getString("account_name"));
+                accountModel.setName(rs.getString("account_name"));
                 accountModel.setBalance(rs.getInt("balance"));
                 accountModel.setId(rs.getInt("id"));
                 accountModels.add(accountModel);
@@ -54,7 +54,7 @@ public class AccountDao {
             if (generatedKeys.next()) {
                 AccountModel accountModel = new AccountModel();
                 accountModel.setId(generatedKeys.getInt(1));
-                accountModel.setAccountName(accountName);
+                accountModel.setName(accountName);
                 accountModel.setBalance(0);
                 accountModel.setUserId(userId);
 

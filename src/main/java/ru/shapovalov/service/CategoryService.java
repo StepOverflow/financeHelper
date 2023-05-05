@@ -9,9 +9,9 @@ public class CategoryService {
     private final CategoryDao categoryDao;
     private final CategoryModelToCategoryDtoConverter categoryDtoConverter;
 
-    public CategoryService() {
-        categoryDtoConverter = new CategoryModelToCategoryDtoConverter();
-        categoryDao = new CategoryDao();
+    public CategoryService(CategoryDao categoryDao, CategoryModelToCategoryDtoConverter categoryDtoConverter) {
+        this.categoryDao = categoryDao;
+        this.categoryDtoConverter = categoryDtoConverter;
     }
 
     public CategoryDto create(String categoryName, int userId) {

@@ -1,14 +1,18 @@
 package ru.shapovalov;
 
+import ru.shapovalov.dao.TransactionDao;
 import ru.shapovalov.service.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import static ru.shapovalov.service.ServiceFactory.*;
+
 public class Main {
     public static void main(String[] args) {
-        UserAuthService userAuthService = new UserAuthService();
+        UserAuthService userAuthService = getUserAuthService();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -38,8 +42,8 @@ public class Main {
                             System.out.println("6. Edit transaction category");
                             System.out.println("0. Log out");
 
-                            AccountService accountService = new AccountService();
-                            CategoryService categoryService = new CategoryService();
+                            AccountService accountService = getAccountService();
+                            CategoryService categoryService = getCategoryService();
                             int choice2 = scanner.nextInt();
                             switch (choice2) {
                                 case 1:

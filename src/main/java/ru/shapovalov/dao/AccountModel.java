@@ -1,5 +1,7 @@
 package ru.shapovalov.dao;
 
+import java.util.Objects;
+
 public class AccountModel {
     private int id;
     private int userId;
@@ -22,11 +24,11 @@ public class AccountModel {
         this.userId = userId;
     }
 
-    public String getAccountName() {
+    public String getName() {
         return accountName;
     }
 
-    public void setAccountName(String accountName) {
+    public void setName(String accountName) {
         this.accountName = accountName;
     }
 
@@ -36,5 +38,18 @@ public class AccountModel {
 
     public void setBalance(int balance) {
         this.balance = balance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccountModel that = (AccountModel) o;
+        return id == that.id && userId == that.userId && balance == that.balance && Objects.equals(accountName, that.accountName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userId, accountName, balance);
     }
 }

@@ -11,12 +11,11 @@ public class UserAuthService {
     private final DigestService digestService;
     private final UserModelToUserDtoConverter userDtoConverter;
 
-    public UserAuthService() {
-        this.userDao = new UserDao();
-        this.digestService = new Md5DigestService();
-        this.userDtoConverter = new UserModelToUserDtoConverter();
+    public UserAuthService(UserDao userDao, DigestService digestService, UserModelToUserDtoConverter userDtoConverter) {
+        this.userDao = userDao;
+        this.digestService = digestService;
+        this.userDtoConverter = userDtoConverter;
     }
-
     public Optional<UserDto> auth(String email, String password) {
         String hash = digestService.hex(password);
         UserModel source = userDao.findByEmailAndHash(email, hash);
