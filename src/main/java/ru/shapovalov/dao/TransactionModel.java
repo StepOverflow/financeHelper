@@ -4,8 +4,8 @@ import java.sql.Timestamp;
 
 public class TransactionModel {
     private int id;
-    private int sender;
-    private int recipient;
+    private Integer sender;
+    private Integer recipient;
     private int sum;
     private Timestamp timestamp;
 
@@ -17,19 +17,19 @@ public class TransactionModel {
         this.id = id;
     }
 
-    public int getSender() {
+    public Integer getSender() {
         return sender;
     }
 
-    public void setSender(int sender) {
+    public void setSender(Integer sender) {
         this.sender = sender;
     }
 
-    public int getRecipient() {
+    public Integer getRecipient() {
         return recipient;
     }
 
-    public void setRecipient(int recipient) {
+    public void setRecipient(Integer recipient) {
         this.recipient = recipient;
     }
 

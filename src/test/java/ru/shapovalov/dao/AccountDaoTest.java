@@ -2,7 +2,6 @@ package ru.shapovalov.dao;
 
 import org.junit.*;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -18,28 +17,38 @@ public class AccountDaoTest {
         System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=-0");
         System.setProperty("jdbcUser", "sa");
         System.setProperty("jdbcPassword", "");
-        System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
+        System.setProperty("liquibaseFile", "liquibase_account_dao_test.xml");
 
         userDaoSubj = getUserDao();
         accountDaoSubj = getAccountDao();
     }
 
     @Test
-    public void testGetAllByUserId() {
-        userDaoSubj.insert("user1", "hash");
-        accountDaoSubj.insert("account1", 1);
-        accountDaoSubj.insert("account2", 1);
+    public void testInsert() {
+        AccountModel accountModel = accountDaoSubj.insert("test_account", 1);
 
-        List<AccountModel> actualList = accountDaoSubj.getAllByUserId(1);
-
-        assertEquals(2, actualList.size());
+        assertEquals("test_account", accountModel.getName());
+        assertEquals(0, accountModel.getBalance());
+        assertTrue(accountModel.getId() > 0);
+        assertEquals(1, accountModel.getUserId());
     }
 
     @Test
-    public void testDelete() {
-        userDaoSubj.insert("user13", "hash");
-        AccountModel accountModel = accountDaoSubj.insert("accName", 1);
+    public void testGetAllByUserId() {
+        AccountModel accountModel1 = accountDaoSubj.insert("test_account1", 1);
+        AccountModel accountModel2 = accountDaoSubj.insert("test_account2", 1);
+        AccountModel accountModel3 = accountDaoSubj.insert("test_account3", 2);
 
-        assertTrue(accountDaoSubj.delete(accountModel.getId(), accountModel.getUserId()));
+        assertEquals(2, accountDaoSubj.getAllByUserId(1).size());
+        assertEquals(1, accountDaoSubj.getAllByUserId(2).size());
+    }
+
+    @Test
+   public void testDelete() {
+        AccountModel accountModel = accountDaoSubj.insert("test_account", 3);
+        int accountId = accountModel.getId();
+
+        assertTrue(accountDaoSubj.delete(accountId, 3));
+        assertTrue(accountDaoSubj.getAllByUserId(3).isEmpty());
     }
 }

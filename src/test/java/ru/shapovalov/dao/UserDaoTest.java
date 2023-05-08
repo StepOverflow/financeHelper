@@ -2,7 +2,7 @@ package ru.shapovalov.dao;
 
 import org.junit.Before;
 import org.junit.Test;
-
+import ru.shapovalov.exception.CustomException;
 
 import java.util.UUID;
 
@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 import static ru.shapovalov.dao.DaoFactory.getUserDao;
 
 public class UserDaoTest {
-    UserDao subj;
+    UserDao userDaoSubj;
 
     @Before
     public void setUp() {
@@ -19,27 +19,36 @@ public class UserDaoTest {
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
 
-        subj = getUserDao();
+        userDaoSubj = getUserDao();
     }
 
     @Test
-    public void insert() {
-        UserModel userModel = subj.insert("user", "hash");
-
-        subj.findByEmailAndHash("user", "hash");
-
-        assertEquals("user", userModel.getEmail());
+    public void testFindByEmailAndHash() {
+        UserModel userModel = userDaoSubj.findByEmailAndHash("user1@example.com", "password1");
+        assertNotNull(userModel);
+        assertEquals("user1@example.com", userModel.getEmail());
+        assertEquals("password1", userModel.getPassword());
     }
 
     @Test
-    public void findByEmailAndHash() {
-        UserModel userModel = subj.insert("user", "hash");
+    public void testInsert() {
+        UserModel userModel = userDaoSubj.insert("test3@example.com", "password3");
+        assertNotNull(userModel);
+        assertEquals("test3@example.com", userModel.getEmail());
+        assertEquals("password3", userModel.getPassword());
+    }
 
-        UserModel user = subj.findByEmailAndHash("user", "hash");
+    @Test
+    public void testInsertWithGeneratedKeys() {
+        UserModel userModel = userDaoSubj.insert("test4@example.com", "password4");
+        assertNotNull(userModel);
+        assertNotEquals(0, userModel.getId());
+        assertEquals("test4@example.com", userModel.getEmail());
+        assertEquals("password4", userModel.getPassword());
+    }
 
-        assertEquals(1, user.getId());
-        assertEquals("user", user.getEmail());
-        assertEquals("hash", user.getPassword());
-
+    @Test
+    public void testInsertDuplicateEmail() {
+        assertThrows(CustomException.class, () -> userDaoSubj.insert("user1@example.com", "password3"));
     }
 }

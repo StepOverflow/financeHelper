@@ -9,7 +9,6 @@ import ru.shapovalov.converter.AccountModelToAccountDtoConverter;
 import ru.shapovalov.dao.AccountDao;
 import ru.shapovalov.dao.AccountModel;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

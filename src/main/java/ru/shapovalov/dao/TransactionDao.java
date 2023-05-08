@@ -1,65 +1,111 @@
 package ru.shapovalov.dao;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+
+import static ru.shapovalov.dao.DaoFactory.getAccountDao;
 
 public class TransactionDao {
     private final DataSource dataSource;
 
-    public TransactionDao() {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5433/postgres");
-        config.setUsername("postgres");
-        config.setPassword("Pattaya2023");
-
-        dataSource = new HikariDataSource(config);
+    public TransactionDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public int getResultIncomeInPeriod(int userId, Timestamp startDate, Timestamp endDate) {
+    public TransactionModel moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId) {
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
+
+            if (fromAccount != null && getAccountDao().getBalance(fromAccount) < amountPaid) {
+                throw new CustomException("Insufficient funds on the account");
+            }
+            TransactionModel transactionModel = createTransaction(fromAccount, toAccount, amountPaid, userId);
+            updateAccountBalances(fromAccount, toAccount, amountPaid);
+
+            connection.commit();
+
+            return transactionModel;
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                    return null;
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            throw new CustomException(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    private TransactionModel createTransaction(Integer fromAccount, Integer toAccount, int amountPaid, int userId) {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
-                    "SELECT SUM(amount_paid) FROM transactions t " +
-                            " JOIN accounts a ON a.id = t.to_account_id " +
-                            " WHERE t.created_date BETWEEN ? AND ? " +
-                            " AND a.user_id = ? ");
-            ps.setTimestamp(1, startDate);
-            ps.setTimestamp(2, endDate);
-            ps.setInt(3, userId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1);
+                    "INSERT INTO transactions (from_account_id, to_account_id, amount_paid, created_date) " +
+                            "VALUES (?, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS);
+            if (fromAccount == null) {
+                ps.setNull(1, java.sql.Types.INTEGER);
             } else {
-                return 0;
+                ps.setInt(1, fromAccount);
+            }
+            if (toAccount == null) {
+                ps.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(2, toAccount);
+            }
+            ps.setInt(3, amountPaid);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            ps.setTimestamp(4, timestamp);
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                int transactionId = rs.getInt(1);
+                TransactionModel transactionModel = new TransactionModel();
+                transactionModel.setId(transactionId);
+                transactionModel.setSender(fromAccount);
+                transactionModel.setRecipient(toAccount);
+                transactionModel.setSum(amountPaid);
+                transactionModel.setTimestamp(timestamp);
+                return transactionModel;
+            } else {
+                throw new SQLException("Creating transaction failed, no ID obtained.");
             }
         } catch (SQLException e) {
             throw new CustomException(e);
         }
     }
 
-    public int getResultExpensesInPeriod(int userId, Timestamp startDate, Timestamp endDate) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(
-                    "SELECT SUM(amount_paid) FROM transactions t " +
-                            " JOIN accounts a ON a.id = t.to_account_id " +
-                            " WHERE t.created_date BETWEEN ? AND ? " +
-                            " AND a.user_id = ? ");
-            ps.setTimestamp(1, startDate);
-            ps.setTimestamp(2, endDate);
-            ps.setInt(3, userId);
-            ResultSet rs = ps.executeQuery();
+    private void updateAccountBalances(Integer fromAccountId, Integer toAccountId, int amountPaid) {
+        if (fromAccountId != null) {
+            updateAccountBalance(fromAccountId, -amountPaid);
+        }
+        if (toAccountId != null) {
+            updateAccountBalance(toAccountId, amountPaid);
+        }
+    }
 
-            if (rs.next()) {
-                return rs.getInt(1);
-            } else {
-                return 0;
-            }
+    private void updateAccountBalance(Integer accountId, int amount) {
+        String sql = "UPDATE accounts SET balance = balance + ? WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, amount);
+            ps.setInt(2, accountId);
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw new CustomException(e);
         }

@@ -40,10 +40,10 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="from_account_id" type="INTEGER">
-                <constraints nullable="false" foreignKeyName="fk_from_accounts" references="accounts(id)"/>
+                <constraints nullable="true" foreignKeyName="fk_from_accounts" references="accounts(id)"/>
             </column>
             <column name="to_account_id" type="INTEGER">
-                <constraints nullable="false" foreignKeyName="fk_to_accounts" references="accounts(id)"/>
+                <constraints nullable="true" foreignKeyName="fk_to_accounts" references="accounts(id)"/>
             </column>
             <column name="amount_paid" type="INTEGER">
                 <constraints nullable="false"/>

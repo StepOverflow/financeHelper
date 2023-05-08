@@ -31,7 +31,7 @@ public class DaoFactory {
 
     public static TransactionDao getTransactionDao() {
         if (transactionDao == null) {
-            transactionDao = new TransactionDao();
+            transactionDao = new TransactionDao(getDataSource());
         }
         return transactionDao;
     }

@@ -1,6 +1,5 @@
 package ru.shapovalov.service;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -72,7 +71,7 @@ public class UserAuthServiceTest {
         Optional<UserDto> userDtoOptional = subj.auth(email, password);
 
         assertTrue(userDtoOptional.isPresent());
-        assertEquals(Optional.of(userDto), userDtoOptional);
+        assertEquals(userDto, userDtoOptional.get());
 
         verify(digestService, times(1)).hex(password);
         verify(userDao, times(1)).findByEmailAndHash(email, hashPassword);

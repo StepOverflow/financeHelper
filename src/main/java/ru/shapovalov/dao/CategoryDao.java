@@ -1,9 +1,12 @@
 package ru.shapovalov.dao;
 
 import ru.shapovalov.exception.CustomException;
+import ru.shapovalov.service.TransactionDto;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CategoryDao {
     private final DataSource dataSource;
@@ -69,5 +72,97 @@ public class CategoryDao {
             throw new CustomException(e);
         }
         return categoryModel;
+    }
+
+    public Map<String, Integer> getResultIncomeInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT c.name, SUM(t.amount_paid) " +
+                            "FROM transactions t " +
+                            "JOIN accounts a ON a.id = t.to_account_id " +
+                            "JOIN transactions_categories tc ON tc.transaction_id = t.id " +
+                            "JOIN categories c ON c.id = tc.category_id " +
+                            "WHERE t.created_date BETWEEN ? AND ? " +
+                            "AND a.user_id = ? " +
+                            "GROUP BY c.name"
+            );
+            ps.setTimestamp(1, startDate);
+            ps.setTimestamp(2, endDate);
+            ps.setInt(3, userId);
+            ResultSet rs = ps.executeQuery();
+            Map<String, Integer> result = new HashMap<>();
+            while (rs.next()) {
+                String categoryName = rs.getString(1);
+                int amount = rs.getInt(2);
+                result.put(categoryName, amount);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+    }
+
+    public Map<String, Integer> getResultExpenseInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT c.name, SUM(t.amount_paid) " +
+                            "FROM transactions t " +
+                            "JOIN accounts a ON a.id = t.from_account_id " +
+                            "JOIN transactions_categories tc ON tc.transaction_id = t.id " +
+                            "JOIN categories c ON c.id = tc.category_id " +
+                            "WHERE t.created_date BETWEEN ? AND ? " +
+                            "AND a.user_id = ? " +
+                            "GROUP BY c.name"
+            );
+            ps.setTimestamp(1, startDate);
+            ps.setTimestamp(2, endDate);
+            ps.setInt(3, userId);
+            ResultSet rs = ps.executeQuery();
+            Map<String, Integer> result = new HashMap<>();
+            while (rs.next()) {
+                String categoryName = rs.getString(1);
+                int amount = rs.getInt(2);
+                result.put(categoryName, amount);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+    }
+
+    public boolean setCategoryOfTransaction(int category, TransactionDto transactionDto) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("insert into transactions_categories (transaction_id, category_id) values (?,?)");
+
+            ps.setInt(1, transactionDto.getId());
+            ps.setInt(2, category);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+    }
+
+    public CategoryModel getById(int categoryId) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM categories WHERE id = ?");
+
+            ps.setInt(1, categoryId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                CategoryModel categoryModel = new CategoryModel();
+                categoryModel.setId(rs.getInt("id"));
+                categoryModel.setName(rs.getString("name"));
+                categoryModel.setUserId(rs.getInt("user_id"));
+
+                return categoryModel;
+            } else {
+                throw new CustomException("Category not found");
+            }
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
     }
 }
