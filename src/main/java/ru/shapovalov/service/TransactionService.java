@@ -22,8 +22,8 @@ public class TransactionService {
         if (userIdOfAccount == userId) {
             TransactionModel transactionModel;
             if (recipient == 0) {
-                transactionModel = transactionDao.moneyTransfer(sender, null, sum, userId);
-            } else transactionModel = transactionDao.moneyTransfer(sender, recipient, sum, userId);
+                transactionModel = transactionDao.moneyTransfer(sender, null, sum);
+            } else transactionModel = transactionDao.moneyTransfer(sender, recipient, sum);
             return transactionDtoConverter.convert(transactionModel);
         }
         return null;

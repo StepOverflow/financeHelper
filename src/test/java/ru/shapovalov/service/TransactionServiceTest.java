@@ -28,8 +28,8 @@ public class TransactionServiceTest {
         expectedTransactionModel.setRecipient(recipient);
         expectedTransactionModel.setSum(sum);
 
-        when(transactionDao.moneyTransfer(sender, recipient, sum, userId)).thenReturn(expectedTransactionModel);
-        TransactionModel actualTransactionModel = transactionDao.moneyTransfer(sender, recipient, sum, userId);
+        when(transactionDao.moneyTransfer(sender, recipient, sum)).thenReturn(expectedTransactionModel);
+        TransactionModel actualTransactionModel = transactionDao.moneyTransfer(sender, recipient, sum);
 
         assertEquals(expectedTransactionModel, actualTransactionModel);
     }
@@ -48,7 +48,7 @@ public class TransactionServiceTest {
         expectedTransactionModel.setRecipient(recipient);
         expectedTransactionModel.setSum(sum);
 
-        TransactionModel actualTransactionModel = transactionDao.moneyTransfer(sender, recipient, sum, wrongUser);
+        TransactionModel actualTransactionModel = transactionDao.moneyTransfer(sender, recipient, sum);
 
         assertNull(actualTransactionModel);
     }

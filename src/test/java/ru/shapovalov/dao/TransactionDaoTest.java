@@ -12,8 +12,8 @@ public class TransactionDaoTest {
     private AccountDao accountDao;
 
     @Before
-    public void setUp() throws Exception {
-        System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=-0");
+    public void setUp() {
+        System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=0");
         System.setProperty("jdbcUser", "sa");
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_transaction_dao_test.xml");
@@ -28,7 +28,7 @@ public class TransactionDaoTest {
         int account2StartBalance = accountDao.getBalance(2);
         int amount = 100;
 
-        TransactionModel transactionModel = transactionDao.moneyTransfer(1, 2, amount, 1);
+        TransactionModel transactionModel = transactionDao.moneyTransfer(1, 2, amount);
 
         assertNotNull(transactionModel);
         assertEquals(account1StartBalance - amount, accountDao.getBalance(1));

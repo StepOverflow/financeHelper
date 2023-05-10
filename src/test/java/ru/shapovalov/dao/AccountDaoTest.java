@@ -10,16 +10,14 @@ import static ru.shapovalov.dao.DaoFactory.getUserDao;
 
 public class AccountDaoTest {
     private AccountDao accountDaoSubj;
-    private UserDao userDaoSubj;
 
     @Before
     public void setUp() {
-        System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=-0");
+        System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=0");
         System.setProperty("jdbcUser", "sa");
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_account_dao_test.xml");
 
-        userDaoSubj = getUserDao();
         accountDaoSubj = getAccountDao();
     }
 

@@ -14,7 +14,7 @@ public class TransactionDao {
         this.dataSource = dataSource;
     }
 
-    public TransactionModel moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId) {
+    public TransactionModel moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid) {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
@@ -23,7 +23,7 @@ public class TransactionDao {
             if (fromAccount != null && getAccountDao().getBalance(fromAccount) < amountPaid) {
                 throw new CustomException("Insufficient funds on the account");
             }
-            TransactionModel transactionModel = createTransaction(fromAccount, toAccount, amountPaid, userId);
+            TransactionModel transactionModel = createTransaction(fromAccount, toAccount, amountPaid);
             updateAccountBalances(fromAccount, toAccount, amountPaid);
 
             connection.commit();
@@ -51,7 +51,7 @@ public class TransactionDao {
         }
     }
 
-    private TransactionModel createTransaction(Integer fromAccount, Integer toAccount, int amountPaid, int userId) {
+    private TransactionModel createTransaction(Integer fromAccount, Integer toAccount, int amountPaid) {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO transactions (from_account_id, to_account_id, amount_paid, created_date) " +
@@ -74,13 +74,12 @@ public class TransactionDao {
 
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
-                int transactionId = rs.getInt(1);
                 TransactionModel transactionModel = new TransactionModel();
-                transactionModel.setId(transactionId);
-                transactionModel.setSender(fromAccount);
-                transactionModel.setRecipient(toAccount);
-                transactionModel.setSum(amountPaid);
-                transactionModel.setTimestamp(timestamp);
+                transactionModel.setId(rs.getInt("id"));
+                transactionModel.setSender(rs.getInt("from_account_id"));
+                transactionModel.setRecipient(rs.getInt("to_account_id"));
+                transactionModel.setSum(rs.getInt("amount_paid"));
+                transactionModel.setTimestamp(rs.getTimestamp("created_date"));
                 return transactionModel;
             } else {
                 throw new SQLException("Creating transaction failed, no ID obtained.");

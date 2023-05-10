@@ -16,7 +16,7 @@ public class CategoryDaoTest {
 
     @Before
     public void setUp() throws Exception {
-        System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=-0");
+        System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=0");
         System.setProperty("jdbcUser", "sa");
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_category_dao_test.xml");
