@@ -74,12 +74,13 @@ public class TransactionDao {
 
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
+                int transactionId = rs.getInt(1);
                 TransactionModel transactionModel = new TransactionModel();
-                transactionModel.setId(rs.getInt("id"));
-                transactionModel.setSender(rs.getInt("from_account_id"));
-                transactionModel.setRecipient(rs.getInt("to_account_id"));
-                transactionModel.setSum(rs.getInt("amount_paid"));
-                transactionModel.setTimestamp(rs.getTimestamp("created_date"));
+                transactionModel.setId(transactionId);
+                transactionModel.setSender(fromAccount);
+                transactionModel.setRecipient(toAccount);
+                transactionModel.setSum(amountPaid);
+                transactionModel.setTimestamp(timestamp);
                 return transactionModel;
             } else {
                 throw new SQLException("Creating transaction failed, no ID obtained.");

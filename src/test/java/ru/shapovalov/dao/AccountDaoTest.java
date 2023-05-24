@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static ru.shapovalov.dao.DaoFactory.getAccountDao;
-import static ru.shapovalov.dao.DaoFactory.getUserDao;
 
 public class AccountDaoTest {
     private AccountDao accountDaoSubj;
@@ -42,7 +41,7 @@ public class AccountDaoTest {
     }
 
     @Test
-   public void testDelete() {
+    public void testDelete() {
         AccountModel accountModel = accountDaoSubj.insert("test_account", 3);
         int accountId = accountModel.getId();
 
