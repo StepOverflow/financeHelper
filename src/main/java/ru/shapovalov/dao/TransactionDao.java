@@ -1,5 +1,6 @@
 package ru.shapovalov.dao;
 
+
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
@@ -23,8 +24,8 @@ public class TransactionDao {
             if (fromAccount != null && getAccountDao().getBalance(fromAccount) < amountPaid) {
                 throw new CustomException("Insufficient funds on the account");
             }
-            TransactionModel transactionModel = createTransaction(fromAccount, toAccount, amountPaid);
-            updateAccountBalances(fromAccount, toAccount, amountPaid);
+            TransactionModel transactionModel = createTransaction(connection, fromAccount, toAccount, amountPaid);
+            updateAccountBalances(connection, fromAccount, toAccount, amountPaid);
 
             connection.commit();
 
@@ -51,9 +52,9 @@ public class TransactionDao {
         }
     }
 
-    private TransactionModel createTransaction(Integer fromAccount, Integer toAccount, int amountPaid) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(
+    private TransactionModel createTransaction(Connection connection, Integer fromAccount, Integer toAccount, int amountPaid) {
+        try {
+            PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO transactions (from_account_id, to_account_id, amount_paid, created_date) " +
                             "VALUES (?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
@@ -90,19 +91,19 @@ public class TransactionDao {
         }
     }
 
-    private void updateAccountBalances(Integer fromAccountId, Integer toAccountId, int amountPaid) {
+    private void updateAccountBalances(Connection connection, Integer fromAccountId, Integer toAccountId, int amountPaid) {
         if (fromAccountId != null) {
-            updateAccountBalance(fromAccountId, -amountPaid);
+            updateAccountBalance(connection, fromAccountId, -amountPaid);
         }
         if (toAccountId != null) {
-            updateAccountBalance(toAccountId, amountPaid);
+            updateAccountBalance(connection, toAccountId, amountPaid);
         }
     }
 
-    private void updateAccountBalance(Integer accountId, int amount) {
+    private void updateAccountBalance(Connection connection, Integer accountId, int amount) {
         String sql = "UPDATE accounts SET balance = balance + ? WHERE id = ?";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, amount);
             ps.setInt(2, accountId);
             ps.executeUpdate();

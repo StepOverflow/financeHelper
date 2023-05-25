@@ -25,14 +25,19 @@ public class TransactionDaoTest {
 
     @Test
     public void moneyTransfer() {
+        Integer fromAccount = 1;
+        Integer toAccount = 2;
         int account1StartBalance = accountDao.getBalance(1);
         int account2StartBalance = accountDao.getBalance(2);
         int amount = 100;
 
-        TransactionModel transactionModel = transactionDao.moneyTransfer(1, 2, amount);
+        TransactionModel transactionModel = transactionDao.moneyTransfer(fromAccount, toAccount, amount);
 
         assertNotNull(transactionModel);
         assertEquals(account1StartBalance - amount, accountDao.getBalance(1));
         assertEquals(account2StartBalance + amount, accountDao.getBalance(2));
+        assertEquals(fromAccount, transactionModel.getSender());
+        assertEquals(toAccount, transactionModel.getRecipient());
+        assertEquals(amount, transactionModel.getSum());
     }
 }
