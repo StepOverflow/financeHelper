@@ -24,6 +24,7 @@ public class CategoryDaoTest {
         categoryDaoSubj = getCategoryDao();
     }
 
+
     @Test
     public void insert() {
         String categoryName = "New Category";
@@ -54,11 +55,6 @@ public class CategoryDaoTest {
         assertEquals(newCategoryName, categoryModel.getName());
         assertEquals(userId, categoryModel.getUserId());
         assertEquals(categoryId, categoryModel.getId());
-
-        CategoryModel updatedCategory = categoryDaoSubj.getById(categoryId);
-        assertNotNull(updatedCategory);
-        assertEquals(newCategoryName, updatedCategory.getName());
-
     }
 
     @Test

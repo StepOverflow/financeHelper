@@ -18,10 +18,6 @@ public class CategoryService {
         this.categoryDtoConverter = categoryDtoConverter;
     }
 
-    public boolean setCategoryOfTransaction(int category, TransactionDto transactionDto) {
-        return categoryDao.setCategoryOfTransaction(category, transactionDto);
-    }
-
     public CategoryDto create(String categoryName, int userId) {
         CategoryModel categoryModel = categoryDao.insert(categoryName, userId);
         return categoryDtoConverter.convert(categoryModel);
@@ -54,9 +50,5 @@ public class CategoryService {
         Timestamp endDate = Timestamp.valueOf(now.atZone(ZoneId.systemDefault()).toLocalDateTime());
 
         return categoryDao.getResultExpenseInPeriodByCategory(userId, startDate, endDate);
-    }
-
-    public CategoryDto getById(int categoryId) {
-        return categoryDtoConverter.convert(categoryDao.getById(categoryId));
     }
 }

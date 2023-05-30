@@ -2,6 +2,7 @@ package ru.shapovalov.dao;
 
 import org.junit.*;
 
+import javax.sql.DataSource;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -9,6 +10,7 @@ import static ru.shapovalov.dao.DaoFactory.getAccountDao;
 
 public class AccountDaoTest {
     private AccountDao accountDaoSubj;
+    private DataSource dataSource;
 
     @Before
     public void setUp() {
@@ -18,6 +20,13 @@ public class AccountDaoTest {
         System.setProperty("liquibaseFile", "liquibase_account_dao_test.xml");
 
         accountDaoSubj = getAccountDao();
+        dataSource = accountDaoSubj.getDataSource();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        dataSource = null;
+        accountDaoSubj = null;
     }
 
     @Test
@@ -32,20 +41,13 @@ public class AccountDaoTest {
 
     @Test
     public void testGetAllByUserId() {
-        AccountModel accountModel1 = accountDaoSubj.insert("test_account1", 1);
-        AccountModel accountModel2 = accountDaoSubj.insert("test_account2", 1);
-        AccountModel accountModel3 = accountDaoSubj.insert("test_account3", 2);
-
         assertEquals(2, accountDaoSubj.getAllByUserId(1).size());
         assertEquals(1, accountDaoSubj.getAllByUserId(2).size());
     }
 
     @Test
     public void testDelete() {
-        AccountModel accountModel = accountDaoSubj.insert("test_account", 3);
-        int accountId = accountModel.getId();
-
-        assertTrue(accountDaoSubj.delete(accountId, 3));
-        assertTrue(accountDaoSubj.getAllByUserId(3).isEmpty());
+        assertTrue(accountDaoSubj.delete(3, 2));
+        assertTrue(accountDaoSubj.getAllByUserId(2).isEmpty());
     }
 }

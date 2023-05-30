@@ -31,8 +31,4 @@ public class AccountService {
     public boolean delete(int accountId, int userId) {
         return accountDao.delete(accountId, userId);
     }
-
-    public AccountDto getById(int accountId) {
-        return accountDtoConverter.convert(accountDao.getById(accountId));
-    }
 }

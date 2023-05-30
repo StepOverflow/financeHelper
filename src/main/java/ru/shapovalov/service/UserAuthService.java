@@ -5,6 +5,7 @@ import ru.shapovalov.dao.UserDao;
 import ru.shapovalov.dao.UserModel;
 
 import java.util.Optional;
+
 public class UserAuthService {
     private final UserDao userDao;
     private final DigestService digestService;
@@ -16,7 +17,6 @@ public class UserAuthService {
         this.userDtoConverter = userDtoConverter;
     }
 
-   
     public Optional<UserDto> auth(String email, String password) {
         String hash = digestService.hex(password);
         UserModel source = userDao.findByEmailAndHash(email, hash);

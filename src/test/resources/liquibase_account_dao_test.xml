@@ -22,4 +22,21 @@
             <column name="email" value="user3@example.com" />
         </insert>
     </changeSet>
+    <changeSet id="insert_accounts" author="stepan">
+        <insert tableName="accounts">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="account_name" value="account1"/>
+            <column name="balance" valueNumeric="100"/>
+        </insert>
+        <insert tableName="accounts">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="account_name" value="account2"/>
+            <column name="balance" valueNumeric="200"/>
+        </insert>
+        <insert tableName="accounts">
+            <column name="user_id" valueNumeric="2"/>
+            <column name="account_name" value="account3"/>
+            <column name="balance" valueNumeric="300"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

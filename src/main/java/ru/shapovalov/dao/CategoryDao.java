@@ -129,40 +129,4 @@ public class CategoryDao {
             throw new CustomException(e);
         }
     }
-
-    public boolean setCategoryOfTransaction(int category, TransactionDto transactionDto) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("insert into transactions_categories (transaction_id, category_id) values (?,?)");
-
-            ps.setInt(1, transactionDto.getId());
-            ps.setInt(2, category);
-
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            throw new CustomException(e);
-        }
-    }
-
-    public CategoryModel getById(int categoryId) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM categories WHERE id = ?");
-
-            ps.setInt(1, categoryId);
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                CategoryModel categoryModel = new CategoryModel();
-                categoryModel.setId(rs.getInt("id"));
-                categoryModel.setName(rs.getString("name"));
-                categoryModel.setUserId(rs.getInt("user_id"));
-
-                return categoryModel;
-            } else {
-                throw new CustomException("Category not found");
-            }
-        } catch (SQLException e) {
-            throw new CustomException(e);
-        }
-    }
 }

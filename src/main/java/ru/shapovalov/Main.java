@@ -39,8 +39,9 @@ public class Main {
                             System.out.println("4. Create transaction category");
                             System.out.println("5. Delete transaction category");
                             System.out.println("6. Edit transaction category");
-                            System.out.println("7. Income and expense report");
-                            System.out.println("8. Transfers");
+                            System.out.println("7. Income report");
+                            System.out.println("8. Expense report");
+                            System.out.println("9. Transfers");
                             System.out.println("0. Log out");
 
                             AccountService accountService = getAccountService();
@@ -106,19 +107,19 @@ public class Main {
                                 case 7:
                                     int days = requestInt("Report for how many days?");
                                     Map<String, Integer> resultIncomeInPeriodByCategory = categoryService.getResultIncomeInPeriodByCategory(userDto.getId(), days);
-                                    Map<String, Integer> resultExpenseInPeriodByCategory = categoryService.getResultExpenseInPeriodByCategory(userDto.getId(), days);
-                                    System.out.println("Result expenses: " + resultExpenseInPeriodByCategory);
                                     System.out.println("Result incomes: " + resultIncomeInPeriodByCategory);
                                     break;
-                                case 8:
+                                    case 8: days = requestInt("Report for how many days?");
+                                    Map<String, Integer> resultExpenseInPeriodByCategory = categoryService.getResultExpenseInPeriodByCategory(userDto.getId(), days);
+                                    System.out.println("Result expenses: " + resultExpenseInPeriodByCategory);
+                                    break;
+                                case 9:
                                     int sender = requestInt("Specify from which account id funds will be debited");
                                     int recipient = requestInt("Specify which account the funds will be transferred to. " +
                                             "if this is an unknown account, enter 0");
                                     int sum = requestInt("Enter the desired amount");
                                     TransactionDto transactionDto = transactionService.sendMoney(sender, recipient, sum, userDto.getId());
                                     if (transactionDto != null) {
-                                        int category = requestInt("Choose category of this transaction");
-                                        categoryService.setCategoryOfTransaction(category, transactionDto);
                                         System.out.println("Successful, your payment receipt: ");
                                         System.out.println(transactionDto);
                                     } else {

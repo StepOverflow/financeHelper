@@ -16,16 +16,12 @@ public class TransactionService {
     }
 
     public TransactionDto sendMoney(int sender, int recipient, int sum, int userId) {
-        int userIdOfAccount = getAccountService()
-                .getById(sender)
-                .getUserId();
-        if (userIdOfAccount == userId) {
-            TransactionModel transactionModel;
-            if (recipient == 0) {
-                transactionModel = transactionDao.moneyTransfer(sender, null, sum);
-            } else transactionModel = transactionDao.moneyTransfer(sender, recipient, sum);
-            return transactionDtoConverter.convert(transactionModel);
+        TransactionModel transactionModel;
+        if (recipient == 0) {
+            transactionModel = transactionDao.moneyTransfer(sender, null, sum, userId);
+        } else {
+            transactionModel = transactionDao.moneyTransfer(sender, recipient, sum, userId);
         }
-        return null;
+        return transactionDtoConverter.convert(transactionModel);
     }
 }

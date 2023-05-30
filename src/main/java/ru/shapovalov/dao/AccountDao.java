@@ -8,33 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountDao {
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
     private final DataSource dataSource;
 
     public AccountDao(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
-
-    public AccountModel getById(int accountId) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM accounts WHERE id = ?");
-
-            ps.setInt(1, accountId);
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                AccountModel accountModel = new AccountModel();
-                accountModel.setId(rs.getInt("id"));
-                accountModel.setName(rs.getString("account_name"));
-                accountModel.setBalance(rs.getInt("balance"));
-                accountModel.setUserId(rs.getInt("user_id"));
-
-                return accountModel;
-            } else {
-                throw new CustomException("Account not found");
-            }
-        } catch (SQLException e) {
-            throw new CustomException(e);
-        }
     }
 
     public List<AccountModel> getAllByUserId(int userId) {
@@ -90,21 +71,6 @@ public class AccountDao {
             ps.setInt(2, userId);
 
             return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            throw new CustomException(e);
-        }
-    }
-
-    public int getBalance(int accountId) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select balance from accounts where id = ?");
-            ps.setInt(1, accountId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("balance");
-            } else {
-                throw new CustomException("Account not found");
-            }
         } catch (SQLException e) {
             throw new CustomException(e);
         }

@@ -1,12 +1,9 @@
 package ru.shapovalov.dao;
 
-
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;
-
-import static ru.shapovalov.dao.DaoFactory.getAccountDao;
 
 public class TransactionDao {
     private final DataSource dataSource;
@@ -15,18 +12,25 @@ public class TransactionDao {
         this.dataSource = dataSource;
     }
 
-    public TransactionModel moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid) {
+    public TransactionModel moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId) {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
-
-            if (fromAccount != null && getAccountDao().getBalance(fromAccount) < amountPaid) {
+            int accountBalance = getAccountBalance(connection, fromAccount);
+            if (fromAccount != null && accountBalance < amountPaid) {
                 throw new CustomException("Insufficient funds on the account");
             }
             TransactionModel transactionModel = createTransaction(connection, fromAccount, toAccount, amountPaid);
-            updateAccountBalances(connection, fromAccount, toAccount, amountPaid);
-
+            if (transactionModel == null) {
+                connection.rollback();
+                return null;
+            }
+            boolean balanceUpdated = updateAccountBalances(connection, fromAccount, toAccount, amountPaid);
+            if (!balanceUpdated) {
+                connection.rollback();
+                return null;
+            }
             connection.commit();
 
             return transactionModel;
@@ -91,24 +95,41 @@ public class TransactionDao {
         }
     }
 
-    private void updateAccountBalances(Connection connection, Integer fromAccountId, Integer toAccountId, int amountPaid) {
+    private boolean updateAccountBalances(Connection connection, Integer fromAccountId, Integer toAccountId, int amountPaid) {
+        boolean success = true;
         if (fromAccountId != null) {
-            updateAccountBalance(connection, fromAccountId, -amountPaid);
+            success = updateAccountBalance(connection, fromAccountId, -amountPaid);
         }
         if (toAccountId != null) {
-            updateAccountBalance(connection, toAccountId, amountPaid);
+            success = updateAccountBalance(connection, toAccountId, amountPaid);
         }
+        return success;
     }
 
-    private void updateAccountBalance(Connection connection, Integer accountId, int amount) {
+    private boolean updateAccountBalance(Connection connection, Integer accountId, int amount) {
         String sql = "UPDATE accounts SET balance = balance + ? WHERE id = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, amount);
             ps.setInt(2, accountId);
-            ps.executeUpdate();
+            int affectedRows = ps.executeUpdate();
+            return (affectedRows > 0);
         } catch (SQLException e) {
             throw new CustomException(e);
+        }
+    }
+
+    private int getAccountBalance(Connection connection, Integer accountId) throws SQLException {
+        String sql = "SELECT balance FROM accounts WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, accountId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("balance");
+                } else {
+                    throw new CustomException("Account not found");
+                }
+            }
         }
     }
 }
