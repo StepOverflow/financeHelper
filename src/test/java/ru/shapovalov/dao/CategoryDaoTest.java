@@ -1,8 +1,10 @@
 package ru.shapovalov.dao;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -13,6 +15,7 @@ import static ru.shapovalov.dao.DaoFactory.*;
 
 public class CategoryDaoTest {
     private CategoryDao categoryDaoSubj;
+    private DataSource dataSource;
 
     @Before
     public void setUp() throws Exception {
@@ -22,8 +25,14 @@ public class CategoryDaoTest {
         System.setProperty("liquibaseFile", "liquibase_category_dao_test.xml");
 
         categoryDaoSubj = getCategoryDao();
+        dataSource = categoryDaoSubj.getDataSource();
     }
 
+    @After
+    public void tearDown() {
+        dataSource = null;
+        categoryDaoSubj = null;
+    }
 
     @Test
     public void insert() {

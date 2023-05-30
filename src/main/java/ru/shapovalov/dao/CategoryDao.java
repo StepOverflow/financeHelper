@@ -11,6 +11,10 @@ import java.util.Map;
 public class CategoryDao {
     private final DataSource dataSource;
 
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
     public CategoryDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }

@@ -24,7 +24,7 @@ public class AccountDaoTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         dataSource = null;
         accountDaoSubj = null;
     }

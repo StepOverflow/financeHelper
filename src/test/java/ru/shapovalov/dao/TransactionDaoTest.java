@@ -1,8 +1,10 @@
 package ru.shapovalov.dao;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.sql.DataSource;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -10,7 +12,7 @@ import static ru.shapovalov.dao.DaoFactory.*;
 
 public class TransactionDaoTest {
     private TransactionDao transactionDao;
-    private AccountDao accountDao;
+    private DataSource dataSource;
 
     @Before
     public void setUp() {
@@ -20,7 +22,13 @@ public class TransactionDaoTest {
         System.setProperty("liquibaseFile", "liquibase_transaction_dao_test.xml");
 
         transactionDao = getTransactionDao();
-        accountDao = getAccountDao();
+        dataSource = transactionDao.getDataSource();
+    }
+
+    @After
+    public void tearDown() {
+        dataSource = null;
+        transactionDao = null;
     }
 
     @Test

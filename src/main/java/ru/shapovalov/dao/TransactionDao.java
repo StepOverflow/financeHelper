@@ -12,6 +12,10 @@ public class TransactionDao {
         this.dataSource = dataSource;
     }
 
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
     public TransactionModel moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId) {
         Connection connection = null;
         try {
