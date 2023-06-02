@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountDao {
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
     private final DataSource dataSource;
 
     public AccountDao(DataSource dataSource) {

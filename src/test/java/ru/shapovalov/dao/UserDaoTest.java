@@ -13,7 +13,6 @@ import static ru.shapovalov.dao.DaoFactory.getUserDao;
 
 public class UserDaoTest {
     private UserDao userDaoSubj;
-    private DataSource dataSource;
 
     @Before
     public void setUp() {
@@ -23,13 +22,10 @@ public class UserDaoTest {
         System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
 
         userDaoSubj = getUserDao();
-        dataSource = userDaoSubj.getDataSource();
-
     }
 
     @After
     public void tearDown() {
-        dataSource = null;
         userDaoSubj = null;
     }
 

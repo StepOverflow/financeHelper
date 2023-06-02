@@ -12,7 +12,6 @@ import static ru.shapovalov.dao.DaoFactory.*;
 
 public class TransactionDaoTest {
     private TransactionDao transactionDao;
-    private DataSource dataSource;
 
     @Before
     public void setUp() {
@@ -22,12 +21,10 @@ public class TransactionDaoTest {
         System.setProperty("liquibaseFile", "liquibase_transaction_dao_test.xml");
 
         transactionDao = getTransactionDao();
-        dataSource = transactionDao.getDataSource();
     }
 
     @After
     public void tearDown() {
-        dataSource = null;
         transactionDao = null;
     }
 

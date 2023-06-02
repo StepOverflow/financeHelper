@@ -41,7 +41,7 @@ public class TransactionModel {
         this.sum = sum;
     }
 
-    public java.sql.Timestamp getTimestamp() {
+    public Timestamp getTimestamp() {
         return timestamp;
     }
 

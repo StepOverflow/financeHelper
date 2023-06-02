@@ -6,6 +6,7 @@
     <include file="liquibase.xml"/>
 
     <changeSet author="stepan" id="insert_users_categories">
+
         <insert tableName="users">
             <column name="password" value="password1"/>
             <column name="email" value="user1@example.com"/>
@@ -18,6 +19,7 @@
             <column name="password" value="password3"/>
             <column name="email" value="user3@example.com"/>
         </insert>
+
         <insert tableName="accounts">
             <column name="user_id" valueNumeric="1"/>
             <column name="account_name" value="account1"/>
@@ -74,7 +76,7 @@
         </insert>
         <insert tableName="categories">
             <column name="name" value="bank"/>
-            <column name="user_id" valueNumeric="2"/>
+            <column name="user_id" valueNumeric="1"/>
         </insert>
         <insert tableName="categories">
             <column name="name" value="travel"/>
@@ -82,7 +84,7 @@
         </insert>
         <insert tableName="categories">
             <column name="name" value="travel"/>
-            <column name="user_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="2"/>
         </insert>
         <insert tableName="transactions_categories">
             <column name="transaction_id" valueNumeric="1"/>
@@ -104,6 +106,7 @@
             <column name="transaction_id" valueNumeric="4"/>
             <column name="category_id" valueNumeric="2"/>
         </insert>
+
     </changeSet>
 
 </databaseChangeLog>

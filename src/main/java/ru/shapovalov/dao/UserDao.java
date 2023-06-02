@@ -12,10 +12,6 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
     public UserModel findByEmailAndHash(String email, String hash) {
         UserModel userModel = null;
         try (Connection conn = dataSource.getConnection()) {

@@ -2,10 +2,7 @@ package ru.shapovalov;
 
 import ru.shapovalov.service.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 import static ru.shapovalov.service.ServiceFactory.*;
 
@@ -122,6 +119,20 @@ public class Main {
                                     if (transactionDto != null) {
                                         System.out.println("Successful, your payment receipt: ");
                                         System.out.println(transactionDto);
+                                        List<Integer> categoryIds = new ArrayList<>();
+                                        int categoryId;
+                                        do {
+                                            categoryId = requestInt("Enter category ID (enter 0 to finish):");
+                                            if (categoryId != 0) {
+                                                categoryIds.add(categoryId);
+                                            }
+                                        } while (categoryId != 0);
+                                        boolean categoriesSet = categoryService.setCategoriesOfTransactions(transactionDto.getId(), categoryIds);
+                                        if (categoriesSet) {
+                                            System.out.println("Transaction categories set successfully!");
+                                        } else {
+                                            System.out.println("Failed to set transaction categories.");
+                                        }
                                     } else {
                                         System.out.println("Funds transfer failed");
                                     }

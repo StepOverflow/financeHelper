@@ -10,8 +10,6 @@ import static ru.shapovalov.dao.DaoFactory.getAccountDao;
 
 public class AccountDaoTest {
     private AccountDao accountDaoSubj;
-    private DataSource dataSource;
-
     @Before
     public void setUp() {
         System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=0");
@@ -20,12 +18,10 @@ public class AccountDaoTest {
         System.setProperty("liquibaseFile", "liquibase_account_dao_test.xml");
 
         accountDaoSubj = getAccountDao();
-        dataSource = accountDaoSubj.getDataSource();
     }
 
     @After
     public void tearDown() {
-        dataSource = null;
         accountDaoSubj = null;
     }
 

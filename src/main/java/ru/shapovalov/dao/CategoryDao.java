@@ -5,15 +5,13 @@ import ru.shapovalov.service.TransactionDto;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CategoryDao {
     private final DataSource dataSource;
-
-    public DataSource getDataSource() {
-        return dataSource;
-    }
 
     public CategoryDao(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -129,6 +127,25 @@ public class CategoryDao {
                 result.put(categoryName, amount);
             }
             return result;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+    }
+
+    public boolean setCategoriesOfTransactions(int transactionId, List<Integer> categoryIds) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO transactions_categories (transaction_id, category_id) VALUES (?, ?)");
+
+            for (Integer categoryId : categoryIds) {
+                if (categoryId != null) {
+                    ps.setInt(1, transactionId);
+                    ps.setInt(2, categoryId);
+                    ps.addBatch();
+                }
+            }
+
+            int[] rowsAffected = ps.executeBatch();
+            return Arrays.stream(rowsAffected).allMatch(count -> count > 0);
         } catch (SQLException e) {
             throw new CustomException(e);
         }
