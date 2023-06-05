@@ -10,7 +10,7 @@ public class TransactionModelToTransactionDtoConverter implements Converter<Tran
         transactionDto.setSender(source.getSender());
         transactionDto.setRecipient(source.getRecipient());
         transactionDto.setSum(source.getSum());
-        transactionDto.setTimestamp(source.getTimestamp());
+        transactionDto.setCreatedDate(source.getCreatedDate());
         return transactionDto;
     }
 }

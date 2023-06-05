@@ -7,7 +7,7 @@ public class TransactionModel {
     private Integer sender;
     private Integer recipient;
     private int sum;
-    private Timestamp timestamp;
+    private Timestamp createdDate;
 
     public int getId() {
         return id;
@@ -41,12 +41,12 @@ public class TransactionModel {
         this.sum = sum;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public Timestamp getCreatedDate() {
+        return createdDate;
     }
 
-    public void setTimestamp(java.sql.Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class TransactionModel {
                 ", sender=" + sender +
                 ", recipient=" + recipient +
                 ", sum=" + sum +
-                ", timestamp=" + timestamp +
+                ", createdDate=" + createdDate +
                 '}';
     }
 }

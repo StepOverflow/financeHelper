@@ -1,15 +1,22 @@
 package ru.shapovalov.dao;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import javax.sql.DataSource;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static ru.shapovalov.dao.DaoConfiguration.getDataSource;
 import static ru.shapovalov.dao.DaoFactory.getAccountDao;
 
 public class AccountDaoTest {
     private AccountDao accountDaoSubj;
+
+    private DataSource dataSource;
+
     @Before
     public void setUp() {
         System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=0");
@@ -18,11 +25,13 @@ public class AccountDaoTest {
         System.setProperty("liquibaseFile", "liquibase_account_dao_test.xml");
 
         accountDaoSubj = getAccountDao();
+        dataSource = getDataSource();
     }
 
     @After
     public void tearDown() {
         accountDaoSubj = null;
+        dataSource = null;
     }
 
     @Test

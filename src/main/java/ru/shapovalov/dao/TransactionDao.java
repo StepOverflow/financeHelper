@@ -4,6 +4,8 @@ import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class TransactionDao {
     private final DataSource dataSource;
@@ -12,11 +14,7 @@ public class TransactionDao {
         this.dataSource = dataSource;
     }
 
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
-    public TransactionModel moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId) {
+    public TransactionModel moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId, List<Integer> categoryIds) {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
@@ -32,6 +30,11 @@ public class TransactionDao {
             }
             boolean balanceUpdated = updateAccountBalances(connection, fromAccount, toAccount, amountPaid);
             if (!balanceUpdated) {
+                connection.rollback();
+                return null;
+            }
+            boolean categoriesUpdated = setCategoriesOfTransactions(connection, transactionModel.getId(), categoryIds);
+            if (!categoriesUpdated) {
                 connection.rollback();
                 return null;
             }
@@ -89,7 +92,7 @@ public class TransactionDao {
                 transactionModel.setSender(fromAccount);
                 transactionModel.setRecipient(toAccount);
                 transactionModel.setSum(amountPaid);
-                transactionModel.setTimestamp(timestamp);
+                transactionModel.setCreatedDate(timestamp);
                 return transactionModel;
             } else {
                 throw new SQLException("Creating transaction failed, no ID obtained.");
@@ -134,6 +137,24 @@ public class TransactionDao {
                     throw new CustomException("Account not found");
                 }
             }
+        }
+    }
+
+    public boolean setCategoriesOfTransactions(Connection connection, int transactionId, List<Integer> categoryIds) {
+        String sql = "INSERT INTO transactions_categories (transaction_id, category_id) VALUES (?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (Integer categoryId : categoryIds) {
+                if (categoryId != null) {
+                    ps.setInt(1, transactionId);
+                    ps.setInt(2, categoryId);
+                    ps.addBatch();
+                }
+            }
+
+            int[] rowsAffected = ps.executeBatch();
+            return Arrays.stream(rowsAffected).allMatch(count -> count > 0);
+        } catch (SQLException e) {
+            throw new CustomException(e);
         }
     }
 }

@@ -7,7 +7,6 @@ import ru.shapovalov.dao.CategoryModel;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.Map;
 
 public class CategoryService {
@@ -51,8 +50,5 @@ public class CategoryService {
         Timestamp endDate = Timestamp.valueOf(now.atZone(ZoneId.systemDefault()).toLocalDateTime());
 
         return categoryDao.getResultExpenseInPeriodByCategory(userId, startDate, endDate);
-    }
-    public boolean setCategoriesOfTransactions(int transactionId, List<Integer> categoryIds){
-        return categoryDao.setCategoriesOfTransactions(transactionId, categoryIds);
     }
 }

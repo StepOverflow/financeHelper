@@ -106,7 +106,8 @@ public class Main {
                                     Map<String, Integer> resultIncomeInPeriodByCategory = categoryService.getResultIncomeInPeriodByCategory(userDto.getId(), days);
                                     System.out.println("Result incomes: " + resultIncomeInPeriodByCategory);
                                     break;
-                                    case 8: days = requestInt("Report for how many days?");
+                                case 8:
+                                    days = requestInt("Report for how many days?");
                                     Map<String, Integer> resultExpenseInPeriodByCategory = categoryService.getResultExpenseInPeriodByCategory(userDto.getId(), days);
                                     System.out.println("Result expenses: " + resultExpenseInPeriodByCategory);
                                     break;
@@ -115,24 +116,18 @@ public class Main {
                                     int recipient = requestInt("Specify which account the funds will be transferred to. " +
                                             "if this is an unknown account, enter 0");
                                     int sum = requestInt("Enter the desired amount");
-                                    TransactionDto transactionDto = transactionService.sendMoney(sender, recipient, sum, userDto.getId());
+                                    List<Integer> categoryIds = new ArrayList<>();
+                                    int categoryId;
+                                    do {
+                                        categoryId = requestInt("Enter category ID (enter 0 to finish):");
+                                        if (categoryId != 0) {
+                                            categoryIds.add(categoryId);
+                                        }
+                                    } while (categoryId != 0);
+                                    TransactionDto transactionDto = transactionService.sendMoney(sender, recipient, sum, userDto.getId(), categoryIds);
                                     if (transactionDto != null) {
                                         System.out.println("Successful, your payment receipt: ");
                                         System.out.println(transactionDto);
-                                        List<Integer> categoryIds = new ArrayList<>();
-                                        int categoryId;
-                                        do {
-                                            categoryId = requestInt("Enter category ID (enter 0 to finish):");
-                                            if (categoryId != 0) {
-                                                categoryIds.add(categoryId);
-                                            }
-                                        } while (categoryId != 0);
-                                        boolean categoriesSet = categoryService.setCategoriesOfTransactions(transactionDto.getId(), categoryIds);
-                                        if (categoriesSet) {
-                                            System.out.println("Transaction categories set successfully!");
-                                        } else {
-                                            System.out.println("Failed to set transaction categories.");
-                                        }
                                     } else {
                                         System.out.println("Funds transfer failed");
                                     }

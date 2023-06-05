@@ -7,7 +7,7 @@ public class TransactionDto {
     private Integer sender;
     private Integer recipient;
     private int sum;
-    private Timestamp timestamp;
+    private Timestamp createdDate;
 
     public int getId() {
         return id;
@@ -41,22 +41,22 @@ public class TransactionDto {
         this.sum = sum;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public Timestamp getCreatedDate() {
+        return createdDate;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Override
     public String toString() {
-        return "TransactionDto{" +
+        return "TransactionModel{" +
                 "id=" + id +
                 ", sender=" + sender +
                 ", recipient=" + recipient +
                 ", sum=" + sum +
-                ", timestamp=" + timestamp +
+                ", createdDate=" + createdDate +
                 '}';
     }
 }

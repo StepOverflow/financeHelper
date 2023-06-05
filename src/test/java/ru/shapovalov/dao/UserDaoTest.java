@@ -9,10 +9,13 @@ import javax.sql.DataSource;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
+import static ru.shapovalov.dao.DaoConfiguration.getDataSource;
 import static ru.shapovalov.dao.DaoFactory.getUserDao;
 
 public class UserDaoTest {
     private UserDao userDaoSubj;
+
+    private DataSource dataSource;
 
     @Before
     public void setUp() {
@@ -22,11 +25,13 @@ public class UserDaoTest {
         System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
 
         userDaoSubj = getUserDao();
+        dataSource = getDataSource();
     }
 
     @After
     public void tearDown() {
         userDaoSubj = null;
+        dataSource = null;
     }
 
     @Test
