@@ -48,10 +48,7 @@ public class CategoryDaoTest {
 
     @Test
     public void delete() {
-        int categoryId = 3;
-        int userId = 1;
-        boolean isDeleted = categoryDaoSubj.delete(categoryId, userId);
-        assertTrue(isDeleted);
+        assertTrue(categoryDaoSubj.delete(3, 1));
     }
 
     @Test
