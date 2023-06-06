@@ -3,15 +3,19 @@ package ru.shapovalov.dao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static ru.shapovalov.dao.DaoConfiguration.getDataSource;
 import static ru.shapovalov.dao.DaoFactory.getTransactionDao;
 
@@ -42,7 +46,7 @@ public class TransactionDaoTest {
         Integer fromAccount = 1;
         Integer toAccount = 2;
         int amount = 100;
-        List<Integer> categoryIds = new ArrayList<>(Arrays.asList(1, 2));
+        List categoryIds = Arrays.asList(1, 2);
 
         TransactionModel transactionModel = transactionDao.moneyTransfer(fromAccount, toAccount, amount, 1, categoryIds);
 
@@ -50,5 +54,55 @@ public class TransactionDaoTest {
         assertEquals(fromAccount, transactionModel.getSender());
         assertEquals(toAccount, transactionModel.getRecipient());
         assertEquals(amount, transactionModel.getSum());
+    }
+
+    @Test
+    public void moneyTransfer_InsufficientFunds_ThrowsCustomException() {
+        try {
+            transactionDao.moneyTransfer(1, 2, 1000000, 1, Arrays.asList(1, 2));
+            fail("Expected CustomException to be thrown for insufficient funds");
+        } catch (CustomException e) {
+        }
+    }
+
+    @Test
+    public void moneyTransfer_BalanceUpdateFailed_ThrowsCustomException() throws SQLException {
+        DataSource mockDataSource = Mockito.mock(DataSource.class);
+        Connection mockConnection = Mockito.mock(Connection.class);
+
+        Mockito.when(mockDataSource.getConnection()).thenReturn(mockConnection);
+        Mockito.when(mockConnection.prepareStatement(Mockito.anyString())).thenThrow(new SQLException("Failed to establish connection"));
+
+        TransactionDao transactionDao = new TransactionDao(mockDataSource);
+
+        try {
+            transactionDao.moneyTransfer(1, 2, 100, 1, Arrays.asList(1, 2));
+            fail("Expected CustomException to be thrown for balance update failure");
+        } catch (CustomException e) {
+        }
+    }
+
+    @Test
+    public void moneyTransfer_CategoriesSetFailed_ThrowsCustomException() throws SQLException {
+        DataSource mockDataSource = Mockito.mock(DataSource.class);
+        Connection mockConnection = Mockito.mock(Connection.class);
+        PreparedStatement mockPreparedStatement = Mockito.mock(PreparedStatement.class);
+        ResultSet mockResultSet = Mockito.mock(ResultSet.class);
+
+        Mockito.when(mockResultSet.next()).thenReturn(true);
+        Mockito.when(mockResultSet.getInt(1)).thenReturn(100);
+
+        Mockito.when(mockConnection.prepareStatement(Mockito.anyString())).thenReturn(mockPreparedStatement);
+        Mockito.when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+
+        Mockito.when(mockDataSource.getConnection()).thenReturn(mockConnection);
+
+        TransactionDao transactionDao = new TransactionDao(mockDataSource);
+
+        try {
+            transactionDao.moneyTransfer(1, 2, 100, 1, Arrays.asList(1, 2));
+            fail("Expected CustomException to be thrown for categories set failure");
+        } catch (CustomException e) {
+        }
     }
 }

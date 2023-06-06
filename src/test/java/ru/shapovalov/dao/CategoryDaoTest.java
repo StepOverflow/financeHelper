@@ -67,7 +67,7 @@ public class CategoryDaoTest {
     @Test
     public void getResultIncomeInPeriodByCategory() {
         int userId = 1;
-        Timestamp startDate = Timestamp.valueOf(LocalDateTime.now().minusDays(30));
+        Timestamp startDate = Timestamp.valueOf(LocalDateTime.now().minusDays(300));
         Timestamp endDate = Timestamp.valueOf(LocalDateTime.now());
 
         Map<String, Integer> result = categoryDaoSubj.getResultIncomeInPeriodByCategory(userId, startDate, endDate);
@@ -78,7 +78,7 @@ public class CategoryDaoTest {
     @Test
     public void getResultExpenseInPeriodByCategory() {
         int userId = 3;
-        Timestamp startDate = Timestamp.valueOf(LocalDateTime.now().minusDays(30));
+        Timestamp startDate = Timestamp.valueOf(LocalDateTime.now().minusDays(300));
         Timestamp endDate = Timestamp.valueOf(LocalDateTime.now());
 
         Map<String, Integer> result = categoryDaoSubj.getResultExpenseInPeriodByCategory(userId, startDate, endDate);

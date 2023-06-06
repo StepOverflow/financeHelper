@@ -24,19 +24,16 @@ public class TransactionDao {
                 throw new CustomException("Insufficient funds on the account");
             }
             TransactionModel transactionModel = createTransaction(connection, fromAccount, toAccount, amountPaid);
-            if (transactionModel == null) {
-                connection.rollback();
-                return null;
-            }
+
             boolean balanceUpdated = updateAccountBalances(connection, fromAccount, toAccount, amountPaid);
             if (!balanceUpdated) {
                 connection.rollback();
-                return null;
+                throw new CustomException("Balance cannot be updated");
             }
             boolean categoriesUpdated = setCategoriesOfTransactions(connection, transactionModel.getId(), categoryIds);
             if (!categoriesUpdated) {
                 connection.rollback();
-                return null;
+                throw new CustomException("Categories cannot be set");
             }
             connection.commit();
 
@@ -45,7 +42,6 @@ public class TransactionDao {
             if (connection != null) {
                 try {
                     connection.rollback();
-                    return null;
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -140,7 +136,7 @@ public class TransactionDao {
         }
     }
 
-    public boolean setCategoriesOfTransactions(Connection connection, int transactionId, List<Integer> categoryIds) {
+    private boolean setCategoriesOfTransactions(Connection connection, int transactionId, List<Integer> categoryIds) {
         String sql = "INSERT INTO transactions_categories (transaction_id, category_id) VALUES (?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             for (Integer categoryId : categoryIds) {
