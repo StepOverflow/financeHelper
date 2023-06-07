@@ -58,11 +58,7 @@ public class TransactionDaoTest {
 
     @Test
     public void moneyTransfer_InsufficientFunds_ThrowsCustomException() {
-        try {
-            transactionDao.moneyTransfer(1, 2, 1000000, 1, Arrays.asList(1, 2));
-            fail("Expected CustomException to be thrown for insufficient funds");
-        } catch (CustomException e) {
-        }
+        assertThrows(CustomException.class, () -> transactionDao.moneyTransfer(1, 2, 1000000, 1, Arrays.asList(1, 2)));
     }
 
     @Test
@@ -75,11 +71,7 @@ public class TransactionDaoTest {
 
         TransactionDao transactionDao = new TransactionDao(mockDataSource);
 
-        try {
-            transactionDao.moneyTransfer(1, 2, 100, 1, Arrays.asList(1, 2));
-            fail("Expected CustomException to be thrown for balance update failure");
-        } catch (CustomException e) {
-        }
+        assertThrows(CustomException.class, () -> transactionDao.moneyTransfer(1, 2, 100, 1, Arrays.asList(1, 2)));
     }
 
     @Test
@@ -99,10 +91,6 @@ public class TransactionDaoTest {
 
         TransactionDao transactionDao = new TransactionDao(mockDataSource);
 
-        try {
-            transactionDao.moneyTransfer(1, 2, 100, 1, Arrays.asList(1, 2));
-            fail("Expected CustomException to be thrown for categories set failure");
-        } catch (CustomException e) {
-        }
+        assertThrows(CustomException.class, () -> transactionDao.moneyTransfer(1, 2, 100, 1, Arrays.asList(1, 2)));
     }
 }
