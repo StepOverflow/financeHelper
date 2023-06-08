@@ -18,11 +18,14 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class UserAuthServiceTest {
     @InjectMocks
-    UserAuthServiceImpl subj;
+    UserAuthService subj;
+
     @Mock
     UserDao userDao;
+
     @Mock
     DigestService digestService;
+
     @Mock
     UserModelToUserDtoConverter userDtoConverter;
 
@@ -68,7 +71,7 @@ public class UserAuthServiceTest {
         Optional<UserDto> userDtoOptional = subj.auth(email, password);
 
         assertTrue(userDtoOptional.isPresent());
-        assertEquals(Optional.of(userDto), userDtoOptional);
+        assertEquals(userDto, userDtoOptional.get());
 
         verify(digestService, times(1)).hex(password);
         verify(userDao, times(1)).findByEmailAndHash(email, hashPassword);
@@ -94,7 +97,7 @@ public class UserAuthServiceTest {
         DigestService digestServiceMock = mock(DigestService.class);
         UserModelToUserDtoConverter userDtoConverterMock = mock(UserModelToUserDtoConverter.class);
 
-        UserAuthServiceImpl userAuthService = new UserAuthServiceImpl(userDaoMock, digestServiceMock, userDtoConverterMock);
+        UserAuthService userAuthService = new UserAuthService(userDaoMock, digestServiceMock, userDtoConverterMock);
 
         when(digestServiceMock.hex(password)).thenReturn(hashedPassword);
         when(userDaoMock.insert(email, hashedPassword)).thenReturn(userModel);

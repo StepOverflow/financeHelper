@@ -10,18 +10,15 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-@Configuration
 public class DaoConfiguration {
-@Bean
-    public DataSource getDataSource() {
+
+    public static DataSource getDataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(System.getProperty("jdncUrl", "jdbc:postgresql://localhost:5433/postgres"));
+        config.setJdbcUrl(System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5433/postgres"));
         config.setUsername(System.getProperty("jdbcUser", "postgres"));
         config.setPassword(System.getProperty("jdbcPassword", "Pattaya2023"));
 

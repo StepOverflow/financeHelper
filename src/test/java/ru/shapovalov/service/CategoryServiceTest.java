@@ -5,23 +5,21 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.shapovalov.converter.CategoryModelToCategoryDtoConverter;
 import ru.shapovalov.dao.CategoryDao;
 import ru.shapovalov.dao.CategoryModel;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-@SpringBootTest
+
 @RunWith(MockitoJUnitRunner.class)
 public class CategoryServiceTest {
-    ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
     @InjectMocks
     CategoryService subj;
+
     @Mock
     CategoryDao categoryDao;
+
     @Mock
     CategoryModelToCategoryDtoConverter categoryDtoConverter;
 
@@ -93,14 +91,11 @@ public class CategoryServiceTest {
         when(categoryDao.edit(id, name, userId)).thenReturn(categoryModel);
         when(categoryDtoConverter.convert(categoryModel)).thenReturn(exceptedCategoryDto);
 
-        CategoryService categoryService = context.getBean(CategoryService.class);
         CategoryDto actualCategoryDto = subj.edit(id, name, userId);
 
         assertEquals(exceptedCategoryDto, actualCategoryDto);
 
         verify(categoryDao, times(1)).edit(id, name, userId);
         verify(categoryDtoConverter, times(1)).convert(categoryModel);
-
-
     }
 }
