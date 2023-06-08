@@ -1,5 +1,7 @@
 package ru.shapovalov.dao;
 
+import static ru.shapovalov.dao.DaoConfiguration.getDataSource;
+
 public class DaoFactory {
     private static AccountDao accountDao;
     private static CategoryDao categoryDao;
@@ -8,28 +10,28 @@ public class DaoFactory {
 
     public static AccountDao getAccountDao() {
         if (accountDao == null) {
-            accountDao = new AccountDao();
+            accountDao = new AccountDao(getDataSource());
         }
         return accountDao;
     }
 
     public static CategoryDao getCategoryDao() {
         if (categoryDao == null) {
-            categoryDao = new CategoryDao();
+            categoryDao = new CategoryDao(getDataSource());
         }
         return categoryDao;
     }
 
     public static UserDao getUserDao() {
         if (userDao == null) {
-            userDao = new UserDao();
+            userDao = new UserDao(getDataSource());
         }
         return userDao;
     }
 
     public static TransactionDao getTransactionDao() {
         if (transactionDao == null) {
-            transactionDao = new TransactionDao();
+            transactionDao = new TransactionDao(getDataSource());
         }
         return transactionDao;
     }

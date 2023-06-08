@@ -1,7 +1,7 @@
 package ru.shapovalov.service;
 
-import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 public class Md5DigestService implements DigestService {
     @Override
     public String hex(String str) {

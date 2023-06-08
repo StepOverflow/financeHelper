@@ -7,6 +7,16 @@ public class ServiceFactory {
     private static UserAuthService userAuthService;
     private static AccountService accountService;
     private static CategoryService categoryService;
+    private static TransactionService transactionService;
+
+    public static TransactionService getTransactionService() {
+        if (transactionService == null) {
+            transactionService = new TransactionService(
+                    getTransactionDao(),
+                    getTransactionDtoConverter()
+            );
+        } return transactionService;
+    }
 
     public static CategoryService getCategoryService() {
         if (categoryService == null) {

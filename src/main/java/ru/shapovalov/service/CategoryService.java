@@ -3,7 +3,11 @@ package ru.shapovalov.service;
 import ru.shapovalov.converter.CategoryModelToCategoryDtoConverter;
 import ru.shapovalov.dao.CategoryDao;
 import ru.shapovalov.dao.CategoryModel;
-import ru.shapovalov.dao.UserDao;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Map;
 
 public class CategoryService {
     private final CategoryDao categoryDao;
@@ -26,5 +30,25 @@ public class CategoryService {
     public CategoryDto edit(int id, String newCategoryName, int userId) {
         CategoryModel categoryModel = categoryDao.edit(id, newCategoryName, userId);
         return categoryDtoConverter.convert(categoryModel);
+    }
+
+    public Map<String, Integer> getResultIncomeInPeriodByCategory(int userId, int days) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime yesterday = now.minusDays(days);
+
+        Timestamp startDate = Timestamp.valueOf(yesterday.atZone(ZoneId.systemDefault()).toLocalDateTime());
+        Timestamp endDate = Timestamp.valueOf(now.atZone(ZoneId.systemDefault()).toLocalDateTime());
+
+        return categoryDao.getResultIncomeInPeriodByCategory(userId, startDate, endDate);
+    }
+
+    public Map<String, Integer> getResultExpenseInPeriodByCategory(int userId, int days) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime yesterday = now.minusDays(days);
+
+        Timestamp startDate = Timestamp.valueOf(yesterday.atZone(ZoneId.systemDefault()).toLocalDateTime());
+        Timestamp endDate = Timestamp.valueOf(now.atZone(ZoneId.systemDefault()).toLocalDateTime());
+
+        return categoryDao.getResultExpenseInPeriodByCategory(userId, startDate, endDate);
     }
 }

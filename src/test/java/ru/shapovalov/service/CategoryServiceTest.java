@@ -11,7 +11,6 @@ import ru.shapovalov.dao.CategoryModel;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static ru.shapovalov.service.ServiceFactory.getCategoryService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CategoryServiceTest {

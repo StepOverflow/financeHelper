@@ -1,7 +1,5 @@
 package ru.shapovalov.dao;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
@@ -12,13 +10,8 @@ import java.util.Map;
 public class CategoryDao {
     private final DataSource dataSource;
 
-    public CategoryDao() {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5433/postgres");
-        config.setUsername("postgres");
-        config.setPassword("Pattaya2023");
-
-        dataSource = new HikariDataSource(config);
+    public CategoryDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public CategoryModel insert(String categoryName, int userId) {

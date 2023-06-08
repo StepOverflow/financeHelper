@@ -1,7 +1,5 @@
 package ru.shapovalov.dao;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
@@ -10,13 +8,8 @@ import java.sql.*;
 public class UserDao {
     private final DataSource dataSource;
 
-    public UserDao() {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5433/postgres");
-        config.setUsername("postgres");
-        config.setPassword("Pattaya2023");
-
-        dataSource = new HikariDataSource(config);
+    public UserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public UserModel findByEmailAndHash(String email, String hash) {

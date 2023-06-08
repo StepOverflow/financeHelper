@@ -4,6 +4,7 @@ public class ConverterFactory {
     private static AccountModelToAccountDtoConverter accountDtoConverter;
     private static UserModelToUserDtoConverter userDtoConverter;
     private static CategoryModelToCategoryDtoConverter categoryDtoConverter;
+    private static TransactionModelToTransactionDtoConverter transactionDtoConverter;
 
     public static AccountModelToAccountDtoConverter getAccountDtoConverter() {
         if (accountDtoConverter == null) {
@@ -24,5 +25,12 @@ public class ConverterFactory {
             categoryDtoConverter = new CategoryModelToCategoryDtoConverter();
         }
         return categoryDtoConverter;
+    }
+
+    public static TransactionModelToTransactionDtoConverter getTransactionDtoConverter() {
+        if (transactionDtoConverter == null) {
+            transactionDtoConverter = new TransactionModelToTransactionDtoConverter();
+        }
+        return transactionDtoConverter;
     }
 }
