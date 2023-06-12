@@ -3,6 +3,10 @@ package ru.shapovalov.dao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
@@ -11,11 +15,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
-import static ru.shapovalov.dao.DaoConfiguration.getDataSource;
-import static ru.shapovalov.dao.DaoFactory.getCategoryDao;
 
 public class CategoryDaoTest {
     private CategoryDao categoryDaoSubj;
+
     private DataSource dataSource;
 
     @Before
@@ -25,8 +28,8 @@ public class CategoryDaoTest {
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_category_dao_test.xml");
 
-        categoryDaoSubj = getCategoryDao();
-        dataSource = getDataSource();
+        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
+        categoryDaoSubj = context.getBean(CategoryDao.class);
     }
 
     @After

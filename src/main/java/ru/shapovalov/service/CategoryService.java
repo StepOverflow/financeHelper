@@ -1,5 +1,6 @@
 package ru.shapovalov.service;
 
+import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.CategoryModelToCategoryDtoConverter;
 import ru.shapovalov.dao.CategoryDao;
 import ru.shapovalov.dao.CategoryModel;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
 
+@Service
 public class CategoryService {
     private final CategoryDao categoryDao;
     private final CategoryModelToCategoryDtoConverter categoryDtoConverter;

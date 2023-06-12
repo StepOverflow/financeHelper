@@ -3,14 +3,13 @@ package ru.shapovalov.dao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.sql.DataSource;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static ru.shapovalov.dao.DaoConfiguration.getDataSource;
-import static ru.shapovalov.dao.DaoFactory.getAccountDao;
+import static org.junit.Assert.*;
 
 public class AccountDaoTest {
     private AccountDao accountDaoSubj;
@@ -24,8 +23,8 @@ public class AccountDaoTest {
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_account_dao_test.xml");
 
-        accountDaoSubj = getAccountDao();
-        dataSource = getDataSource();
+        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
+        accountDaoSubj = context.getBean(AccountDao.class);
     }
 
     @After
@@ -54,5 +53,9 @@ public class AccountDaoTest {
     public void testDelete() {
         assertTrue(accountDaoSubj.delete(3, 2));
         assertTrue(accountDaoSubj.getAllByUserId(2).isEmpty());
+    }
+    @Test
+    public void testDeleteWrongUser() {
+        assertFalse(accountDaoSubj.delete(3, 1));
     }
 }

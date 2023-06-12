@@ -1,11 +1,13 @@
 package ru.shapovalov.service;
 
+import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.Converter;
 import ru.shapovalov.dao.UserDao;
 import ru.shapovalov.dao.UserModel;
 
 import java.util.Optional;
 
+@Service
 public class UserAuthService {
     private final UserDao userDao;
     private final DigestService digestService;

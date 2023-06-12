@@ -1,5 +1,6 @@
 package ru.shapovalov.service;
 
+import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.AccountModelToAccountDtoConverter;
 import ru.shapovalov.dao.AccountDao;
 import ru.shapovalov.dao.AccountModel;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+@Service
 public class AccountService {
     private final AccountDao accountDao;
     private final AccountModelToAccountDtoConverter accountDtoConverter;
