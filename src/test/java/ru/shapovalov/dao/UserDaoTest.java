@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
+import static ru.shapovalov.dao.DaoConfiguration.getDataSource;
+import static ru.shapovalov.dao.DaoFactory.getUserDao;
 
 public class UserDaoTest {
     private UserDao userDaoSubj;
