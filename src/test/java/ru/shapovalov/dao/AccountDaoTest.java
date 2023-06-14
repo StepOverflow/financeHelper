@@ -1,18 +1,16 @@
 package ru.shapovalov.dao;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import javax.sql.DataSource;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
 
 public class AccountDaoTest {
     private AccountDao accountDaoSubj;
-
-    private DataSource dataSource;
 
     @Before
     public void setUp() {
@@ -23,12 +21,6 @@ public class AccountDaoTest {
 
         ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
         accountDaoSubj = context.getBean(AccountDao.class);
-    }
-
-    @After
-    public void tearDown() {
-        accountDaoSubj = null;
-        dataSource = null;
     }
 
     @Test
@@ -52,6 +44,7 @@ public class AccountDaoTest {
         assertTrue(accountDaoSubj.delete(3, 2));
         assertTrue(accountDaoSubj.getAllByUserId(2).isEmpty());
     }
+
     @Test
     public void testDeleteWrongUser() {
         assertFalse(accountDaoSubj.delete(3, 1));

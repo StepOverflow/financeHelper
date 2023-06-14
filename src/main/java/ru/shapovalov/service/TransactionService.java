@@ -1,5 +1,6 @@
 package ru.shapovalov.service;
 
+import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.TransactionModelToTransactionDtoConverter;
 import ru.shapovalov.dao.TransactionDao;
 import ru.shapovalov.dao.TransactionModel;

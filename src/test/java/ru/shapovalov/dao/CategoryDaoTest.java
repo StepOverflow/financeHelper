@@ -1,14 +1,10 @@
 package ru.shapovalov.dao;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -19,8 +15,6 @@ import static org.junit.Assert.*;
 public class CategoryDaoTest {
     private CategoryDao categoryDaoSubj;
 
-    private DataSource dataSource;
-
     @Before
     public void setUp() {
         System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=0");
@@ -30,12 +24,6 @@ public class CategoryDaoTest {
 
         ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
         categoryDaoSubj = context.getBean(CategoryDao.class);
-    }
-
-    @After
-    public void tearDown() {
-        categoryDaoSubj = null;
-        dataSource = null;
     }
 
     @Test

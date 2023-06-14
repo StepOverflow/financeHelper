@@ -1,6 +1,5 @@
 package ru.shapovalov.dao;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -22,8 +21,6 @@ import static org.junit.Assert.*;
 public class TransactionDaoTest {
     private TransactionDao transactionDaoSubj;
 
-    private DataSource dataSource;
-
     @Before
     public void setUp() {
         System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=0");
@@ -33,12 +30,6 @@ public class TransactionDaoTest {
 
         ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
         transactionDaoSubj = context.getBean(TransactionDao.class);
-    }
-
-    @After
-    public void tearDown() {
-        transactionDaoSubj = null;
-        dataSource = null;
     }
 
     @Test

@@ -1,5 +1,7 @@
 package ru.shapovalov;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.shapovalov.service.*;
 
 import java.util.*;
