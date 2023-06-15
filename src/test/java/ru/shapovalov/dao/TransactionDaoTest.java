@@ -1,9 +1,10 @@
 package ru.shapovalov.dao;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
@@ -16,13 +17,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
-import static ru.shapovalov.dao.DaoConfiguration.getDataSource;
-import static ru.shapovalov.dao.DaoFactory.getTransactionDao;
 
 public class TransactionDaoTest {
-    private TransactionDao transactionDao;
-
-    private DataSource dataSource;
+    private TransactionDao transactionDaoSubj;
 
     @Before
     public void setUp() {
@@ -31,14 +28,8 @@ public class TransactionDaoTest {
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_transaction_dao_test.xml");
 
-        transactionDao = getTransactionDao();
-        dataSource = getDataSource();
-    }
-
-    @After
-    public void tearDown() {
-        transactionDao = null;
-        dataSource = null;
+        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
+        transactionDaoSubj = context.getBean(TransactionDao.class);
     }
 
     @Test
@@ -48,7 +39,7 @@ public class TransactionDaoTest {
         int amount = 100;
         List categoryIds = Arrays.asList(1, 2);
 
-        TransactionModel transactionModel = transactionDao.moneyTransfer(fromAccount, toAccount, amount, 1, categoryIds);
+        TransactionModel transactionModel = transactionDaoSubj.moneyTransfer(fromAccount, toAccount, amount, 1, categoryIds);
 
         assertNotNull(transactionModel);
         assertEquals(fromAccount, transactionModel.getSender());
@@ -58,7 +49,7 @@ public class TransactionDaoTest {
 
     @Test
     public void moneyTransfer_InsufficientFunds_ThrowsCustomException() {
-        assertThrows(CustomException.class, () -> transactionDao.moneyTransfer(1, 2, 1000000, 1, Arrays.asList(1, 2)));
+        assertThrows(CustomException.class, () -> transactionDaoSubj.moneyTransfer(1, 2, 1000000, 1, Arrays.asList(1, 2)));
     }
 
     @Test

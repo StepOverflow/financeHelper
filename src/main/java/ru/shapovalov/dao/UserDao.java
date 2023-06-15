@@ -1,10 +1,12 @@
 package ru.shapovalov.dao;
 
+import org.springframework.stereotype.Service;
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;
 
+@Service
 public class UserDao {
     private final DataSource dataSource;
 

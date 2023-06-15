@@ -1,5 +1,6 @@
 package ru.shapovalov.dao;
 
+import org.springframework.stereotype.Service;
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
@@ -7,6 +8,7 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class CategoryDao {
     private final DataSource dataSource;
 

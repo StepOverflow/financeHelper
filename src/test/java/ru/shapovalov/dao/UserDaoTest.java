@@ -1,21 +1,17 @@
 package ru.shapovalov.dao;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.shapovalov.exception.CustomException;
 
-import javax.sql.DataSource;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
-import static ru.shapovalov.dao.DaoConfiguration.getDataSource;
-import static ru.shapovalov.dao.DaoFactory.getUserDao;
 
 public class UserDaoTest {
     private UserDao userDaoSubj;
-
-    private DataSource dataSource;
 
     @Before
     public void setUp() {
@@ -24,14 +20,8 @@ public class UserDaoTest {
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
 
-        userDaoSubj = getUserDao();
-        dataSource = getDataSource();
-    }
-
-    @After
-    public void tearDown() {
-        userDaoSubj = null;
-        dataSource = null;
+        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
+        userDaoSubj = context.getBean(UserDao.class);
     }
 
     @Test
