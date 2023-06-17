@@ -13,8 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-
-import static ru.shapovalov.SpringContext.*;
+import static ru.shapovalov.SpringContext.getContext;
 
 public class AccountServlet extends HttpServlet {
 
@@ -30,17 +29,20 @@ public class AccountServlet extends HttpServlet {
         HttpSession session = req.getSession();
         Integer userId = (Integer) session.getAttribute("userId");
 
+        List<AccountDto> accountDtos = accountService.getAll(userId);
+        writer.write(accountDtos.toString());
+
         String action = req.getParameter("action");
         switch (action) {
             case "add":
                 String name = req.getParameter("name");
                 AccountDto accountDto = accountService.create(name, userId);
-                writer.write("New account created!");
+                writer.write("New account created! ");
                 writer.write(accountDto.toString());
                 break;
             case "delete":
                 String accountIdParam = req.getParameter("id");
-                if (accountIdParam == null || StringUtils.isNumeric(accountIdParam)) {
+                if (!StringUtils.isNumeric(accountIdParam)) {
                     writer.write("Wrong format!");
                 } else {
                     int accountId = Integer.parseInt(accountIdParam);
@@ -50,13 +52,19 @@ public class AccountServlet extends HttpServlet {
                     }
                 }
                 break;
-            default:
-                List<AccountDto> accountDtos = accountService.getAll(userId);
-                writer.write(accountDtos.toString());
+            case "edit":
+                accountIdParam = req.getParameter("id");
+                if (!StringUtils.isNumeric(accountIdParam)) {
+                    writer.write("Wrong format!");
+                } else {
+                    int accountId = Integer.parseInt(accountIdParam);
+                    String newName = req.getParameter("newName");
+                    boolean edit = accountService.edit(accountId, newName, userId);
+                    if (edit) {
+                        writer.write("Account edited!");
+                    }
+                }
                 break;
         }
     }
 }
-
-
-

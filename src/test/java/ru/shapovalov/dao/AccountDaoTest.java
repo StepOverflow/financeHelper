@@ -1,79 +1,53 @@
 package ru.shapovalov.dao;
 
-import liquibase.Liquibase;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.shapovalov.SpringContext;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
-
+import static ru.shapovalov.SpringContext.getContext;
 
 public class AccountDaoTest {
-    AccountDao accountSubj;
-    UserDao userSubj;
+    private AccountDao accountDaoSubj;
 
     @Before
     public void setUp() {
-        System.setProperty("jdncUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID().toString());
+        System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem" + UUID.randomUUID() + ";DB_CLOSE_DELAY=0");
         System.setProperty("jdbcUser", "sa");
         System.setProperty("jdbcPassword", "");
-        System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
+        System.setProperty("liquibaseFile", "liquibase_account_dao_test.xml");
 
-        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
-        accountSubj = context.getBean(AccountDao.class);
-        userSubj = context.getBean(UserDao.class);
-
+        accountDaoSubj = getContext().getBean(AccountDao.class);
     }
 
     @Test
-    public void getAllByUserId_ok() {
-        AccountModel accountModel1 = new AccountModel();
-        accountModel1.setUserId(2);
-        accountModel1.setId(1);
-        accountModel1.setName("account1");
+    public void testInsert() {
+        AccountModel accountModel = accountDaoSubj.insert("test_account", 1);
 
-        AccountModel accountModel2 = new AccountModel();
-        accountModel2.setUserId(2);
-        accountModel2.setId(2);
-        accountModel2.setName("account2");
-
-        List<AccountModel> expectedList = Arrays.asList(accountModel1, accountModel2);
-
-        userSubj.insert("user1", "hash");
-        userSubj.insert("user2", "hash");
-
-        accountSubj.insert("account1", 2);
-        accountSubj.insert("account2", 2);
-
-        List<AccountModel> actualList = accountSubj.getAllByUserId(2);
-
-        assertArrayEquals(expectedList.toArray(), actualList.toArray());
-        assertFalse(actualList.isEmpty());
+        assertEquals("test_account", accountModel.getName());
+        assertEquals(0, accountModel.getBalance());
+        assertTrue(accountModel.getId() > 0);
+        assertEquals(1, accountModel.getUserId());
     }
 
     @Test
-    public void delete_ok() {
-        userSubj.insert("user1", "hash");
-        userSubj.insert("user2", "hash");
-
-        AccountModel accountModel = accountSubj.insert("accName", 2);
-
-        assertTrue(accountSubj.delete(accountModel.getId(), accountModel.getUserId()));
+    public void testGetAllByUserId() {
+        assertEquals(2, accountDaoSubj.getAllByUserId(1).size());
+        assertEquals(1, accountDaoSubj.getAllByUserId(2).size());
     }
 
     @Test
-    public void delete_noHaveRoots() {
-        userSubj.insert("user1", "hash");
-        userSubj.insert("user2", "hash");
-        userSubj.insert("user3", "hash");
+    public void testDelete() {
+        assertTrue(accountDaoSubj.delete(3, 2));
+        assertTrue(accountDaoSubj.getAllByUserId(2).isEmpty());
+    }
 
-        AccountModel accountModel = accountSubj.insert("accName", 2);
-
-        assertFalse(accountSubj.delete(accountModel.getId(), 3));
+    @Test
+    public void testDeleteWrongUser() {
+        assertFalse(accountDaoSubj.delete(3, 1));
     }
 }

@@ -43,4 +43,13 @@ public class CategoryModel {
     public int hashCode() {
         return Objects.hash(id, name, userId);
     }
+
+    @Override
+    public String toString() {
+        return "CategoryModel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", userId=" + userId +
+                '}';
+    }
 }

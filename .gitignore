@@ -1,10 +1,4 @@
-     .idea
-     out
      *.iml
-     .DS_Store
-     src/.DS_Store
-     target
-
      # игнорировать файлы, содержащие пароли или ключи доступа
      *.key
      *.pem
@@ -24,7 +18,7 @@
      *.jar
 
      # игнорировать файлы, созданные IDE
-     .idea/
+
      .vscode/
      .project
      .classpath
@@ -41,3 +35,14 @@
 /JBorn_Web_11_Shapovalov.iml
 /target/
 /.idea/
+/.DS_Store
+/out/
+/src/.DS_Store
+/src/main/.DS_Store
+/src/main/java/.DS_Store
+/src/main/java/ru/.DS_Store
+/src/main/java/ru/shapovalov/.DS_Store
+/src/test/.DS_Store
+/src/test/java/.DS_Store
+/src/test/java/ru/.DS_Store
+/src/test/java/ru/shapovalov/.DS_Store

@@ -3,6 +3,7 @@ package ru.shapovalov.converter;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.dao.TransactionModel;
 import ru.shapovalov.service.TransactionDto;
+
 @Service
 public class TransactionModelToTransactionDtoConverter implements Converter<TransactionModel, TransactionDto> {
     @Override
@@ -12,7 +13,7 @@ public class TransactionModelToTransactionDtoConverter implements Converter<Tran
         transactionDto.setSender(source.getSender());
         transactionDto.setRecipient(source.getRecipient());
         transactionDto.setSum(source.getSum());
-        transactionDto.setTimestamp(source.getTimestamp());
+        transactionDto.setCreatedDate(source.getCreatedDate());
         return transactionDto;
     }
 }

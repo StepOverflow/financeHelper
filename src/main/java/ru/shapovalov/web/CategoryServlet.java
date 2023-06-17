@@ -1,6 +1,5 @@
 package ru.shapovalov.web;
 
-
 import ru.shapovalov.service.CategoryDto;
 import ru.shapovalov.service.CategoryService;
 
@@ -9,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -29,6 +27,9 @@ public class CategoryServlet extends HttpServlet {
         HttpSession session = req.getSession();
         Integer userId = (Integer) session.getAttribute("userId");
 
+        List<CategoryDto> categoryDtos = categoryService.getAll(userId);
+        writer.write(categoryDtos.toString());
+
         String action = req.getParameter("action");
         switch (action) {
             case "add":
@@ -36,12 +37,14 @@ public class CategoryServlet extends HttpServlet {
                 CategoryDto categoryDto = categoryService.create(name, userId);
                 writer.write("New account created!");
                 writer.write(categoryDto.toString());
+                break;
             case "delete":
                 int id = Integer.parseInt(req.getParameter("id"));
                 boolean delete = categoryService.delete(id, userId);
                 if (delete) {
                     writer.write("Category deleted!");
                 }
+                break;
             case "edit":
                 id = Integer.parseInt(req.getParameter("id"));
                 name = req.getParameter("name");
@@ -49,9 +52,7 @@ public class CategoryServlet extends HttpServlet {
 
                 writer.write("Edited!");
                 writer.write(resultDto.toString());
-            default:
-                List<CategoryDto> categoryDtos = categoryService.getAll(userId);
-                writer.write(categoryDtos.toString());
+                break;
         }
     }
 }

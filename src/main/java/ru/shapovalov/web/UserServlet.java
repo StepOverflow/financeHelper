@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Optional;
 
 import static ru.shapovalov.SpringContext.getContext;
 
@@ -32,8 +31,7 @@ public class UserServlet extends HttpServlet {
             writer.write("Access denied!");
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
-            Optional<UserDto> userByIdOptional = authService.getUserById(userId);
-            UserDto userDto = userByIdOptional.get();
+            UserDto userDto = authService.getByUserId(userId);
             writer.write(userDto.toString());
         }
     }

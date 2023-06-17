@@ -3,6 +3,7 @@ package ru.shapovalov.converter;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.dao.UserModel;
 import ru.shapovalov.service.UserDto;
+
 @Service
 public class UserModelToUserDtoConverter implements Converter<UserModel, UserDto> {
     @Override

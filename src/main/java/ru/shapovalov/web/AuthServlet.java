@@ -29,10 +29,10 @@ public class AuthServlet extends HttpServlet {
         UserDto user = userDtoOptional.get();
 
         PrintWriter writer = resp.getWriter();
-        if (user == null){
+        if (user == null) {
             writer.write("Access denied!");
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        }else {
+        } else {
             writer.write(user.toString());
             HttpSession session = req.getSession();
             session.setAttribute("userId", user.getId());
