@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ru.shapovalov.SpringContext;
 import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
-import static ru.shapovalov.SpringContext.getContext;
 
 public class TransactionDaoTest {
     private TransactionDao transactionDaoSubj;
@@ -30,7 +28,8 @@ public class TransactionDaoTest {
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_transaction_dao_test.xml");
 
-        transactionDaoSubj = getContext().getBean(TransactionDao.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
+        transactionDaoSubj = context.getBean(TransactionDao.class);
     }
 
     @Test

@@ -4,12 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ru.shapovalov.SpringContext;
 
 import java.util.UUID;
 
 import static org.junit.Assert.*;
-import static ru.shapovalov.SpringContext.getContext;
 
 public class AccountDaoTest {
     private AccountDao accountDaoSubj;
@@ -21,7 +19,8 @@ public class AccountDaoTest {
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_account_dao_test.xml");
 
-        accountDaoSubj = getContext().getBean(AccountDao.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
+        accountDaoSubj = context.getBean(AccountDao.class);
     }
 
     @Test

@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ru.shapovalov.SpringContext;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -12,7 +11,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
-import static ru.shapovalov.SpringContext.getContext;
 
 public class CategoryDaoTest {
     private CategoryDao categoryDaoSubj;
@@ -24,7 +22,8 @@ public class CategoryDaoTest {
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_category_dao_test.xml");
 
-        categoryDaoSubj = getContext().getBean(CategoryDao.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
+        categoryDaoSubj = context.getBean(CategoryDao.class);
     }
 
     @Test

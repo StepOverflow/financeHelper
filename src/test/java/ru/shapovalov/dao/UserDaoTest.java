@@ -2,12 +2,13 @@ package ru.shapovalov.dao;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.shapovalov.exception.CustomException;
 
 import java.util.UUID;
 
 import static org.junit.Assert.*;
-import static ru.shapovalov.SpringContext.getContext;
 
 public class UserDaoTest {
     private UserDao userDaoSubj;
@@ -19,7 +20,8 @@ public class UserDaoTest {
         System.setProperty("jdbcPassword", "");
         System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
 
-        userDaoSubj = getContext().getBean(UserDao.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
+        userDaoSubj = context.getBean(UserDao.class);
     }
 
     @Test
