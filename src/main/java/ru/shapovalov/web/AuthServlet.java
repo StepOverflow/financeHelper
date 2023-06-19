@@ -3,7 +3,6 @@ package ru.shapovalov.web;
 import ru.shapovalov.service.UserAuthService;
 import ru.shapovalov.service.UserDto;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -13,7 +12,7 @@ import java.util.Optional;
 
 import static ru.shapovalov.SpringContext.getContext;
 
-public class AuthServlet extends HttpServlet {
+public class AuthServlet extends BaseServlet {
     private final UserAuthService userAuthService;
 
     public AuthServlet() {

@@ -35,41 +35,112 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>AccountServlet</servlet-name>
-        <servlet-class>ru.shapovalov.web.AccountServlet</servlet-class>
+        <servlet-name>ListAccountServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.ListAccountServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>AccountServlet</servlet-name>
+        <servlet-name>ListAccountServlet</servlet-name>
         <url-pattern>/accounts</url-pattern>
     </servlet-mapping>
+
     <servlet>
-        <servlet-name>CategoryServlet</servlet-name>
-        <servlet-class>ru.shapovalov.web.CategoryServlet</servlet-class>
+        <servlet-name>AddAccountServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.AddAccountServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>CategoryServlet</servlet-name>
+        <servlet-name>AddAccountServlet</servlet-name>
+        <url-pattern>/accounts/add</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DeleteAccountServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.DeleteAccountServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DeleteAccountServlet</servlet-name>
+        <url-pattern>/accounts/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EditAccountServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.EditAccountServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>EditAccountServlet</servlet-name>
+        <url-pattern>/accounts/edit</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ListCategoryServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.ListCategoryServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ListCategoryServlet</servlet-name>
         <url-pattern>/categories</url-pattern>
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>TransactionServet</servlet-name>
-        <servlet-class>ru.shapovalov.web.TransactionServlet</servlet-class>
+        <servlet-name>AddCategoryServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.AddCategoryServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>TransactionServet</servlet-name>
-        <url-pattern>/transactions</url-pattern>
+        <servlet-name>AddCategoryServlet</servlet-name>
+        <url-pattern>/categories/add</url-pattern>
     </servlet-mapping>
+
     <servlet>
-        <servlet-name>ReportServlet</servlet-name>
-        <servlet-class>ru.shapovalov.web.ReportServlet</servlet-class>
+        <servlet-name>DeleteCategoryServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.DeleteCategoryServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>ReportServlet</servlet-name>
-        <url-pattern>/report</url-pattern>
+        <servlet-name>DeleteCategoryServlet</servlet-name>
+        <url-pattern>/categories/delete</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>EditCategoryServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.EditCategoryServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>EditCategoryServlet</servlet-name>
+        <url-pattern>/categories/edit</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>MoneyTransferServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.MoneyTransferServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>MoneyTransferServlet</servlet-name>
+        <url-pattern>/transfer</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>IncomeReportServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.IncomeReportServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>IncomeReportServlet</servlet-name>
+        <url-pattern>/report/income</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ExpenseReportServlet</servlet-name>
+        <servlet-class>ru.shapovalov.web.ExpenseReportServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ExpenseReportServlet</servlet-name>
+        <url-pattern>/report/expense</url-pattern>
+    </servlet-mapping>
 </web-app>

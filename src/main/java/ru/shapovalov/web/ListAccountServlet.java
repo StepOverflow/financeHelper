@@ -1,20 +1,22 @@
 package ru.shapovalov.web;
 
-import ru.shapovalov.service.UserAuthService;
-import ru.shapovalov.service.UserDto;
+import ru.shapovalov.service.AccountDto;
+import ru.shapovalov.service.AccountService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import static ru.shapovalov.SpringContext.getContext;
 
-public class UserServlet extends BaseServlet {
-    private final UserAuthService authService;
+public class ListAccountServlet extends BaseServlet {
 
-    public UserServlet() {
-        this.authService = getContext().getBean(UserAuthService.class);
+    private final AccountService accountService;
+
+    public ListAccountServlet() {
+        this.accountService = getContext().getBean(AccountService.class);
     }
 
     @Override
@@ -22,7 +24,7 @@ public class UserServlet extends BaseServlet {
         PrintWriter writer = resp.getWriter();
         Integer userId = getUserId(req);
 
-        UserDto userDto = authService.getByUserId(userId);
-        writer.write(userDto.toString());
+        List<AccountDto> accountDtos = accountService.getAll(userId);
+        writer.write(accountDtos.toString());
     }
 }

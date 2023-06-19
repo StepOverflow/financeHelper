@@ -27,8 +27,11 @@ public class RegistrationServlet extends HttpServlet {
         UserDto userDto = userAuthService.registration(login, password);
 
         PrintWriter writer = resp.getWriter();
-        writer.write("New user registered!");
-        writer.write(userDto.toString());
-
+        if (userDto == null) {
+            writer.write("Registration failed!");
+        } else {
+            writer.write("New user registered!");
+            writer.write(userDto.toString());
+        }
     }
 }
