@@ -22,9 +22,13 @@ public class ListCategoryServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter writer = resp.getWriter();
-        Integer userId = getUserId(req);
+        Integer userId = getUserId(req, resp);
 
         List<CategoryDto> categoryDtos = categoryService.getAll(userId);
-        writer.write(categoryDtos.toString());
+        if (categoryDtos.isEmpty()) {
+            writer.write("Categories not found!");
+        } else {
+            writer.write(categoryDtos.toString());
+        }
     }
 }

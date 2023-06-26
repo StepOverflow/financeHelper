@@ -7,8 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
 
+import static java.lang.Integer.parseInt;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static ru.shapovalov.SpringContext.getContext;
 
 public class ExpenseReportServlet extends BaseServlet {
@@ -21,10 +22,16 @@ public class ExpenseReportServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter writer = resp.getWriter();
-        Integer userId = getUserId(req);
+        Integer userId = getUserId(req, resp);
 
-        int days = Integer.parseInt(req.getParameter("days"));
-        Map<String, Integer> resultExpenseInPeriodByCategory = categoryService.getResultExpenseInPeriodByCategory(userId, days);
-        writer.write(resultExpenseInPeriodByCategory.toString());
+        String days = req.getParameter("days");
+        if (isNumeric(days)) {
+            writer.write(
+                    categoryService
+                            .getResultExpenseInPeriodByCategory(userId, parseInt(days))
+                            .toString());
+        } else {
+            writer.write("Wrong format!");
+        }
     }
 }

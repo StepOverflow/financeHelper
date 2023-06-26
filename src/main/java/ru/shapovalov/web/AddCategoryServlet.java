@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static ru.shapovalov.SpringContext.getContext;
 
 public class AddCategoryServlet extends BaseServlet {
@@ -21,11 +22,16 @@ public class AddCategoryServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter writer = resp.getWriter();
-        Integer userId = getUserId(req);
+        Integer userId = getUserId(req, resp);
 
         String name = req.getParameter("name");
-        CategoryDto categoryDto = categoryService.create(name, userId);
-        writer.write("New account created!");
-        writer.write(categoryDto.toString());
+
+        if (isNotEmpty(name)) {
+            CategoryDto categoryDto = categoryService.create(name, userId);
+            writer.write("New account created!");
+            writer.write(categoryDto.toString());
+        } else {
+            writer.write("Wrong format!");
+        }
     }
 }

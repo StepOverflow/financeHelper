@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
+import static java.lang.Integer.parseInt;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static ru.shapovalov.SpringContext.getContext;
 
 public class MoneyTransferServlet extends BaseServlet {
@@ -25,23 +26,31 @@ public class MoneyTransferServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
-        Integer userId = getUserId(req);
+        Integer userId = getUserId(req, resp);
 
-        int fromAccount = Integer.parseInt(req.getParameter("fromAccount"));
-        int toAccount = Integer.parseInt(req.getParameter("toAccount"));
-        int amountPaid = Integer.parseInt(req.getParameter("amountPaid"));
-        String categoryIdsParam = req.getParameter("categoryIds");
-        List<Integer> categoryIds =
-                stream(categoryIdsParam.split(","))
-                        .map(Integer::parseInt)
-                        .collect(toList());
+        String from = req.getParameter("from");
+        String to = req.getParameter("to");
+        String amount = req.getParameter("amount");
+        String[] categoryIdsParam = req.getParameterValues("category");
+        List<Integer> categoryIds = new ArrayList<>();
 
-        try {
-            TransactionDto transactionDto = transactionService.sendMoney(fromAccount, toAccount, amountPaid, userId, categoryIds);
-            writer.write("Transaction successful!\n");
-            writer.write(transactionDto.toString());
-        } catch (CustomException e) {
-            writer.write("Transaction failed: " + e.getMessage());
+        if (isNumeric(from) && isNumeric(to) && isNumeric(amount)) {
+            for (String s : categoryIdsParam) {
+                if (isNumeric(s)) {
+                    categoryIds.add(parseInt(s));
+                } else {
+                    writer.write("Invalid category ID");
+                    return;
+                }
+            }
+            try {
+                TransactionDto transactionDto = transactionService.sendMoney(parseInt(from), parseInt(to), parseInt(amount), userId, categoryIds);
+                writer.write("Transaction successful!\n");
+                writer.write(transactionDto.toString());
+            } catch (CustomException e) {
+                writer.write("Transaction failed: " + e.getMessage());
+            }
         }
+
     }
 }

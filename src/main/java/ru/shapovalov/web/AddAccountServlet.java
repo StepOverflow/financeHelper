@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static ru.shapovalov.SpringContext.getContext;
 
 public class AddAccountServlet extends BaseServlet {
@@ -21,11 +22,16 @@ public class AddAccountServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
-        Integer userId = getUserId(req);
+        Integer userId = getUserId(req, resp);
 
         String name = req.getParameter("name");
-        AccountDto accountDto = accountService.create(name, userId);
-        writer.write("New account created! ");
-        writer.write(accountDto.toString());
+
+        if (isNotEmpty(name)) {
+            AccountDto accountDto = accountService.create(name, userId);
+            writer.write("New account created! ");
+            writer.write(accountDto.toString());
+        } else {
+            writer.write("Wrong format!");
+        }
     }
 }

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static ru.shapovalov.SpringContext.getContext;
 
 public class RegistrationServlet extends HttpServlet {
@@ -23,15 +24,18 @@ public class RegistrationServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-
-        UserDto userDto = userAuthService.registration(login, password);
-
         PrintWriter writer = resp.getWriter();
-        if (userDto == null) {
-            writer.write("Registration failed!");
+
+        if (isNotEmpty(login) && isNotEmpty(password)) {
+            UserDto userDto = userAuthService.registration(login, password);
+            if (userDto == null) {
+                writer.write("Registration failed!");
+            } else {
+                writer.write("New user registered!");
+                writer.write(userDto.toString());
+            }
         } else {
-            writer.write("New user registered!");
-            writer.write(userDto.toString());
+            writer.write("Wrong format!");
         }
     }
 }

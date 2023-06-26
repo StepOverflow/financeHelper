@@ -22,9 +22,13 @@ public class ListAccountServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
-        Integer userId = getUserId(req);
+        Integer userId = getUserId(req, resp);
 
         List<AccountDto> accountDtos = accountService.getAll(userId);
-        writer.write(accountDtos.toString());
+        if (accountDtos.isEmpty()) {
+            writer.write("Accounts not found!");
+        } else {
+            writer.write(accountDtos.toString());
+        }
     }
 }

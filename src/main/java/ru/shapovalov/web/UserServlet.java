@@ -20,7 +20,7 @@ public class UserServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
-        Integer userId = getUserId(req);
+        Integer userId = getUserId(req, resp);
 
         UserDto userDto = authService.getByUserId(userId);
         writer.write(userDto.toString());
