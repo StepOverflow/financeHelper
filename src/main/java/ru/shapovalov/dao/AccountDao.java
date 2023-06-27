@@ -1,6 +1,5 @@
 package ru.shapovalov.dao;
 
-
 import org.springframework.stereotype.Service;
 import ru.shapovalov.exception.CustomException;
 
@@ -8,6 +7,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class AccountDao {
     private final DataSource dataSource;
@@ -67,6 +67,19 @@ public class AccountDao {
             PreparedStatement ps = conn.prepareStatement("DELETE FROM accounts WHERE id = ? AND user_id = ?");
             ps.setInt(1, accountId);
             ps.setInt(2, userId);
+
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+    }
+
+    public boolean edit(int accountId, String newName, int userId) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("UPDATE accounts SET account_name = ? WHERE id = ? AND user_id = ?");
+            ps.setString(1, newName);
+            ps.setInt(2, accountId);
+            ps.setInt(3, userId);
 
             return ps.executeUpdate() == 1;
         } catch (SQLException e) {

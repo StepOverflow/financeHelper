@@ -7,16 +7,36 @@
 
     <changeSet author="stepan" id="insert_users">
         <insert tableName="users">
+            <column name="id" valueNumeric="1" />
             <column name="password" value="password1" />
             <column name="email" value="user1@example.com" />
         </insert>
         <insert tableName="users">
+            <column name="id" valueNumeric="2" />
             <column name="password" value="password2" />
             <column name="email" value="user2@example.com" />
         </insert>
         <insert tableName="users">
+            <column name="id" valueNumeric="3" />
             <column name="password" value="password2" />
             <column name="email" value="user3@example.com" />
+        </insert>
+    </changeSet>
+    <changeSet id="insert_accounts" author="stepan">
+        <insert tableName="accounts">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="account_name" value="account1"/>
+            <column name="balance" valueNumeric="100"/>
+        </insert>
+        <insert tableName="accounts">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="account_name" value="account2"/>
+            <column name="balance" valueNumeric="200"/>
+        </insert>
+        <insert tableName="accounts">
+            <column name="user_id" valueNumeric="2"/>
+            <column name="account_name" value="account3"/>
+            <column name="balance" valueNumeric="300"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

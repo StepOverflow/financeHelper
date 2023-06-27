@@ -6,7 +6,9 @@ import ru.shapovalov.exception.CustomException;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CategoryDao {
@@ -75,23 +77,83 @@ public class CategoryDao {
         return categoryModel;
     }
 
-    public List<CategoryModel> getAllByUserId(int userId) {
-        List<CategoryModel> categoryModels = new ArrayList<>();
+    public Map<String, Integer> getResultIncomeInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM categories WHERE user_id = ?");
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT c.name, SUM(t.amount_paid) " +
+                            "FROM transactions t " +
+                            "JOIN accounts a ON a.id = t.to_account_id " +
+                            "JOIN transactions_categories tc ON tc.transaction_id = t.id " +
+                            "JOIN categories c ON c.id = tc.category_id " +
+                            "WHERE t.created_date BETWEEN ? AND ? " +
+                            "AND a.user_id = ? " +
+                            "GROUP BY c.name"
+            );
+            ps.setTimestamp(1, startDate);
+            ps.setTimestamp(2, endDate);
+            ps.setInt(3, userId);
+            ResultSet rs = ps.executeQuery();
+            Map<String, Integer> result = new HashMap<>();
+            while (rs.next()) {
+                String categoryName = rs.getString(1);
+                int amount = rs.getInt(2);
+                result.put(categoryName, amount);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+    }
+
+    public Map<String, Integer> getResultExpenseInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT c.name, SUM(t.amount_paid) " +
+                            "FROM transactions t " +
+                            "JOIN accounts a ON a.id = t.from_account_id " +
+                            "JOIN transactions_categories tc ON tc.transaction_id = t.id " +
+                            "JOIN categories c ON c.id = tc.category_id " +
+                            "WHERE t.created_date BETWEEN ? AND ? " +
+                            "AND a.user_id = ? " +
+                            "GROUP BY c.name"
+            );
+            ps.setTimestamp(1, startDate);
+            ps.setTimestamp(2, endDate);
+            ps.setInt(3, userId);
+            ResultSet rs = ps.executeQuery();
+            Map<String, Integer> result = new HashMap<>();
+            while (rs.next()) {
+                String categoryName = rs.getString(1);
+                int amount = rs.getInt(2);
+                result.put(categoryName, amount);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+    }
+
+    public List<CategoryModel> getAllByUserId(int userId) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT * " +
+                            "FROM categories c " +
+                            "WHERE user_id = ? "
+            );
+
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
-
+            List<CategoryModel> result = new ArrayList<>();
             while (rs.next()) {
                 CategoryModel categoryModel = new CategoryModel();
                 categoryModel.setUserId(rs.getInt("user_id"));
                 categoryModel.setName(rs.getString("name"));
                 categoryModel.setId(rs.getInt("id"));
-                categoryModels.add(categoryModel);
+                result.add(categoryModel);
             }
+            return result;
         } catch (SQLException e) {
             throw new CustomException(e);
         }
-        return categoryModels;
     }
 }

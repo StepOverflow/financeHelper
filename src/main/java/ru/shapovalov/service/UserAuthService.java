@@ -19,14 +19,6 @@ public class UserAuthService {
         this.userDtoConverter = userDtoConverter;
     }
 
-    public Optional<UserDto> getUserById(Integer userId) {
-        UserModel user = userDao.findByUserId(userId);
-        if (user == null) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(userDtoConverter.convert(user));
-    }
-
     public Optional<UserDto> auth(String email, String password) {
         String hash = digestService.hex(password);
         UserModel source = userDao.findByEmailAndHash(email, hash);
@@ -39,5 +31,9 @@ public class UserAuthService {
 
         UserModel userModel = userDao.insert(email, hash);
         return userDtoConverter.convert(userModel);
+    }
+
+    public UserDto getByUserId(int userId) {
+        return userDtoConverter.convert(userDao.findByUserId(userId));
     }
 }

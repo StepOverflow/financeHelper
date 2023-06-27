@@ -3,9 +3,7 @@ package ru.shapovalov;
 import org.springframework.context.ApplicationContext;
 import ru.shapovalov.service.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 import static ru.shapovalov.SpringContext.getContext;
 
@@ -40,10 +38,14 @@ public class Main {
                             System.out.println("4. Create transaction category");
                             System.out.println("5. Delete transaction category");
                             System.out.println("6. Edit transaction category");
+                            System.out.println("7. Income report");
+                            System.out.println("8. Expense report");
+                            System.out.println("9. Transfers");
                             System.out.println("0. Log out");
 
                             AccountService accountService = context.getBean(AccountService.class);
                             CategoryService categoryService = context.getBean(CategoryService.class);
+                            TransactionService transactionService = context.getBean(TransactionService.class);
                             int choice2 = scanner.nextInt();
                             switch (choice2) {
                                 case 1:
@@ -102,13 +104,34 @@ public class Main {
                                     System.out.println(categoryDto);
                                     break;
                                 case 7:
-                                    List<CategoryDto> categoryDtos = categoryService.getAll(userDto.getId());
-                                    if (!categoryDtos.isEmpty()) {
-                                        for (CategoryDto category : categoryDtos) {
-                                            System.out.println(category);
+                                    int days = requestInt("Report for how many days?");
+                                    Map<String, Integer> resultIncomeInPeriodByCategory = categoryService.getResultIncomeInPeriodByCategory(userDto.getId(), days);
+                                    System.out.println("Result incomes: " + resultIncomeInPeriodByCategory);
+                                    break;
+                                case 8:
+                                    days = requestInt("Report for how many days?");
+                                    Map<String, Integer> resultExpenseInPeriodByCategory = categoryService.getResultExpenseInPeriodByCategory(userDto.getId(), days);
+                                    System.out.println("Result expenses: " + resultExpenseInPeriodByCategory);
+                                    break;
+                                case 9:
+                                    int sender = requestInt("Specify from which account id funds will be debited");
+                                    int recipient = requestInt("Specify which account the funds will be transferred to. " +
+                                            "if this is an unknown account, enter 0");
+                                    int sum = requestInt("Enter the desired amount");
+                                    List<Integer> categoryIds = new ArrayList<>();
+                                    int categoryId;
+                                    do {
+                                        categoryId = requestInt("Enter category ID (enter 0 to finish):");
+                                        if (categoryId != 0) {
+                                            categoryIds.add(categoryId);
                                         }
+                                    } while (categoryId != 0);
+                                    TransactionDto transactionDto = transactionService.sendMoney(sender, recipient, sum, userDto.getId(), categoryIds);
+                                    if (transactionDto != null) {
+                                        System.out.println("Successful, your payment receipt: ");
+                                        System.out.println(transactionDto);
                                     } else {
-                                        System.out.println("No available accounts found!");
+                                        System.out.println("Funds transfer failed");
                                     }
                                     break;
                                 case 0:

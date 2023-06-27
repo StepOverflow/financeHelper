@@ -3,6 +3,7 @@ package ru.shapovalov.converter;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.dao.AccountModel;
 import ru.shapovalov.service.AccountDto;
+
 @Service
 public class AccountModelToAccountDtoConverter implements Converter<AccountModel, AccountDto> {
     @Override
