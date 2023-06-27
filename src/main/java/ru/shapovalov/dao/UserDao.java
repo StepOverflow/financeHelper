@@ -23,10 +23,7 @@ public class UserDao {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                userModel = new UserModel();
-                userModel.setEmail(rs.getString("email"));
-                userModel.setId(rs.getInt("id"));
-                userModel.setPassword(rs.getString("password"));
+                userModel = createUserModelByResultSet(rs);
             }
         } catch (SQLException e) {
             throw new CustomException(e);
@@ -56,5 +53,30 @@ public class UserDao {
         } catch (SQLException e) {
             throw new CustomException(e);
         }
+    }
+
+    public UserModel findByUserId(Integer userId) {
+        UserModel userModel = null;
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select * from users where id = ?");
+            ps.setInt(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                userModel = createUserModelByResultSet(rs);
+            }
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+        return userModel;
+    }
+
+    private UserModel createUserModelByResultSet(ResultSet rs) throws SQLException {
+        UserModel userModel = new UserModel();
+        userModel.setEmail(rs.getString("email"));
+        userModel.setId(rs.getInt("id"));
+        userModel.setPassword(rs.getString("password"));
+        return userModel;
     }
 }

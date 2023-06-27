@@ -5,7 +5,9 @@ import ru.shapovalov.exception.CustomException;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -124,6 +126,30 @@ public class CategoryDao {
                 String categoryName = rs.getString(1);
                 int amount = rs.getInt(2);
                 result.put(categoryName, amount);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+    }
+
+    public List<CategoryModel> getAllByUserId(int userId) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT * " +
+                            "FROM categories c " +
+                            "WHERE user_id = ? "
+            );
+
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            List<CategoryModel> result = new ArrayList<>();
+            while (rs.next()) {
+                CategoryModel categoryModel = new CategoryModel();
+                categoryModel.setUserId(rs.getInt("user_id"));
+                categoryModel.setName(rs.getString("name"));
+                categoryModel.setId(rs.getInt("id"));
+                result.add(categoryModel);
             }
             return result;
         } catch (SQLException e) {

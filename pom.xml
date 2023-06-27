@@ -9,40 +9,42 @@
     <version>1.0</version>
 
     <properties>
+        <!-- Compiler settings -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <!-- PostgreSQL JDBC driver -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.5.4</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <!-- Apache Commons Codec -->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.15</version>
         </dependency>
 
+        <!-- HikariCP connection pool -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>4.0.3</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-core -->
+        <!-- Liquibase for database migrations -->
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>4.21.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <!-- Java BaseServlet API -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -50,20 +52,21 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Apache Commons DBCP -->
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
         </dependency>
 
+        <!-- Spring Framework Context -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>5.3.9</version>
-
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <!-- JUnit testing framework -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -71,7 +74,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+        <!-- Mockito mocking framework -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -79,7 +82,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+        <!-- H2 Database (for testing) -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -89,6 +92,7 @@
     </dependencies>
 
     <repositories>
+        <!-- Clojars repository -->
         <repository>
             <id>clojars</id>
             <name>Clojars</name>

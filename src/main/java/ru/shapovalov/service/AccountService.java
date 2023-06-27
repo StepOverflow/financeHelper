@@ -30,6 +30,10 @@ public class AccountService {
         return accountDtoConverter.convert(accountModel);
     }
 
+    public boolean edit(int accountId, String newName, int userId) {
+        return accountDao.edit(accountId, newName, userId);
+    }
+
     public boolean delete(int accountId, int userId) {
         return accountDao.delete(accountId, userId);
     }

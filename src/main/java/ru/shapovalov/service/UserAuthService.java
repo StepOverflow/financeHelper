@@ -32,4 +32,8 @@ public class UserAuthService {
         UserModel userModel = userDao.insert(email, hash);
         return userDtoConverter.convert(userModel);
     }
+
+    public UserDto getByUserId(int userId) {
+        return userDtoConverter.convert(userDao.findByUserId(userId));
+    }
 }

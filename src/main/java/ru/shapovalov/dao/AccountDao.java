@@ -73,4 +73,17 @@ public class AccountDao {
             throw new CustomException(e);
         }
     }
+
+    public boolean edit(int accountId, String newName, int userId) {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("UPDATE accounts SET account_name = ? WHERE id = ? AND user_id = ?");
+            ps.setString(1, newName);
+            ps.setInt(2, accountId);
+            ps.setInt(3, userId);
+
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new CustomException(e);
+        }
+    }
 }

@@ -1,14 +1,15 @@
 package ru.shapovalov;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.shapovalov.service.*;
 
 import java.util.*;
 
+import static ru.shapovalov.SpringContext.getContext;
+
 public class Main {
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext("ru.shapovalov");
+        ApplicationContext context = getContext();
         UserAuthService userAuthService = context.getBean(UserAuthService.class);
         Scanner scanner = new Scanner(System.in);
 
