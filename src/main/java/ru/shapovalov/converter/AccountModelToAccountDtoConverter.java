@@ -9,7 +9,7 @@ public class AccountModelToAccountDtoConverter implements Converter<AccountModel
     @Override
     public AccountDto convert(AccountModel source) {
         AccountDto accountDto = new AccountDto();
-        accountDto.setName(source.getName());
+        accountDto.setAccountName(source.getAccountName());
         accountDto.setId(source.getId());
         accountDto.setBalance(source.getBalance());
         accountDto.setUserId(source.getUserId());

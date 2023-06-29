@@ -14,7 +14,7 @@ import java.util.Optional;
 public class AuthController implements Controller<AuthRequest, AuthResponse> {
     private final UserAuthService authService;
 
-    @Override
+     @Override
     public AuthResponse handle(AuthRequest request) {
         Optional<UserDto> userOptional = authService.auth(request.getEmail(), request.getPassword());
         if (userOptional.isPresent()) {
@@ -29,4 +29,3 @@ public class AuthController implements Controller<AuthRequest, AuthResponse> {
         return AuthRequest.class;
     }
 }
-

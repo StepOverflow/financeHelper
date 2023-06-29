@@ -2,7 +2,6 @@ package ru.shapovalov.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationContext;
-import ru.shapovalov.SpringContext;
 import ru.shapovalov.controller.AuthController;
 import ru.shapovalov.controller.Controller;
 import ru.shapovalov.controller.SecureController;
@@ -10,11 +9,16 @@ import ru.shapovalov.json.AuthRequest;
 import ru.shapovalov.json.AuthResponse;
 import ru.shapovalov.json.ErrorResponse;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static ru.shapovalov.SpringContext.getContext;
 
 public class MainServlet extends HttpServlet {
     private ObjectMapper om = new ObjectMapper();
@@ -22,7 +26,7 @@ public class MainServlet extends HttpServlet {
     private Map<String, SecureController> secureControllers = new HashMap<>();
 
     public MainServlet() {
-        ApplicationContext context = SpringContext.getContext();
+        ApplicationContext context = getContext();
 
         for (String beanName : context.getBeanNamesForType(Controller.class)) {
             controllers.put(beanName, context.getBean(beanName, Controller.class));

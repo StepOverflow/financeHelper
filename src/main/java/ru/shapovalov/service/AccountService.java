@@ -1,5 +1,6 @@
 package ru.shapovalov.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.AccountModelToAccountDtoConverter;
 import ru.shapovalov.dao.AccountDao;
@@ -10,14 +11,10 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService {
     private final AccountDao accountDao;
     private final AccountModelToAccountDtoConverter accountDtoConverter;
-
-    public AccountService(AccountDao accountDao, AccountModelToAccountDtoConverter accountDtoConverter) {
-        this.accountDao = accountDao;
-        this.accountDtoConverter = accountDtoConverter;
-    }
 
     public List<AccountDto> getAll(int userId) {
         return accountDao.getAllByUserId(userId).stream()

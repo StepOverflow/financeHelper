@@ -1,5 +1,6 @@
 package ru.shapovalov.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.exception.CustomException;
 
@@ -7,12 +8,10 @@ import javax.sql.DataSource;
 import java.sql.*;
 
 @Service
+@RequiredArgsConstructor
 public class UserDao {
     private final DataSource dataSource;
 
-    public UserDao(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     public UserModel findByEmailAndHash(String email, String hash) {
         UserModel userModel = null;

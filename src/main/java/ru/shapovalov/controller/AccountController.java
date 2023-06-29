@@ -1,7 +1,6 @@
 package ru.shapovalov.controller;
 
 import org.springframework.stereotype.Service;
-import ru.shapovalov.controller.SecureController;
 import ru.shapovalov.json.AccountRequest;
 import ru.shapovalov.json.AccountResponse;
 

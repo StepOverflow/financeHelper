@@ -32,22 +32,22 @@ public class AccountServiceTest {
 
         AccountModel accountModel1 = new AccountModel();
         accountModel1.setId(1);
-        accountModel1.setName("Account 1");
+        accountModel1.setAccountName("Account 1");
         accountModel1.setUserId(userId);
 
         AccountModel accountModel2 = new AccountModel();
         accountModel2.setId(2);
-        accountModel2.setName("Account 2");
+        accountModel2.setAccountName("Account 2");
         accountModel2.setUserId(userId);
 
         AccountDto accountDto1 = new AccountDto();
         accountDto1.setId(accountModel1.getId());
-        accountDto1.setName(accountModel1.getName());
+        accountDto1.setAccountName(accountModel1.getAccountName());
         accountDto1.setUserId(accountModel1.getUserId());
 
         AccountDto accountDto2 = new AccountDto();
         accountDto2.setId(accountModel2.getId());
-        accountDto2.setName(accountModel2.getName());
+        accountDto2.setAccountName(accountModel2.getAccountName());
         accountDto2.setUserId(accountModel2.getUserId());
 
         List <AccountModel> accountModels = Arrays.asList(accountModel1, accountModel2);
@@ -72,12 +72,12 @@ public class AccountServiceTest {
 
         AccountModel accountModel1 = new AccountModel();
         accountModel1.setId(1);
-        accountModel1.setName(accountName);
+        accountModel1.setAccountName(accountName);
         accountModel1.setUserId(userId);
 
         AccountDto exceptedAccountDto = new AccountDto();
         exceptedAccountDto.setId(accountModel1.getId());
-        exceptedAccountDto.setName(accountModel1.getName());
+        exceptedAccountDto.setAccountName(accountModel1.getAccountName());
         exceptedAccountDto.setUserId(accountModel1.getUserId());
 
         when(accountDao.insert(accountName, userId)).thenReturn(accountModel1);

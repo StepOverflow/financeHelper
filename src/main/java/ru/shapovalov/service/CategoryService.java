@@ -1,5 +1,6 @@
 package ru.shapovalov.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.CategoryModelToCategoryDtoConverter;
 import ru.shapovalov.dao.CategoryDao;
@@ -14,14 +15,10 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
     private final CategoryDao categoryDao;
     private final CategoryModelToCategoryDtoConverter categoryDtoConverter;
-
-    public CategoryService(CategoryDao categoryDao, CategoryModelToCategoryDtoConverter categoryDtoConverter) {
-        this.categoryDao = categoryDao;
-        this.categoryDtoConverter = categoryDtoConverter;
-    }
 
     public CategoryDto create(String categoryName, int userId) {
         CategoryModel categoryModel = categoryDao.insert(categoryName, userId);
