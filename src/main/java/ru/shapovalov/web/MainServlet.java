@@ -89,4 +89,46 @@ public class MainServlet extends HttpServlet {
             om.writeValue(res.getWriter(), new ErrorResponse(e.getMessage()));
         }
     }
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String uri = req.getRequestURI();
+
+        res.setContentType("application/json");
+
+        try {
+            Controller controller = controllers.get(uri);
+            if (controller != null) {
+                if (controller instanceof AuthController) {
+                    res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+                } else {
+                    om.writeValue(
+                            res.getWriter(),
+                            controller.handle(om.readValue(req.getInputStream(), controller.getRequestClass()))
+                    );
+                }
+            } else {
+                SecureController secureController = secureControllers.get(uri);
+                if (secureController != null) {
+                    HttpSession session = req.getSession();
+                    Integer userId = (Integer) session.getAttribute("userId");
+                    if (userId == null) {
+                        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    } else {
+                        om.writeValue(
+                                res.getWriter(),
+                                secureController.handle(
+                                        om.readValue(req.getInputStream(), secureController.getRequestClass()),
+                                        userId
+                                )
+                        );
+                    }
+                } else {
+                    res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                }
+            }
+        } catch (Exception e) {
+            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            om.writeValue(res.getWriter(), new ErrorResponse(e.getMessage()));
+        }
+    }
 }
