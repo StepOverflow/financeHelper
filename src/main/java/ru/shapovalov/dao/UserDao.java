@@ -12,7 +12,6 @@ import java.sql.*;
 public class UserDao {
     private final DataSource dataSource;
 
-
     public UserModel findByEmailAndHash(String email, String hash) {
         UserModel userModel = null;
         try (Connection conn = dataSource.getConnection()) {

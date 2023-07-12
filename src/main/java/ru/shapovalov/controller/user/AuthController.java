@@ -1,9 +1,10 @@
-package ru.shapovalov.controller;
+package ru.shapovalov.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.shapovalov.json.AuthRequest;
-import ru.shapovalov.json.AuthResponse;
+import ru.shapovalov.controller.Controller;
+import ru.shapovalov.json.user.AuthRequest;
+import ru.shapovalov.json.user.AuthResponse;
 import ru.shapovalov.service.UserAuthService;
 import ru.shapovalov.service.UserDto;
 
@@ -14,7 +15,7 @@ import java.util.Optional;
 public class AuthController implements Controller<AuthRequest, AuthResponse> {
     private final UserAuthService authService;
 
-     @Override
+    @Override
     public AuthResponse handle(AuthRequest request) {
         Optional<UserDto> userOptional = authService.auth(request.getEmail(), request.getPassword());
         if (userOptional.isPresent()) {

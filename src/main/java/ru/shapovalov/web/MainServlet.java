@@ -2,12 +2,12 @@ package ru.shapovalov.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationContext;
-import ru.shapovalov.controller.AuthController;
 import ru.shapovalov.controller.Controller;
 import ru.shapovalov.controller.SecureController;
-import ru.shapovalov.json.AuthRequest;
-import ru.shapovalov.json.AuthResponse;
-import ru.shapovalov.json.ErrorResponse;
+import ru.shapovalov.controller.user.AuthController;
+import ru.shapovalov.json.error.ErrorResponse;
+import ru.shapovalov.json.user.AuthRequest;
+import ru.shapovalov.json.user.AuthResponse;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

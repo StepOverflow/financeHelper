@@ -1,4 +1,4 @@
-package ru.shapovalov.json;
+package ru.shapovalov.json.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

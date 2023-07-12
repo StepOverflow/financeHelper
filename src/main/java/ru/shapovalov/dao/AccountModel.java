@@ -1,6 +1,5 @@
 package ru.shapovalov.dao;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
