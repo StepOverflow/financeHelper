@@ -1,5 +1,6 @@
 package ru.shapovalov.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.exception.CustomException;
 
@@ -9,12 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionDao {
     private final DataSource dataSource;
-
-    public TransactionDao(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     public TransactionModel moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId, List<Integer> categoryIds) {
         Connection connection = null;

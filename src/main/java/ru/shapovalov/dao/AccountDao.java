@@ -1,5 +1,6 @@
 package ru.shapovalov.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.exception.CustomException;
 
@@ -9,12 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AccountDao {
     private final DataSource dataSource;
-
-    public AccountDao(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     public List<AccountModel> getAllByUserId(int userId) {
         List<AccountModel> accountModels = new ArrayList<>();
@@ -26,7 +24,7 @@ public class AccountDao {
             while (rs.next()) {
                 AccountModel accountModel = new AccountModel();
                 accountModel.setUserId(rs.getInt("user_id"));
-                accountModel.setName(rs.getString("account_name"));
+                accountModel.setAccountName(rs.getString("account_name"));
                 accountModel.setBalance(rs.getInt("balance"));
                 accountModel.setId(rs.getInt("id"));
                 accountModels.add(accountModel);
@@ -49,7 +47,7 @@ public class AccountDao {
             if (generatedKeys.next()) {
                 AccountModel accountModel = new AccountModel();
                 accountModel.setId(generatedKeys.getInt(1));
-                accountModel.setName(accountName);
+                accountModel.setAccountName(accountName);
                 accountModel.setBalance(0);
                 accountModel.setUserId(userId);
 

@@ -1,5 +1,6 @@
 package ru.shapovalov.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.exception.CustomException;
 
@@ -11,12 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryDao {
     private final DataSource dataSource;
-
-    public CategoryDao(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     public CategoryModel insert(String categoryName, int userId) {
         try (Connection conn = dataSource.getConnection()) {

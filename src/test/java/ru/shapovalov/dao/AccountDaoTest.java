@@ -27,7 +27,7 @@ public class AccountDaoTest {
     public void testInsert() {
         AccountModel accountModel = accountDaoSubj.insert("test_account", 1);
 
-        assertEquals("test_account", accountModel.getName());
+        assertEquals("test_account", accountModel.getAccountName());
         assertEquals(0, accountModel.getBalance());
         assertTrue(accountModel.getId() > 0);
         assertEquals(1, accountModel.getUserId());

@@ -1,5 +1,6 @@
 package ru.shapovalov.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.Converter;
 import ru.shapovalov.dao.UserDao;
@@ -8,16 +9,11 @@ import ru.shapovalov.dao.UserModel;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserAuthService {
     private final UserDao userDao;
     private final DigestService digestService;
     private final Converter<UserModel, UserDto> userDtoConverter;
-
-    public UserAuthService(UserDao userDao, DigestService digestService, Converter<UserModel, UserDto> userDtoConverter) {
-        this.userDao = userDao;
-        this.digestService = digestService;
-        this.userDtoConverter = userDtoConverter;
-    }
 
     public Optional<UserDto> auth(String email, String password) {
         String hash = digestService.hex(password);
