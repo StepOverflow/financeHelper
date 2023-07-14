@@ -8,6 +8,8 @@ import ru.shapovalov.json.account.AddAccountResponse;
 import ru.shapovalov.service.AccountDto;
 import ru.shapovalov.service.AccountService;
 
+import java.util.Optional;
+
 @Controller("/accounts/add")
 @RequiredArgsConstructor
 public class AddAccountController implements SecureController<AddAccountRequest, AddAccountResponse> {
@@ -15,15 +17,13 @@ public class AddAccountController implements SecureController<AddAccountRequest,
 
     @Override
     public AddAccountResponse handle(AddAccountRequest request, Integer userId) {
-        AccountDto accountDto = accountService.create(request.getName(), userId);
-        if (accountDto != null) {
-            return new AddAccountResponse(
-                    accountDto.getId(),
-                    accountDto.getAccountName(),
-                    accountDto.getBalance()
-            );
-        }
-        return null;
+        Optional<AccountDto> accountDtoOptional = Optional.ofNullable(accountService.create(request.getName(), userId));
+
+        return accountDtoOptional.map(accountDto -> new AddAccountResponse(
+                accountDto.getId(),
+                accountDto.getAccountName(),
+                accountDto.getBalance()
+        )).orElse(null);
     }
 
     @Override

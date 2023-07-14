@@ -18,11 +18,7 @@ public class AuthController implements Controller<AuthRequest, AuthResponse> {
     @Override
     public AuthResponse handle(AuthRequest request) {
         Optional<UserDto> userOptional = authService.auth(request.getEmail(), request.getPassword());
-        if (userOptional.isPresent()) {
-            UserDto userDto = userOptional.get();
-            return new AuthResponse(userDto.getId(), userDto.getEmail());
-        }
-        return null;
+        return userOptional.map(userDto -> new AuthResponse(userDto.getId(), userDto.getEmail())).orElse(null);
     }
 
     @Override

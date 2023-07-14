@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DeleteAccountResponse {
-    boolean isDeleted;
+   private boolean isDeleted;
 }

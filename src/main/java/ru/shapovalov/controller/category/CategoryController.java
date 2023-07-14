@@ -18,8 +18,7 @@ public class CategoryController implements SecureController<CategoryRequest, Lis
 
     @Override
     public List<CategoryResponse> handle(CategoryRequest request, Integer userId) {
-        return categoryService.getAll(userId)
-                .stream()
+        return categoryService.getAll(userId).stream()
                 .map(categoryDto -> new CategoryResponse(categoryDto.getId(), categoryDto.getName()))
                 .collect(toList());
     }

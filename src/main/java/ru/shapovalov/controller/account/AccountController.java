@@ -18,8 +18,7 @@ public class AccountController implements SecureController<AccountRequest, List<
 
     @Override
     public List<AccountResponse> handle(AccountRequest request, Integer userId) {
-        return accountService.getAll(userId)
-                .stream()
+        return accountService.getAll(userId).stream()
                 .map(accountDto -> new AccountResponse(accountDto.getId(), accountDto.getAccountName(), accountDto.getBalance()))
                 .collect(toList());
     }

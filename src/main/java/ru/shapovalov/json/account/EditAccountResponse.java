@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class EditAccountResponse {
-    boolean isEdited;
+    private boolean isEdited;
 }

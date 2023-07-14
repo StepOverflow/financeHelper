@@ -8,6 +8,8 @@ import ru.shapovalov.json.transaction.TransferResponse;
 import ru.shapovalov.service.TransactionDto;
 import ru.shapovalov.service.TransactionService;
 
+import java.util.Optional;
+
 @Controller("/transfer")
 @RequiredArgsConstructor
 public class MoneyTransferController implements SecureController<TransferRequest, TransferResponse> {
@@ -16,17 +18,15 @@ public class MoneyTransferController implements SecureController<TransferRequest
 
     @Override
     public TransferResponse handle(TransferRequest request, Integer userId) {
-        TransactionDto transactionDto = transactionService.sendMoney(request.getSender(), request.getRecipient(), request.getSum(), userId, request.getCategoryIds());
-        if (transactionDto != null) {
-            return new TransferResponse(
-                    transactionDto.getId(),
-                    transactionDto.getSender(),
-                    transactionDto.getRecipient(),
-                    transactionDto.getSum(),
-                    transactionDto.getCreatedDate()
-            );
-        }
-        return null;
+        Optional<TransactionDto> transactionOptional = Optional.ofNullable(transactionService.sendMoney(request.getSender(), request.getRecipient(), request.getSum(), userId, request.getCategoryIds()));
+        return transactionOptional.map(transactionDto ->
+                new TransferResponse(
+                        transactionDto.getId(),
+                        transactionDto.getSender(),
+                        transactionDto.getRecipient(),
+                        transactionDto.getSum(),
+                        transactionDto.getCreatedDate()
+                )).orElse(null);
     }
 
     @Override

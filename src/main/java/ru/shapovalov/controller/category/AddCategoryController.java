@@ -8,6 +8,8 @@ import ru.shapovalov.json.category.AddCategoryResponse;
 import ru.shapovalov.service.CategoryDto;
 import ru.shapovalov.service.CategoryService;
 
+import java.util.Optional;
+
 @Controller("/categories/add")
 @RequiredArgsConstructor
 public class AddCategoryController implements SecureController<AddCategoryRequest, AddCategoryResponse> {
@@ -15,11 +17,8 @@ public class AddCategoryController implements SecureController<AddCategoryReques
 
     @Override
     public AddCategoryResponse handle(AddCategoryRequest request, Integer userId) {
-        CategoryDto categoryDto = categoryService.create(request.getName(), userId);
-        if (categoryDto != null) {
-            return new AddCategoryResponse(categoryDto.getId(), categoryDto.getName());
-        }
-        return null;
+        Optional<CategoryDto> categoryDtoOptional = Optional.ofNullable(categoryService.create(request.getName(), userId));
+        return categoryDtoOptional.map(categoryDto -> new AddCategoryResponse(categoryDto.getId(), categoryDto.getName())).orElse(null);
     }
 
     @Override
