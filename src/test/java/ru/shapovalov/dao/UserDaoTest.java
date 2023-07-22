@@ -4,11 +4,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.shapovalov.entity.User;
 import ru.shapovalov.exception.CustomException;
 
 import java.util.UUID;
 
 import static org.junit.Assert.*;
+import static org.testng.Assert.assertThrows;
 
 public class UserDaoTest {
     private UserDao userDaoSubj;
@@ -26,7 +28,7 @@ public class UserDaoTest {
 
     @Test
     public void testFindByEmailAndHash() {
-        UserModel userModel = userDaoSubj.findByEmailAndHash("user1@example.com", "password1");
+        User userModel = userDaoSubj.findByEmailAndHash("user1@example.com", "password1");
         assertNotNull(userModel);
         assertEquals("user1@example.com", userModel.getEmail());
         assertEquals("password1", userModel.getPassword());
@@ -34,7 +36,7 @@ public class UserDaoTest {
 
     @Test
     public void testInsert() {
-        UserModel userModel = userDaoSubj.insert("test3@example.com", "password3");
+        User userModel = userDaoSubj.insert("test3@example.com", "password3");
         assertNotNull(userModel);
         assertEquals("test3@example.com", userModel.getEmail());
         assertEquals("password3", userModel.getPassword());
@@ -42,7 +44,7 @@ public class UserDaoTest {
 
     @Test
     public void testInsertWithGeneratedKeys() {
-        UserModel userModel = userDaoSubj.insert("test4@example.com", "password4");
+        User userModel = userDaoSubj.insert("test4@example.com", "password4");
         assertNotNull(userModel);
         assertNotEquals(0, userModel.getId());
         assertEquals("test4@example.com", userModel.getEmail());

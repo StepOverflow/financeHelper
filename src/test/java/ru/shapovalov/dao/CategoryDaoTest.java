@@ -4,13 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.shapovalov.entity.Category;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.testng.AssertJUnit.*;
 
 public class CategoryDaoTest {
     private CategoryDao categoryDaoSubj;
@@ -31,10 +32,10 @@ public class CategoryDaoTest {
         String categoryName = "New Category";
         int userId = 1;
 
-        CategoryModel categoryModel = categoryDaoSubj.insert(categoryName, userId);
-        assertNotNull(categoryModel);
-        assertEquals(categoryName, categoryModel.getName());
-        assertEquals(userId, categoryModel.getUserId());
+        Category category = categoryDaoSubj.insert(categoryName, userId);
+        assertNotNull(category);
+        assertEquals(categoryName, category.getName());
+        assertEquals(userId, category.getUser().getId());
     }
 
     @Test
@@ -48,11 +49,11 @@ public class CategoryDaoTest {
         int userId = 3;
         String newCategoryName = "New Name";
 
-        CategoryModel categoryModel = categoryDaoSubj.edit(categoryId, newCategoryName, userId);
-        assertNotNull(categoryModel);
-        assertEquals(newCategoryName, categoryModel.getName());
-        assertEquals(userId, categoryModel.getUserId());
-        assertEquals(categoryId, categoryModel.getId());
+        Category category = categoryDaoSubj.edit(categoryId, newCategoryName, userId);
+        assertNotNull(category);
+        assertEquals(newCategoryName, category.getName());
+        assertEquals(userId, category.getUser().getId());
+        assertEquals(categoryId, category.getId());
     }
 
     @Test
@@ -61,7 +62,7 @@ public class CategoryDaoTest {
         Timestamp startDate = Timestamp.valueOf(LocalDateTime.now().minusDays(300));
         Timestamp endDate = Timestamp.valueOf(LocalDateTime.now());
 
-        Map<String, Integer> result = categoryDaoSubj.getResultIncomeInPeriodByCategory(userId, startDate, endDate);
+        Map<String, Long> result = categoryDaoSubj.getResultIncomeInPeriodByCategory(userId, startDate, endDate);
         assertNotNull(result);
         assertTrue(result.containsKey("salary"));
     }
@@ -72,7 +73,7 @@ public class CategoryDaoTest {
         Timestamp startDate = Timestamp.valueOf(LocalDateTime.now().minusDays(300));
         Timestamp endDate = Timestamp.valueOf(LocalDateTime.now());
 
-        Map<String, Integer> result = categoryDaoSubj.getResultExpenseInPeriodByCategory(userId, startDate, endDate);
+        Map<String, Long> result = categoryDaoSubj.getResultExpenseInPeriodByCategory(userId, startDate, endDate);
         assertNotNull(result);
         assertTrue(result.containsKey("salary"));
     }

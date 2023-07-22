@@ -1,87 +1,78 @@
 package ru.shapovalov.dao;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import ru.shapovalov.exception.CustomException;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import ru.shapovalov.entity.Account;
+import ru.shapovalov.entity.User;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.Collections;
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
+import static java.util.Collections.*;
+
+@Repository
+@Transactional
 public class AccountDao {
-    private final DataSource dataSource;
 
-    public List<AccountModel> getAllByUserId(int userId) {
-        List<AccountModel> accountModels = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM accounts WHERE user_id = ?");
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
+    @PersistenceContext
+    private EntityManager entityManager;
 
-            while (rs.next()) {
-                AccountModel accountModel = new AccountModel();
-                accountModel.setUserId(rs.getInt("user_id"));
-                accountModel.setAccountName(rs.getString("account_name"));
-                accountModel.setBalance(rs.getInt("balance"));
-                accountModel.setId(rs.getInt("id"));
-                accountModels.add(accountModel);
-            }
-        } catch (SQLException e) {
-            throw new CustomException(e);
+    public List<Account> getAllByUserId(int userId) {
+        try {
+            return entityManager.createNamedQuery("Account.getAllByUserId", Account.class)
+                    .setParameter("user_id", userId)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return emptyList();
         }
-        return accountModels;
     }
 
-    public AccountModel insert(String accountName, int userId) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO accounts (account_name, user_id, balance) VALUES (?,?,0)", Statement.RETURN_GENERATED_KEYS);
-
-            ps.setString(1, accountName);
-            ps.setInt(2, userId);
-
-            ps.executeUpdate();
-            ResultSet generatedKeys = ps.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                AccountModel accountModel = new AccountModel();
-                accountModel.setId(generatedKeys.getInt(1));
-                accountModel.setAccountName(accountName);
-                accountModel.setBalance(0);
-                accountModel.setUserId(userId);
-
-                return accountModel;
-            } else {
-                throw new CustomException("Can't generate!");
+    public Account insert(String accountName, int userId) {
+        try {
+            User user = entityManager.find(User.class, userId);
+            if (user != null) {
+                Account account = new Account();
+                account.setName(accountName);
+                account.setBalance(0);
+                account.setUser(user);
+                entityManager.persist(account);
+                return account;
             }
-        } catch (SQLException e) {
-            throw new CustomException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return null;
     }
 
     public boolean delete(int accountId, int userId) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM accounts WHERE id = ? AND user_id = ?");
-            ps.setInt(1, accountId);
-            ps.setInt(2, userId);
-
-            return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            throw new CustomException(e);
+        try {
+            Account account = entityManager.find(Account.class, accountId);
+            if (account != null && account.getUser().getId() == userId) {
+                entityManager.remove(account);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return false;
     }
 
     public boolean edit(int accountId, String newName, int userId) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("UPDATE accounts SET account_name = ? WHERE id = ? AND user_id = ?");
-            ps.setString(1, newName);
-            ps.setInt(2, accountId);
-            ps.setInt(3, userId);
-
-            return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            throw new CustomException(e);
+        try {
+            Account account = entityManager.find(Account.class, accountId);
+            if (account != null && account.getUser().getId() == userId) {
+                account.setName(newName);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return false;
     }
 }

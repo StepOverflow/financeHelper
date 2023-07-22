@@ -105,12 +105,12 @@ public class Main {
                                     break;
                                 case 7:
                                     int days = requestInt("Report for how many days?");
-                                    Map<String, Integer> resultIncomeInPeriodByCategory = categoryService.getResultIncomeInPeriodByCategory(userDto.getId(), days);
+                                    Map<String, Long> resultIncomeInPeriodByCategory = categoryService.getResultIncomeInPeriodByCategory(userDto.getId(), days);
                                     System.out.println("Result incomes: " + resultIncomeInPeriodByCategory);
                                     break;
                                 case 8:
                                     days = requestInt("Report for how many days?");
-                                    Map<String, Integer> resultExpenseInPeriodByCategory = categoryService.getResultExpenseInPeriodByCategory(userDto.getId(), days);
+                                    Map<String, Long> resultExpenseInPeriodByCategory = categoryService.getResultExpenseInPeriodByCategory(userDto.getId(), days);
                                     System.out.println("Result expenses: " + resultExpenseInPeriodByCategory);
                                     break;
                                 case 9:

@@ -5,15 +5,16 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import ru.shapovalov.converter.UserModelToUserDtoConverter;
+import ru.shapovalov.converter.UserToUserDtoConverter;
 import ru.shapovalov.dao.UserDao;
-import ru.shapovalov.dao.UserModel;
+import ru.shapovalov.entity.User;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserAuthServiceTest {
@@ -27,7 +28,7 @@ public class UserAuthServiceTest {
     DigestService digestService;
 
     @Mock
-    UserModelToUserDtoConverter userDtoConverter;
+    UserToUserDtoConverter userDtoConverter;
 
     @Test
     public void auth_userNotFound() {
@@ -56,17 +57,17 @@ public class UserAuthServiceTest {
 
         when(digestService.hex(password)).thenReturn(hashPassword);
 
-        UserModel userModel = new UserModel();
-        userModel.setId(1);
-        userModel.setEmail(email);
-        userModel.setPassword(hashPassword);
+        User user = new User();
+        user.setId(1);
+        user.setEmail(email);
+        user.setPassword(hashPassword);
 
-        when(userDao.findByEmailAndHash(email, hashPassword)).thenReturn(userModel);
+        when(userDao.findByEmailAndHash(email, hashPassword)).thenReturn(user);
 
         UserDto userDto = new UserDto();
         userDto.setId(1);
         userDto.setEmail(email);
-        when(userDtoConverter.convert(userModel)).thenReturn(userDto);
+        when(userDtoConverter.convert(user)).thenReturn(userDto);
 
         Optional<UserDto> userDtoOptional = subj.auth(email, password);
 
@@ -75,40 +76,40 @@ public class UserAuthServiceTest {
 
         verify(digestService, times(1)).hex(password);
         verify(userDao, times(1)).findByEmailAndHash(email, hashPassword);
-        verify(userDtoConverter, times(1)).convert(userModel);
+        verify(userDtoConverter, times(1)).convert(user);
     }
 
     @Test
     public void registration_success() {
         String email = "test@example.com";
         String password = "password1";
-        String hashedPassword = "hashedPassword1";
+        String hashPassword = "hashPassword1";
 
-        UserModel userModel = new UserModel();
-        userModel.setId(1);
-        userModel.setEmail(email);
-        userModel.setPassword(hashedPassword);
+        User user = new User();
+        user.setId(1);
+        user.setEmail(email);
+        user.setPassword(hashPassword);
 
         UserDto expectedUserDto = new UserDto();
-        expectedUserDto.setId(userModel.getId());
-        expectedUserDto.setEmail(userModel.getEmail());
+        expectedUserDto.setId(user.getId());
+        expectedUserDto.setEmail(user.getEmail());
 
         UserDao userDaoMock = mock(UserDao.class);
         DigestService digestServiceMock = mock(DigestService.class);
-        UserModelToUserDtoConverter userDtoConverterMock = mock(UserModelToUserDtoConverter.class);
+        UserToUserDtoConverter userDtoConverterMock = mock(UserToUserDtoConverter.class);
 
         UserAuthService userAuthService = new UserAuthService(userDaoMock, digestServiceMock, userDtoConverterMock);
 
-        when(digestServiceMock.hex(password)).thenReturn(hashedPassword);
-        when(userDaoMock.insert(email, hashedPassword)).thenReturn(userModel);
-        when(userDtoConverterMock.convert(userModel)).thenReturn(expectedUserDto);
+        when(digestServiceMock.hex(password)).thenReturn(hashPassword);
+        when(userDaoMock.insert(email, hashPassword)).thenReturn(user);
+        when(userDtoConverterMock.convert(user)).thenReturn(expectedUserDto);
 
         UserDto actualUserDto = userAuthService.registration(email, password);
 
         assertEquals(expectedUserDto, actualUserDto);
 
         verify(digestServiceMock, times(1)).hex(password);
-        verify(userDaoMock, times(1)).insert(email, hashedPassword);
-        verify(userDtoConverterMock, times(1)).convert(userModel);
+        verify(userDaoMock, times(1)).insert(email, hashPassword);
+        verify(userDtoConverterMock, times(1)).convert(user);
     }
 }

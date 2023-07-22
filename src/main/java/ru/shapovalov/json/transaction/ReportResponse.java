@@ -8,5 +8,5 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class ReportResponse {
-    private Map<String, Integer> report;
+    private Map<String, Long> report;
 }
