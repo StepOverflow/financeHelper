@@ -1,10 +1,10 @@
 package ru.shapovalov.controller.category;
 
+import ru.shapovalov.json.category.AddCategoryRequest;
+import ru.shapovalov.json.category.AddCategoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import ru.shapovalov.controller.SecureController;
-import ru.shapovalov.json.category.AddCategoryRequest;
-import ru.shapovalov.json.category.AddCategoryResponse;
 import ru.shapovalov.service.CategoryService;
 
 import java.util.Optional;

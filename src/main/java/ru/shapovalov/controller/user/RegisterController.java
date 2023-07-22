@@ -1,10 +1,10 @@
 package ru.shapovalov.controller.user;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.shapovalov.controller.Controller;
 import ru.shapovalov.json.user.RegisterRequest;
 import ru.shapovalov.json.user.RegisterResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.shapovalov.service.UserAuthService;
 
 import java.util.Optional;

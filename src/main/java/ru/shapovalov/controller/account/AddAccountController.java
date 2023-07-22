@@ -1,10 +1,10 @@
 package ru.shapovalov.controller.account;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import ru.shapovalov.controller.SecureController;
 import ru.shapovalov.json.account.AddAccountRequest;
 import ru.shapovalov.json.account.AddAccountResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import ru.shapovalov.service.AccountService;
 
 import java.util.Optional;

@@ -1,10 +1,10 @@
 package ru.shapovalov.service;
 
+import ru.shapovalov.entity.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.CategoryModelToCategoryDtoConverter;
 import ru.shapovalov.dao.CategoryDao;
-import ru.shapovalov.entity.Category;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

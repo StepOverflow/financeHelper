@@ -1,10 +1,10 @@
 package ru.shapovalov.service;
 
+import ru.shapovalov.converter.Converter;
+import ru.shapovalov.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.shapovalov.converter.Converter;
 import ru.shapovalov.dao.UserDao;
-import ru.shapovalov.entity.User;
 
 import java.util.Optional;
 

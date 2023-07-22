@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-
 import static ru.shapovalov.SpringContext.getContext;
 
 public class ListCategoryServlet extends BaseServlet {

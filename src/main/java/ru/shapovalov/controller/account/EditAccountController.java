@@ -1,10 +1,10 @@
 package ru.shapovalov.controller.account;
 
+import ru.shapovalov.json.account.EditAccountRequest;
+import ru.shapovalov.json.account.EditAccountResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import ru.shapovalov.controller.SecureController;
-import ru.shapovalov.json.account.EditAccountRequest;
-import ru.shapovalov.json.account.EditAccountResponse;
 import ru.shapovalov.service.AccountService;
 
 @Controller("/accounts/edit")

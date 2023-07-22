@@ -1,10 +1,10 @@
 package ru.shapovalov.service;
 
+import ru.shapovalov.entity.Transaction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.TransactionModelToTransactionDtoConverter;
 import ru.shapovalov.dao.TransactionDao;
-import ru.shapovalov.entity.Transaction;
 
 import java.util.List;
 

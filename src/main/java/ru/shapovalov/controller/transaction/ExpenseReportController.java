@@ -1,10 +1,10 @@
 package ru.shapovalov.controller.transaction;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import ru.shapovalov.controller.SecureController;
 import ru.shapovalov.json.transaction.ReportRequest;
 import ru.shapovalov.json.transaction.ReportResponse;
+import ru.shapovalov.controller.SecureController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import ru.shapovalov.service.CategoryService;
 
 @Controller("/report/expense")

@@ -1,10 +1,10 @@
 package ru.shapovalov.dao;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.shapovalov.entity.Category;
 import ru.shapovalov.entity.User;
 import ru.shapovalov.exception.CustomException;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

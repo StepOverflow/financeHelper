@@ -1,10 +1,10 @@
 package ru.shapovalov.service;
 
+import ru.shapovalov.converter.AccountToAccountDtoConverter;
+import ru.shapovalov.entity.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.shapovalov.converter.AccountToAccountDtoConverter;
 import ru.shapovalov.dao.AccountDao;
-import ru.shapovalov.entity.Account;
 
 import java.util.List;
 

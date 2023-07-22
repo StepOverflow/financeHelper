@@ -1,7 +1,7 @@
 package ru.shapovalov.converter;
 
-import org.springframework.stereotype.Service;
 import ru.shapovalov.entity.User;
+import org.springframework.stereotype.Service;
 import ru.shapovalov.service.UserDto;
 
 @Service

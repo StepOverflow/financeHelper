@@ -1,11 +1,11 @@
 package ru.shapovalov.dao;
 
+import ru.shapovalov.entity.User;
+import ru.shapovalov.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.JpaConfiguration;
-import ru.shapovalov.entity.User;
-import ru.shapovalov.exception.CustomException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;

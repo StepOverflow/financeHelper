@@ -1,10 +1,10 @@
 package ru.shapovalov.controller.transaction;
 
+import ru.shapovalov.json.transaction.TransferRequest;
+import ru.shapovalov.json.transaction.TransferResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import ru.shapovalov.controller.SecureController;
-import ru.shapovalov.json.transaction.TransferRequest;
-import ru.shapovalov.json.transaction.TransferResponse;
 import ru.shapovalov.service.TransactionService;
 
 import java.util.Optional;
