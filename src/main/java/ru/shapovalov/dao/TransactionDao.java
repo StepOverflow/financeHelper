@@ -17,6 +17,7 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class TransactionDao {
+
     @PersistenceContext
     private EntityManager entityManager;
 

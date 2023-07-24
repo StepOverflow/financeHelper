@@ -1,48 +1,41 @@
 package ru.shapovalov.dao;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.shapovalov.entity.User;
 import ru.shapovalov.exception.CustomException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Service;
-import ru.shapovalov.JpaConfiguration;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
-import javax.sql.DataSource;
+import javax.persistence.PersistenceContext;
 
 @Service
 @RequiredArgsConstructor
 public class UserDao {
-    private final DataSource dataSource;
 
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(JpaConfiguration.class);
-    EntityManager em = context.getBean(EntityManager.class);
+    @PersistenceContext
+    private final EntityManager em;
 
     public User findByEmailAndHash(String email, String hash) {
-        User user = null;
         try {
-            user = em.createNamedQuery("Users.getByEmailAndPassword", User.class)
+            return em.createNamedQuery("Users.getByEmailAndPassword", User.class)
                     .setParameter("email", email)
                     .setParameter("password", hash)
                     .getSingleResult();
-            return user;
         } catch (NoResultException e) {
-            return user;
+            return null;
         } catch (Exception e) {
             throw new CustomException(e);
         }
     }
 
+    @Transactional
     public User insert(String email, String hash) {
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
         User user = new User();
         user.setEmail(email);
         user.setPassword(hash);
         em.persist(user);
-        transaction.commit();
         return user;
     }
 

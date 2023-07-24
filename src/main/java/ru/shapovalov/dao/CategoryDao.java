@@ -1,14 +1,14 @@
 package ru.shapovalov.dao;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.shapovalov.entity.Category;
 import ru.shapovalov.entity.User;
 import ru.shapovalov.exception.CustomException;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +17,7 @@ import java.util.Map;
 @Repository
 @Transactional
 public class CategoryDao {
+
     @PersistenceContext
     private final EntityManager entityManager;
 
@@ -68,20 +69,16 @@ public class CategoryDao {
     }
 
     public Map<String, Long> getResultIncomeInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
-        TypedQuery<Object[]> query = entityManager.createQuery(
-                "SELECT c.name, SUM(t.amountPaid) " +
+        Query query = entityManager.createQuery("SELECT c.name, SUM(t.amountPaid) " +
                         "FROM Transaction t " +
                         "JOIN t.toAccount a " +
                         "JOIN t.categories c " +
                         "WHERE t.createdDate BETWEEN :startDate AND :endDate " +
                         "AND a.user.id = :userId " +
-                        "GROUP BY c.name",
-                Object[].class
-        );
-        query.setParameter("startDate", startDate);
-        query.setParameter("endDate", endDate);
-        query.setParameter("userId", userId);
-
+                        "GROUP BY c.name")
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
+                .setParameter("userId", userId);
         List<Object[]> results = query.getResultList();
         Map<String, Long> resultMap = new HashMap<>();
         for (Object[] result : results) {
@@ -92,21 +89,17 @@ public class CategoryDao {
         return resultMap;
     }
 
-    public Map<String, Long> getResultExpenseInPeriodByCategory(int userId, Timestamp startDate, Timestamp
-            endDate) {
-        TypedQuery<Object[]> query = entityManager.createQuery(
-                "SELECT c.name, SUM(t.amountPaid) " +
+    public Map<String, Long> getResultExpenseInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
+        Query query = entityManager.createQuery("SELECT c.name, SUM(t.amountPaid) " +
                         "FROM Transaction t " +
                         "JOIN t.fromAccount a " +
                         "JOIN t.categories c " +
                         "WHERE t.createdDate BETWEEN :startDate AND :endDate " +
                         "AND a.user.id = :userId " +
-                        "GROUP BY c.name",
-                Object[].class
-        );
-        query.setParameter("startDate", startDate);
-        query.setParameter("endDate", endDate);
-        query.setParameter("userId", userId);
+                        "GROUP BY c.name")
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
+                .setParameter("userId", userId);
 
         List<Object[]> results = query.getResultList();
         Map<String, Long> resultMap = new HashMap<>();

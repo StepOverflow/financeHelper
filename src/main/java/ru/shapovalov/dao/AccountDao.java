@@ -1,15 +1,14 @@
 package ru.shapovalov.dao;
 
-import ru.shapovalov.entity.Account;
-import ru.shapovalov.entity.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.shapovalov.entity.Account;
+import ru.shapovalov.entity.User;
+import ru.shapovalov.exception.CustomException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-
-import static java.util.Collections.*;
 
 @Repository
 @Transactional
@@ -24,8 +23,7 @@ public class AccountDao {
                     .setParameter("user_id", userId)
                     .getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            return emptyList();
+            throw new CustomException(e);
         }
     }
 
@@ -41,7 +39,7 @@ public class AccountDao {
                 return account;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new CustomException(e);
         }
 
         return null;
@@ -55,7 +53,7 @@ public class AccountDao {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new CustomException(e);
         }
 
         return false;
@@ -66,10 +64,11 @@ public class AccountDao {
             Account account = entityManager.find(Account.class, accountId);
             if (account != null && account.getUser().getId() == userId) {
                 account.setName(newName);
+                entityManager.persist(account);
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new CustomException(e);
         }
 
         return false;
