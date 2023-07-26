@@ -1,14 +1,15 @@
 package ru.shapovalov.dao;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import ru.shapovalov.entity.Account;
 import ru.shapovalov.entity.Category;
 import ru.shapovalov.entity.Transaction;
 import ru.shapovalov.exception.CustomException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -17,9 +18,10 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class TransactionDao {
+    private final DataSource dataSource;
 
     @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Transactional
     public Transaction moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId, List<Integer> categoryIds) {

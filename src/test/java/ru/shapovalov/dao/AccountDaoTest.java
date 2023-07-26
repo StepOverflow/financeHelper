@@ -26,7 +26,7 @@ public class AccountDaoTest {
 
     @Test
     public void testInsert() {
-        Account account = accountDaoSubj.insert("test_account", 1);
+       Account account = accountDaoSubj.insert("test_account", 1);
 
         assertEquals("test_account", account.getName());
         assertEquals(0, account.getBalance());

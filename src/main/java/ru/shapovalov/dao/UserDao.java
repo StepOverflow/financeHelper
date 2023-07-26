@@ -9,10 +9,12 @@ import ru.shapovalov.exception.CustomException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
 
 @Service
 @RequiredArgsConstructor
 public class UserDao {
+    private final DataSource dataSource;
 
     @PersistenceContext
     private final EntityManager em;

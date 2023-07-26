@@ -1,5 +1,6 @@
 package ru.shapovalov.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.shapovalov.entity.Category;
@@ -9,6 +10,7 @@ import ru.shapovalov.exception.CustomException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -16,14 +18,12 @@ import java.util.Map;
 
 @Repository
 @Transactional
+@RequiredArgsConstructor
 public class CategoryDao {
+    private final DataSource dataSource;
 
     @PersistenceContext
     private final EntityManager entityManager;
-
-    public CategoryDao(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
 
     public Category insert(String categoryName, int userId) {
         User user = entityManager.find(User.class, userId);

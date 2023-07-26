@@ -3,21 +3,18 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <include file="liquibase.xml"/>
+    <include file="liquibaseTest.xml"/>
 
     <changeSet author="stepan" id="insert_users">
         <insert tableName="users">
-            <column name="id" valueNumeric="1" />
             <column name="password" value="password1" />
             <column name="email" value="user1@example.com" />
         </insert>
         <insert tableName="users">
-            <column name="id" valueNumeric="2" />
             <column name="password" value="password2" />
             <column name="email" value="user2@example.com" />
         </insert>
         <insert tableName="users">
-            <column name="id" valueNumeric="3" />
             <column name="password" value="password2" />
             <column name="email" value="user3@example.com" />
         </insert>

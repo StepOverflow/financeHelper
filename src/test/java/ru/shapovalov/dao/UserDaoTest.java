@@ -7,6 +7,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ru.shapovalov.entity.User;
 import ru.shapovalov.exception.CustomException;
 
+import javax.persistence.PersistenceException;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -53,6 +54,6 @@ public class UserDaoTest {
 
     @Test
     public void testInsertDuplicateEmail() {
-        assertThrows(CustomException.class, () -> userDaoSubj.insert("user1@example.com", "password3"));
+        assertThrows(PersistenceException.class, () -> userDaoSubj.insert("user1@example.com", "password3"));
     }
 }

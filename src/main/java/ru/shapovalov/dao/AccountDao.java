@@ -1,5 +1,6 @@
 package ru.shapovalov.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.shapovalov.entity.Account;
@@ -8,11 +9,14 @@ import ru.shapovalov.exception.CustomException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
 @Transactional
+@RequiredArgsConstructor
 public class AccountDao {
+    private final DataSource dataSource;
 
     @PersistenceContext
     private EntityManager entityManager;
