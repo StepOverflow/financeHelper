@@ -74,7 +74,6 @@ public class AccountDao {
         } catch (Exception e) {
             throw new CustomException(e);
         }
-
         return false;
     }
 }
