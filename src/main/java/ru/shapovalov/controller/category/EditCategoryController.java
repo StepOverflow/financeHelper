@@ -1,10 +1,10 @@
 package ru.shapovalov.controller.category;
 
+import ru.shapovalov.json.category.EditCategoryRequest;
+import ru.shapovalov.json.category.EditCategoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import ru.shapovalov.controller.SecureController;
-import ru.shapovalov.json.category.EditCategoryRequest;
-import ru.shapovalov.json.category.EditCategoryResponse;
 import ru.shapovalov.service.CategoryService;
 
 @Controller("/categories/edit")

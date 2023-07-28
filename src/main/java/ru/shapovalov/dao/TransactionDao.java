@@ -1,155 +1,76 @@
 package ru.shapovalov.dao;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+import ru.shapovalov.entity.Account;
+import ru.shapovalov.entity.Category;
+import ru.shapovalov.entity.Transaction;
 import ru.shapovalov.exception.CustomException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
-import java.sql.*;
-import java.util.Arrays;
+import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Repository
 @RequiredArgsConstructor
 public class TransactionDao {
     private final DataSource dataSource;
 
-    public TransactionModel moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId, List<Integer> categoryIds) {
-        Connection connection = null;
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transactional
+    public Transaction moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId, List<Integer> categoryIds) {
         try {
-            connection = dataSource.getConnection();
-            connection.setAutoCommit(false);
-            int accountBalance = getAccountBalance(connection, fromAccount);
-            if (fromAccount != null && accountBalance < amountPaid) {
-                throw new CustomException("Insufficient funds on the account");
-            }
-            TransactionModel transactionModel = createTransaction(connection, fromAccount, toAccount, amountPaid);
-
-            boolean balanceUpdated = updateAccountBalances(connection, fromAccount, toAccount, amountPaid);
-            if (!balanceUpdated) {
-                connection.rollback();
-                throw new CustomException("Balance cannot be updated");
-            }
-            boolean categoriesUpdated = setCategoriesOfTransactions(connection, transactionModel.getId(), categoryIds);
-            if (!categoriesUpdated) {
-                connection.rollback();
-                throw new CustomException("Categories cannot be set");
-            }
-            connection.commit();
-
-            return transactionModel;
-        } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
+            Account from = null;
+            Account to = null;
+            if (fromAccount != null) {
+                from = entityManager.find(Account.class, fromAccount);
+                if (from.getUser().getId() != userId) {
+                    throw new CustomException("You don't have permission to perform this operation on this account.");
                 }
-            }
-            throw new CustomException(e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.setAutoCommit(true);
-                    connection.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                if (from.getBalance() < amountPaid) {
+                    throw new CustomException("Insufficient funds on the account");
                 }
+
             }
-        }
-    }
-
-    private TransactionModel createTransaction(Connection connection, Integer fromAccount, Integer toAccount, int amountPaid) {
-        try {
-            PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO transactions (from_account_id, to_account_id, amount_paid, created_date) " +
-                            "VALUES (?, ?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS);
-            if (fromAccount == null) {
-                ps.setNull(1, java.sql.Types.INTEGER);
-            } else {
-                ps.setInt(1, fromAccount);
+            if (toAccount != null) {
+                to = entityManager.find(Account.class, toAccount);
             }
-            if (toAccount == null) {
-                ps.setNull(2, java.sql.Types.INTEGER);
-            } else {
-                ps.setInt(2, toAccount);
-            }
-            ps.setInt(3, amountPaid);
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            ps.setTimestamp(4, timestamp);
-            ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                int transactionId = rs.getInt(1);
-                TransactionModel transactionModel = new TransactionModel();
-                transactionModel.setId(transactionId);
-                transactionModel.setSender(fromAccount);
-                transactionModel.setRecipient(toAccount);
-                transactionModel.setSum(amountPaid);
-                transactionModel.setCreatedDate(timestamp);
-                return transactionModel;
-            } else {
-                throw new SQLException("Creating transaction failed, no ID obtained.");
-            }
-        } catch (SQLException e) {
-            throw new CustomException(e);
-        }
-    }
+            Transaction transaction = new Transaction();
+            transaction.setFromAccount(from);
+            transaction.setToAccount(to);
+            transaction.setAmountPaid(amountPaid);
+            transaction.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+            entityManager.persist(transaction);
 
-    private boolean updateAccountBalances(Connection connection, Integer fromAccountId, Integer toAccountId, int amountPaid) {
-        boolean success = true;
-        if (fromAccountId != null) {
-            success = updateAccountBalance(connection, fromAccountId, -amountPaid);
-        }
-        if (toAccountId != null) {
-            success = updateAccountBalance(connection, toAccountId, amountPaid);
-        }
-        return success;
-    }
-
-    private boolean updateAccountBalance(Connection connection, Integer accountId, int amount) {
-        String sql = "UPDATE accounts SET balance = balance + ? WHERE id = ?";
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, amount);
-            ps.setInt(2, accountId);
-            int affectedRows = ps.executeUpdate();
-            return (affectedRows > 0);
-        } catch (SQLException e) {
-            throw new CustomException(e);
-        }
-    }
-
-    private int getAccountBalance(Connection connection, Integer accountId) throws SQLException {
-        String sql = "SELECT balance FROM accounts WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, accountId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("balance");
-                } else {
-                    throw new CustomException("Account not found");
+            if (categoryIds != null && !categoryIds.isEmpty()) {
+                List<Category> categories = new ArrayList<>();
+                for (Integer categoryId : categoryIds) {
+                    if (categoryId != null) {
+                        Category category = entityManager.find(Category.class, categoryId);
+                        if (category != null) {
+                            categories.add(category);
+                        }
+                    }
                 }
-            }
-        }
-    }
-
-    private boolean setCategoriesOfTransactions(Connection connection, int transactionId, List<Integer> categoryIds) {
-        String sql = "INSERT INTO transactions_categories (transaction_id, category_id) VALUES (?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            for (Integer categoryId : categoryIds) {
-                if (categoryId != null) {
-                    ps.setInt(1, transactionId);
-                    ps.setInt(2, categoryId);
-                    ps.addBatch();
-                }
+                transaction.setCategories(categories);
             }
 
-            int[] rowsAffected = ps.executeBatch();
-            return Arrays.stream(rowsAffected).allMatch(count -> count > 0);
-        } catch (SQLException e) {
+            if (from != null) {
+                from.setBalance(from.getBalance() - amountPaid);
+            }
+            if (to != null) {
+                to.setBalance(to.getBalance() + amountPaid);
+            }
+
+            return transaction;
+        } catch (Exception e) {
             throw new CustomException(e);
         }
     }

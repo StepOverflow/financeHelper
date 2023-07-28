@@ -1,12 +1,11 @@
 package ru.shapovalov.controller.user;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.shapovalov.controller.Controller;
 import ru.shapovalov.json.user.RegisterRequest;
 import ru.shapovalov.json.user.RegisterResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.shapovalov.service.UserAuthService;
-import ru.shapovalov.service.UserDto;
 
 import java.util.Optional;
 
@@ -17,8 +16,7 @@ public class RegisterController implements Controller<RegisterRequest, RegisterR
 
     @Override
     public RegisterResponse handle(RegisterRequest request) {
-        Optional<UserDto> registeredUserOptional = Optional.ofNullable(userAuthService.registration(request.getEmail(), request.getPassword()));
-        return registeredUserOptional.map(registeredUser -> new RegisterResponse(registeredUser.getId(), registeredUser.getEmail())).orElse(null);
+        return Optional.ofNullable(userAuthService.registration(request.getEmail(), request.getPassword())).map(registeredUser -> new RegisterResponse(registeredUser.getId(), registeredUser.getEmail())).orElse(null);
     }
 
     @Override

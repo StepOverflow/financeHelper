@@ -5,7 +5,7 @@
 
     <changeSet id="create_table_users" author="stepan">
         <createTable tableName="users">
-            <column name="id" type="SERIAL">
+            <column name="id" type="SERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="password" type="VARCHAR(100)">
@@ -19,7 +19,7 @@
 
     <changeSet id="create_table_accounts" author="stepan">
         <createTable tableName="accounts">
-            <column name="id" type="SERIAL">
+            <column name="id" type="SERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="user_id" type="INTEGER">
@@ -43,7 +43,7 @@
 
     <changeSet id="create_table_transactions" author="stepan">
         <createTable tableName="transactions">
-            <column name="id" type="SERIAL">
+            <column name="id" type="SERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="from_account_id" type="INTEGER">
@@ -63,7 +63,7 @@
 
     <changeSet id="create_table_categories" author="stepan">
         <createTable tableName="categories">
-            <column name="id" type="SERIAL">
+            <column name="id" type="SERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(50)">

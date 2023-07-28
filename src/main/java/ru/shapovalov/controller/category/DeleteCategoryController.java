@@ -1,10 +1,10 @@
 package ru.shapovalov.controller.category;
 
+import ru.shapovalov.json.category.DeleteCategoryRequest;
+import ru.shapovalov.json.category.DeleteCategoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import ru.shapovalov.controller.SecureController;
-import ru.shapovalov.json.category.DeleteCategoryRequest;
-import ru.shapovalov.json.category.DeleteCategoryResponse;
 import ru.shapovalov.service.CategoryService;
 
 @Controller("/categories/delete")

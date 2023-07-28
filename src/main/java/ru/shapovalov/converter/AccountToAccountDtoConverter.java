@@ -1,18 +1,18 @@
 package ru.shapovalov.converter;
 
+import ru.shapovalov.entity.Account;
 import org.springframework.stereotype.Service;
-import ru.shapovalov.dao.AccountModel;
 import ru.shapovalov.service.AccountDto;
 
 @Service
-public class AccountModelToAccountDtoConverter implements Converter<AccountModel, AccountDto> {
+public class AccountToAccountDtoConverter implements Converter<Account, AccountDto> {
     @Override
-    public AccountDto convert(AccountModel source) {
+    public AccountDto convert(Account source) {
         AccountDto accountDto = new AccountDto();
-        accountDto.setAccountName(source.getAccountName());
+        accountDto.setAccountName(source.getName());
         accountDto.setId(source.getId());
         accountDto.setBalance(source.getBalance());
-        accountDto.setUserId(source.getUserId());
+        accountDto.setUserId(source.getUser().getId());
         return accountDto;
     }
 }

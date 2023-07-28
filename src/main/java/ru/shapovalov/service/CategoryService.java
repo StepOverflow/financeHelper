@@ -1,10 +1,10 @@
 package ru.shapovalov.service;
 
+import ru.shapovalov.entity.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shapovalov.converter.CategoryModelToCategoryDtoConverter;
 import ru.shapovalov.dao.CategoryDao;
-import ru.shapovalov.dao.CategoryModel;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -21,8 +21,8 @@ public class CategoryService {
     private final CategoryModelToCategoryDtoConverter categoryDtoConverter;
 
     public CategoryDto create(String categoryName, int userId) {
-        CategoryModel categoryModel = categoryDao.insert(categoryName, userId);
-        return categoryDtoConverter.convert(categoryModel);
+        Category category = categoryDao.insert(categoryName, userId);
+        return categoryDtoConverter.convert(category);
     }
 
     public boolean delete(int id, int userId) {
@@ -30,11 +30,11 @@ public class CategoryService {
     }
 
     public CategoryDto edit(int id, String newCategoryName, int userId) {
-        CategoryModel categoryModel = categoryDao.edit(id, newCategoryName, userId);
-        return categoryDtoConverter.convert(categoryModel);
+        Category category = categoryDao.edit(id, newCategoryName, userId);
+        return categoryDtoConverter.convert(category);
     }
 
-    public Map<String, Integer> getResultIncomeInPeriodByCategory(int userId, int days) {
+    public Map<String, Long> getResultIncomeInPeriodByCategory(int userId, int days) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime yesterday = now.minusDays(days);
 
@@ -44,7 +44,7 @@ public class CategoryService {
         return categoryDao.getResultIncomeInPeriodByCategory(userId, startDate, endDate);
     }
 
-    public Map<String, Integer> getResultExpenseInPeriodByCategory(int userId, int days) {
+    public Map<String, Long> getResultExpenseInPeriodByCategory(int userId, int days) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime yesterday = now.minusDays(days);
 

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.shapovalov.entity.Account;
 
 import java.util.UUID;
 
@@ -25,12 +26,12 @@ public class AccountDaoTest {
 
     @Test
     public void testInsert() {
-        AccountModel accountModel = accountDaoSubj.insert("test_account", 1);
+       Account account = accountDaoSubj.insert("test_account", 1);
 
-        assertEquals("test_account", accountModel.getAccountName());
-        assertEquals(0, accountModel.getBalance());
-        assertTrue(accountModel.getId() > 0);
-        assertEquals(1, accountModel.getUserId());
+        assertEquals("test_account", account.getName());
+        assertEquals(0, account.getBalance());
+        assertTrue(account.getId() > 0);
+        assertEquals(1, account.getUser().getId());
     }
 
     @Test

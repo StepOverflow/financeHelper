@@ -1,5 +1,6 @@
 package ru.shapovalov.web;
 
+import ru.shapovalov.SpringContext;
 import ru.shapovalov.service.CategoryDto;
 import ru.shapovalov.service.CategoryService;
 
@@ -11,13 +12,12 @@ import java.io.PrintWriter;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
-import static ru.shapovalov.SpringContext.getContext;
 
 public class EditCategoryServlet extends BaseServlet {
     private final CategoryService categoryService;
 
     public EditCategoryServlet() {
-        this.categoryService = getContext().getBean(CategoryService.class);
+        this.categoryService = SpringContext.getContext().getBean(CategoryService.class);
     }
 
     @Override

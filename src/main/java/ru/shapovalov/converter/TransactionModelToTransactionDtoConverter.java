@@ -1,18 +1,18 @@
 package ru.shapovalov.converter;
 
+import ru.shapovalov.entity.Transaction;
 import org.springframework.stereotype.Service;
-import ru.shapovalov.dao.TransactionModel;
 import ru.shapovalov.service.TransactionDto;
 
 @Service
-public class TransactionModelToTransactionDtoConverter implements Converter<TransactionModel, TransactionDto> {
+public class TransactionModelToTransactionDtoConverter implements Converter<Transaction, TransactionDto> {
     @Override
-    public TransactionDto convert(TransactionModel source) {
+    public TransactionDto convert(Transaction source) {
         TransactionDto transactionDto = new TransactionDto();
         transactionDto.setId(source.getId());
-        transactionDto.setSender(source.getSender());
-        transactionDto.setRecipient(source.getRecipient());
-        transactionDto.setSum(source.getSum());
+        transactionDto.setSender(source.getFromAccount().getId());
+        transactionDto.setRecipient(source.getToAccount().getId());
+        transactionDto.setSum(source.getAmountPaid());
         transactionDto.setCreatedDate(source.getCreatedDate());
         return transactionDto;
     }

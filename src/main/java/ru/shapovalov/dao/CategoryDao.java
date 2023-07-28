@@ -1,81 +1,73 @@
 package ru.shapovalov.dao;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import ru.shapovalov.entity.Category;
+import ru.shapovalov.entity.User;
 import ru.shapovalov.exception.CustomException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Repository
+@Transactional
 @RequiredArgsConstructor
 public class CategoryDao {
     private final DataSource dataSource;
 
-    public CategoryModel insert(String categoryName, int userId) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("insert into categories (name, user_id) values (?,?)", Statement.RETURN_GENERATED_KEYS);
+    @PersistenceContext
+    private final EntityManager entityManager;
 
-            ps.setString(1, categoryName);
-            ps.setInt(2, userId);
-
-            ps.executeUpdate();
-            ResultSet generatedKeys = ps.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                CategoryModel categoryModel = new CategoryModel();
-                categoryModel.setId(generatedKeys.getInt(1));
-                categoryModel.setName(categoryName);
-                categoryModel.setUserId(userId);
-
-                return categoryModel;
-            } else {
-                throw new CustomException("Can`t generate !");
-            }
-        } catch (SQLException e) {
-            throw new CustomException(e);
+    public Category insert(String categoryName, int userId) {
+        User user = entityManager.find(User.class, userId);
+        if (user == null) {
+            throw new CustomException("User not found");
         }
+
+        Category category = new Category();
+        category.setName(categoryName);
+        category.setUser(user);
+        entityManager.persist(category);
+
+        return category;
     }
 
     public boolean delete(int id, int userId) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM categories WHERE id = ? and user_id = ?");
-            ps.setInt(1, id);
-            ps.setInt(2, userId);
-
-            return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            throw new CustomException(e);
+        Category category = entityManager.find(Category.class, id);
+        if (category != null && category.getUser().getId() == userId) {
+            entityManager.remove(category);
+            return true;
         }
+
+        return false;
     }
 
-    public CategoryModel edit(int id, String newCategoryName, int userId) {
-        CategoryModel categoryModel = new CategoryModel();
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("update categories set name = ? where id = ? and user_id = ?", Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, newCategoryName);
-            ps.setInt(2, id);
-            ps.setInt(3, userId);
-
-            int rowsAffected = ps.executeUpdate();
-            if (rowsAffected > 0) {
-                categoryModel.setName(newCategoryName);
-                categoryModel.setUserId(userId);
-                ResultSet rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    categoryModel.setId(rs.getInt(1));
-                }
+    public Category edit(int id, String newCategoryName, int userId) {
+        try {
+            Category category = entityManager.find(Category.class, id);
+            if (category != null && category.getUser().getId() == userId) {
+                category.setName(newCategoryName);
+                return category;
             }
-        } catch (SQLException e) {
+            return null;
+        } catch (Exception e) {
             throw new CustomException(e);
         }
-        return categoryModel;
     }
 
-    public Map<String, Integer> getResultIncomeInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
+    public List<Category> getAllByUserId(int userId) {
+        return entityManager.createNamedQuery("Category.getAllByUserId", Category.class)
+                .setParameter("user_id", userId)
+                .getResultList();
+    }
+
+    public Map<String, Long> getResultIncomeInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
                     "SELECT c.name, SUM(t.amount_paid) " +
@@ -91,10 +83,10 @@ public class CategoryDao {
             ps.setTimestamp(2, endDate);
             ps.setInt(3, userId);
             ResultSet rs = ps.executeQuery();
-            Map<String, Integer> result = new HashMap<>();
+            Map<String, Long> result = new HashMap<>();
             while (rs.next()) {
                 String categoryName = rs.getString(1);
-                int amount = rs.getInt(2);
+                long amount = rs.getLong(2);
                 result.put(categoryName, amount);
             }
             return result;
@@ -103,7 +95,7 @@ public class CategoryDao {
         }
     }
 
-    public Map<String, Integer> getResultExpenseInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
+    public Map<String, Long> getResultExpenseInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
                     "SELECT c.name, SUM(t.amount_paid) " +
@@ -119,35 +111,11 @@ public class CategoryDao {
             ps.setTimestamp(2, endDate);
             ps.setInt(3, userId);
             ResultSet rs = ps.executeQuery();
-            Map<String, Integer> result = new HashMap<>();
+            Map<String, Long> result = new HashMap<>();
             while (rs.next()) {
                 String categoryName = rs.getString(1);
-                int amount = rs.getInt(2);
+                long amount = rs.getLong(2);
                 result.put(categoryName, amount);
-            }
-            return result;
-        } catch (SQLException e) {
-            throw new CustomException(e);
-        }
-    }
-
-    public List<CategoryModel> getAllByUserId(int userId) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(
-                    "SELECT * " +
-                            "FROM categories c " +
-                            "WHERE user_id = ? "
-            );
-
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-            List<CategoryModel> result = new ArrayList<>();
-            while (rs.next()) {
-                CategoryModel categoryModel = new CategoryModel();
-                categoryModel.setUserId(rs.getInt("user_id"));
-                categoryModel.setName(rs.getString("name"));
-                categoryModel.setId(rs.getInt("id"));
-                result.add(categoryModel);
             }
             return result;
         } catch (SQLException e) {

@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static ru.shapovalov.SpringContext.getContext;
-
 public class DeleteCategoryServlet extends BaseServlet {
     private final CategoryService categoryService;
 

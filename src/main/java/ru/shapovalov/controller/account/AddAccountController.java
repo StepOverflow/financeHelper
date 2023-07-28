@@ -1,11 +1,10 @@
 package ru.shapovalov.controller.account;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import ru.shapovalov.controller.SecureController;
 import ru.shapovalov.json.account.AddAccountRequest;
 import ru.shapovalov.json.account.AddAccountResponse;
-import ru.shapovalov.service.AccountDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import ru.shapovalov.service.AccountService;
 
 import java.util.Optional;
@@ -17,9 +16,7 @@ public class AddAccountController implements SecureController<AddAccountRequest,
 
     @Override
     public AddAccountResponse handle(AddAccountRequest request, Integer userId) {
-        Optional<AccountDto> accountDtoOptional = Optional.ofNullable(accountService.create(request.getName(), userId));
-
-        return accountDtoOptional.map(accountDto -> new AddAccountResponse(
+        return Optional.ofNullable(accountService.create(request.getName(), userId)).map(accountDto -> new AddAccountResponse(
                 accountDto.getId(),
                 accountDto.getAccountName(),
                 accountDto.getBalance()

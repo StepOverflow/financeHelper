@@ -1,10 +1,10 @@
 package ru.shapovalov.service;
 
+import ru.shapovalov.converter.Converter;
+import ru.shapovalov.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.shapovalov.converter.Converter;
 import ru.shapovalov.dao.UserDao;
-import ru.shapovalov.dao.UserModel;
 
 import java.util.Optional;
 
@@ -13,11 +13,11 @@ import java.util.Optional;
 public class UserAuthService {
     private final UserDao userDao;
     private final DigestService digestService;
-    private final Converter<UserModel, UserDto> userDtoConverter;
+    private final Converter<User, UserDto> userDtoConverter;
 
     public Optional<UserDto> auth(String email, String password) {
         String hash = digestService.hex(password);
-        UserModel source = userDao.findByEmailAndHash(email, hash);
+        User source = userDao.findByEmailAndHash(email, hash);
         return Optional.ofNullable(source)
                 .map(userDtoConverter::convert);
     }
@@ -25,8 +25,8 @@ public class UserAuthService {
     public UserDto registration(String email, String password) {
         String hash = digestService.hex(password);
 
-        UserModel userModel = userDao.insert(email, hash);
-        return userDtoConverter.convert(userModel);
+        User user = userDao.insert(email, hash);
+        return userDtoConverter.convert(user);
     }
 
     public UserDto getByUserId(int userId) {

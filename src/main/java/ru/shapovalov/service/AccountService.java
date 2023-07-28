@@ -1,10 +1,10 @@
 package ru.shapovalov.service;
 
+import ru.shapovalov.converter.AccountToAccountDtoConverter;
+import ru.shapovalov.entity.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.shapovalov.converter.AccountModelToAccountDtoConverter;
 import ru.shapovalov.dao.AccountDao;
-import ru.shapovalov.dao.AccountModel;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountDao accountDao;
-    private final AccountModelToAccountDtoConverter accountDtoConverter;
+    private final AccountToAccountDtoConverter accountDtoConverter;
 
     public List<AccountDto> getAll(int userId) {
         return accountDao.getAllByUserId(userId).stream()
@@ -23,8 +23,8 @@ public class AccountService {
     }
 
     public AccountDto create(String accountName, int userId) {
-        AccountModel accountModel = accountDao.insert(accountName, userId);
-        return accountDtoConverter.convert(accountModel);
+        Account account = accountDao.insert(accountName, userId);
+        return accountDtoConverter.convert(account);
     }
 
     public boolean edit(int accountId, String newName, int userId) {
