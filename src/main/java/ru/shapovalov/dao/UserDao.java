@@ -17,7 +17,7 @@ public class UserDao {
     private final DataSource dataSource;
 
     @PersistenceContext
-    private final EntityManager em;
+    private EntityManager em;
 
     public User findByEmailAndHash(String email, String hash) {
         try {

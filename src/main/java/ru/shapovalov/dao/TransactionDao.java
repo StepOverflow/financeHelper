@@ -21,7 +21,7 @@ public class TransactionDao {
     private final DataSource dataSource;
 
     @PersistenceContext
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Transactional
     public Transaction moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId, List<Integer> categoryIds) {
