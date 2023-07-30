@@ -64,7 +64,8 @@ public class TransactionDaoTest {
         Mockito.when(mockDataSource.getConnection()).thenReturn(mockConnection);
         Mockito.when(mockConnection.prepareStatement(Mockito.anyString())).thenThrow(new SQLException("Failed to establish connection"));
 
-        // assertThrows(CustomException.class, () -> transactionDao.moneyTransfer(1, 2, 100, 1, Arrays.asList(1, 2)));
+        TransactionDao transactionDao = new TransactionDao(mockDataSource);
+        assertThrows(CustomException.class, () -> transactionDao.moneyTransfer(1, 2, 100, 1, Arrays.asList(1, 2)));
     }
 
     @Test
@@ -82,8 +83,7 @@ public class TransactionDaoTest {
 
         Mockito.when(mockDataSource.getConnection()).thenReturn(mockConnection);
 
-        //  TransactionDao transactionDao = new TransactionDao();
-
-        // assertThrows(CustomException.class, () -> transactionDao.moneyTransfer(1, 2, 100, 1, Arrays.asList(1, 2)));
+        TransactionDao transactionDao = new TransactionDao(mockDataSource);
+        assertThrows(CustomException.class, () -> transactionDao.moneyTransfer(1, 2, 100, 1, Arrays.asList(1, 2)));
     }
 }
