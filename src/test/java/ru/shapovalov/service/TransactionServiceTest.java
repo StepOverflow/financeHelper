@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TransactionServiceTest {
@@ -24,21 +24,21 @@ public class TransactionServiceTest {
     @Test
     public void moneyTransfer_ok() {
         Account sender = new Account();
-        sender.setId(1);
+        sender.setId(1L);
         Account recipient = new Account();
-        recipient.setId(2);
+        recipient.setId(2L);
         int sum = 100;
 
-        List<Integer> categoryIds = new ArrayList<>(Arrays.asList(1, 2));
+        List<Long> categoryIds = new ArrayList<>(Arrays.asList(1L, 2L));
 
         Transaction expectedTransaction = new Transaction();
-        expectedTransaction.setId(1);
+        expectedTransaction.setId(1L);
         expectedTransaction.setFromAccount(sender);
         expectedTransaction.setToAccount(recipient);
         expectedTransaction.setAmountPaid(sum);
 
-        when(transactionDao.moneyTransfer(sender.getId(), recipient.getId(), sum, 1, categoryIds)).thenReturn(expectedTransaction);
-        Transaction actualTransaction = transactionDao.moneyTransfer(sender.getId(), recipient.getId(), sum, 1, categoryIds);
+        when(transactionDao.moneyTransfer(sender.getId(), recipient.getId(), sum, 1L, categoryIds)).thenReturn(expectedTransaction);
+        Transaction actualTransaction = transactionDao.moneyTransfer(sender.getId(), recipient.getId(), sum, 1L, categoryIds);
 
         assertEquals(expectedTransaction, actualTransaction);
     }
@@ -46,15 +46,15 @@ public class TransactionServiceTest {
     @Test
     public void sendMoney_InvalidUserId_ReturnsNull() {
         Account sender = new Account();
-        sender.setId(1);
+        sender.setId(1L);
         Account recipient = new Account();
-        recipient.setId(2);
+        recipient.setId(2L);
         int sum = 100;
-        int wrongUser = 4;
-        List<Integer> categoryIds = new ArrayList<>(Arrays.asList(1, 2));
+        long wrongUser = 4;
+        List<Long> categoryIds = new ArrayList<>(Arrays.asList(1L, 2L));
 
         Transaction expectedTransaction = new Transaction();
-        expectedTransaction.setId(1);
+        expectedTransaction.setId(1L);
         expectedTransaction.setFromAccount(sender);
         expectedTransaction.setToAccount(recipient);
         expectedTransaction.setAmountPaid(sum);

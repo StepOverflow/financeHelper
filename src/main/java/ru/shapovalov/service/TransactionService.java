@@ -1,10 +1,10 @@
 package ru.shapovalov.service;
 
-import ru.shapovalov.entity.Transaction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.shapovalov.converter.TransactionModelToTransactionDtoConverter;
+import ru.shapovalov.api.converter.TransactionModelToTransactionDtoConverter;
 import ru.shapovalov.dao.TransactionDao;
+import ru.shapovalov.entity.Transaction;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class TransactionService {
     private final TransactionDao transactionDao;
     private final TransactionModelToTransactionDtoConverter transactionDtoConverter;
 
-    public TransactionDto sendMoney(int sender, int recipient, int sum, int userId, List<Integer> categoryIds) {
+    public TransactionDto sendMoney(Long sender, Long recipient, int sum, Long userId, List<Long> categoryIds) {
         Transaction transaction;
         if (recipient == 0) {
             transaction = transactionDao.moneyTransfer(sender, null, sum, userId, categoryIds);

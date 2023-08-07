@@ -41,7 +41,7 @@ public class UserDao {
         return user;
     }
 
-    public User findByUserId(Integer userId) {
+    public User findByUserId(Long userId) {
         return em.createNamedQuery("Users.getById", User.class)
                 .setParameter("id", userId)
                 .getSingleResult();

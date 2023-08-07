@@ -1,10 +1,10 @@
 package ru.shapovalov.service;
 
-import ru.shapovalov.converter.Converter;
-import ru.shapovalov.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.shapovalov.api.converter.Converter;
 import ru.shapovalov.dao.UserDao;
+import ru.shapovalov.entity.User;
 
 import java.util.Optional;
 
@@ -29,7 +29,7 @@ public class UserAuthService {
         return userDtoConverter.convert(user);
     }
 
-    public UserDto getByUserId(int userId) {
+    public UserDto getByUserId(Long userId) {
         return userDtoConverter.convert(userDao.findByUserId(userId));
     }
 }

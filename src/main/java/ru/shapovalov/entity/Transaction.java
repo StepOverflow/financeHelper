@@ -14,7 +14,7 @@ import java.util.List;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "amount_paid")
     private int amountPaid;

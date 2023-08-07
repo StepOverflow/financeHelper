@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import ru.shapovalov.converter.AccountToAccountDtoConverter;
+import ru.shapovalov.api.converter.AccountToAccountDtoConverter;
 import ru.shapovalov.dao.AccountDao;
 import ru.shapovalov.entity.Account;
 import ru.shapovalov.entity.User;
@@ -15,8 +15,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.testng.AssertJUnit.assertEquals;
+
 @RunWith(MockitoJUnitRunner.class)
 public class AccountServiceTest {
     @InjectMocks
@@ -31,15 +32,15 @@ public class AccountServiceTest {
     @Test
     public void getAll_success() {
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
 
         Account accountModel1 = new Account();
-        accountModel1.setId(1);
+        accountModel1.setId(1L);
         accountModel1.setName("Account 1");
         accountModel1.setUser(user);
 
         Account accountModel2 = new Account();
-        accountModel2.setId(2);
+        accountModel2.setId(2L);
         accountModel2.setName("Account 2");
         accountModel2.setUser(user);
 
@@ -71,11 +72,11 @@ public class AccountServiceTest {
     @Test
     public void create_newAccountCreate() {
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         String accountName = "newAccount";
 
         Account accountModel1 = new Account();
-        accountModel1.setId(1);
+        accountModel1.setId(1L);
         accountModel1.setName(accountName);
         accountModel1.setUser(user);
 
@@ -97,8 +98,8 @@ public class AccountServiceTest {
 
     @Test
     public void delete_accountDelete() {
-        int accountId = 2;
-        int userId = 1;
+        long accountId = 2;
+        long userId = 1;
 
         when(accountDao.delete(accountId, userId)).thenReturn(true);
 
@@ -109,8 +110,8 @@ public class AccountServiceTest {
 
     @Test
     public void delete_accountNotDelete() {
-        int accountId = 2;
-        int userId = 1;
+        long accountId = 2;
+        long userId = 1;
 
         when(accountDao.delete(accountId, userId)).thenReturn(false);
 

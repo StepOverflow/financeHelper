@@ -5,13 +5,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import ru.shapovalov.converter.CategoryModelToCategoryDtoConverter;
+import ru.shapovalov.api.converter.CategoryModelToCategoryDtoConverter;
 import ru.shapovalov.dao.CategoryDao;
 import ru.shapovalov.entity.Category;
 import ru.shapovalov.entity.User;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.testng.AssertJUnit.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CategoryServiceTest {
@@ -28,7 +28,7 @@ public class CategoryServiceTest {
     public void create_success() {
         String categoryName = "newCategory";
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
 
         Category category = new Category();
         category.setName(categoryName);
@@ -52,8 +52,8 @@ public class CategoryServiceTest {
 
     @Test
     public void delete_categoryDeleted() {
-        int id = 1;
-        int userId = 1;
+        long id = 1;
+        long userId = 1;
 
         when(categoryDao.delete(id, userId)).thenReturn(true);
 
@@ -64,8 +64,8 @@ public class CategoryServiceTest {
 
     @Test
     public void delete_categoryNotDeleted() {
-        int id = 1;
-        int userId = 1;
+        long id = 1;
+        long userId = 1;
 
         when(categoryDao.delete(id, userId)).thenReturn(false);
 
@@ -76,10 +76,10 @@ public class CategoryServiceTest {
 
     @Test
     public void edit() {
-        int id = 1;
+        long id = 1;
         String name = "newName";
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
 
         Category category = new Category();
         category.setId(id);

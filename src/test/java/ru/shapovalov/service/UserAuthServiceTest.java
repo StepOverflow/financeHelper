@@ -5,16 +5,16 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import ru.shapovalov.converter.UserToUserDtoConverter;
+import ru.shapovalov.api.converter.UserToUserDtoConverter;
 import ru.shapovalov.dao.UserDao;
 import ru.shapovalov.entity.User;
 
 import java.util.Optional;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserAuthServiceTest {
@@ -58,14 +58,14 @@ public class UserAuthServiceTest {
         when(digestService.hex(password)).thenReturn(hashPassword);
 
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setEmail(email);
         user.setPassword(hashPassword);
 
         when(userDao.findByEmailAndHash(email, hashPassword)).thenReturn(user);
 
         UserDto userDto = new UserDto();
-        userDto.setId(1);
+        userDto.setId(1L);
         userDto.setEmail(email);
         when(userDtoConverter.convert(user)).thenReturn(userDto);
 
@@ -86,7 +86,7 @@ public class UserAuthServiceTest {
         String hashPassword = "hashPassword1";
 
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setEmail(email);
         user.setPassword(hashPassword);
 

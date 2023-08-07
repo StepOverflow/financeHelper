@@ -24,7 +24,7 @@ public class CategoryDao {
     @PersistenceContext
     private final EntityManager entityManager;
 
-    public Category insert(String categoryName, int userId) {
+    public Category insert(String categoryName, Long userId) {
         User user = entityManager.find(User.class, userId);
         if (user == null) {
             throw new CustomException("User not found");
@@ -38,9 +38,9 @@ public class CategoryDao {
         return category;
     }
 
-    public boolean delete(int id, int userId) {
+    public boolean delete(Long id, Long userId) {
         Category category = entityManager.find(Category.class, id);
-        if (category != null && category.getUser().getId() == userId) {
+        if (category != null && category.getUser().getId().equals(userId)) {
             entityManager.remove(category);
             return true;
         }
@@ -48,10 +48,10 @@ public class CategoryDao {
         return false;
     }
 
-    public Category edit(int id, String newCategoryName, int userId) {
+    public Category edit(Long id, String newCategoryName, Long userId) {
         try {
             Category category = entityManager.find(Category.class, id);
-            if (category != null && category.getUser().getId() == userId) {
+            if (category != null && category.getUser().getId().equals(userId)) {
                 category.setName(newCategoryName);
                 return category;
             }
@@ -61,13 +61,13 @@ public class CategoryDao {
         }
     }
 
-    public List<Category> getAllByUserId(int userId) {
+    public List<Category> getAllByUserId(Long userId) {
         return entityManager.createNamedQuery("Category.getAllByUserId", Category.class)
                 .setParameter("user_id", userId)
                 .getResultList();
     }
 
-    public Map<String, Long> getResultIncomeInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
+    public Map<String, Long> getResultIncomeInPeriodByCategory(Long userId, Timestamp startDate, Timestamp endDate) {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
                     "SELECT c.name, SUM(t.amount_paid) " +
@@ -81,7 +81,7 @@ public class CategoryDao {
             );
             ps.setTimestamp(1, startDate);
             ps.setTimestamp(2, endDate);
-            ps.setInt(3, userId);
+            ps.setLong(3, userId);
             ResultSet rs = ps.executeQuery();
             Map<String, Long> result = new HashMap<>();
             while (rs.next()) {
@@ -95,7 +95,7 @@ public class CategoryDao {
         }
     }
 
-    public Map<String, Long> getResultExpenseInPeriodByCategory(int userId, Timestamp startDate, Timestamp endDate) {
+    public Map<String, Long> getResultExpenseInPeriodByCategory(Long userId, Timestamp startDate, Timestamp endDate) {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
                     "SELECT c.name, SUM(t.amount_paid) " +
@@ -109,7 +109,7 @@ public class CategoryDao {
             );
             ps.setTimestamp(1, startDate);
             ps.setTimestamp(2, endDate);
-            ps.setInt(3, userId);
+            ps.setLong(3, userId);
             ResultSet rs = ps.executeQuery();
             Map<String, Long> result = new HashMap<>();
             while (rs.next()) {

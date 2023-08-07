@@ -6,8 +6,8 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class AccountDto {
-    private int id;
-    private int userId;
+    private Long id;
+    private Long userId;
     private String accountName;
     private int balance;
 }

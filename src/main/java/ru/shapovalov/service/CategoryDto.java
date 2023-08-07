@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class CategoryDto {
-    private int id;
+    private Long id;
     private String name;
-    private int userId;
+    private Long userId;
 }

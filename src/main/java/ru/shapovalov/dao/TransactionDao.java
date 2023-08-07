@@ -24,17 +24,18 @@ public class TransactionDao {
     private EntityManager entityManager;
 
     @Transactional
-    public Transaction moneyTransfer(Integer fromAccount, Integer toAccount, int amountPaid, int userId, List<Integer> categoryIds) {
+    public Transaction moneyTransfer(Long fromAccount, Long toAccount, int amountPaid, Long userId, List<Long> categoryIds) {
         try {
             Account from = null;
             Account to = null;
             if (fromAccount != null) {
                 from = entityManager.find(Account.class, fromAccount);
-                if (from.getUser().getId() != userId) {
+                if (from.getUser().getId().equals(userId)) {
+                    if (from.getBalance() < amountPaid) {
+                        throw new CustomException("Insufficient funds on the account");
+                    }
+                } else {
                     throw new CustomException("You don't have permission to perform this operation on this account.");
-                }
-                if (from.getBalance() < amountPaid) {
-                    throw new CustomException("Insufficient funds on the account");
                 }
 
             }
@@ -51,7 +52,7 @@ public class TransactionDao {
 
             if (categoryIds != null && !categoryIds.isEmpty()) {
                 List<Category> categories = new ArrayList<>();
-                for (Integer categoryId : categoryIds) {
+                for (Long categoryId : categoryIds) {
                     if (categoryId != null) {
                         Category category = entityManager.find(Category.class, categoryId);
                         if (category != null) {

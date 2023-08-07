@@ -21,7 +21,7 @@ public class AccountDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Account> getAllByUserId(int userId) {
+    public List<Account> getAllByUserId(Long userId) {
         try {
             return entityManager.createNamedQuery("Account.getAllByUserId", Account.class)
                     .setParameter("user_id", userId)
@@ -31,7 +31,7 @@ public class AccountDao {
         }
     }
 
-    public Account insert(String accountName, int userId) {
+    public Account insert(String accountName, Long userId) {
         try {
             User user = entityManager.find(User.class, userId);
             if (user != null) {
@@ -49,10 +49,10 @@ public class AccountDao {
         return null;
     }
 
-    public boolean delete(int accountId, int userId) {
+    public boolean delete(Long accountId, Long userId) {
         try {
             Account account = entityManager.find(Account.class, accountId);
-            if (account != null && account.getUser().getId() == userId) {
+            if (account != null && account.getUser().getId().equals(userId)) {
                 entityManager.remove(account);
                 return true;
             }
@@ -63,10 +63,10 @@ public class AccountDao {
         return false;
     }
 
-    public boolean edit(int accountId, String newName, int userId) {
+    public boolean edit(Long accountId, String newName, Long userId) {
         try {
             Account account = entityManager.find(Account.class, accountId);
-            if (account != null && account.getUser().getId() == userId) {
+            if (account != null && account.getUser().getId().equals(userId)) {
                 account.setName(newName);
                 entityManager.persist(account);
                 return true;
