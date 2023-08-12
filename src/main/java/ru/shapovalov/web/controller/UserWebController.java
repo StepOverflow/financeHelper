@@ -1,4 +1,4 @@
-package ru.shapovalov.web.controller.user;
+package ru.shapovalov.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -8,8 +8,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import ru.shapovalov.service.UserAuthService;
 import ru.shapovalov.service.UserDto;
+import ru.shapovalov.service.UserService;
 import ru.shapovalov.web.form.LoginForm;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +19,8 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
-public class LoginUserWebController {
-    private final UserAuthService authService;
+public class UserWebController {
+    private final UserService authService;
 
     @GetMapping("/")
     public String index(Model model, HttpServletRequest request) {
@@ -70,5 +70,31 @@ public class LoginUserWebController {
         model.addAttribute("form", form);
 
         return "login";
+    }
+
+    @GetMapping("/register")
+    public String getRegistration(Model model) {
+        model.addAttribute("form", new LoginForm());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String postRegistration(@ModelAttribute("form") @Valid LoginForm form, BindingResult result, Model model) {
+        if (!result.hasErrors()) {
+            UserDto userDto = authService.registration(form.getEmail(), form.getPassword());
+            if (userDto != null) {
+                model.addAttribute("userDto", userDto);
+                return "/register-success";
+            }
+            result.addError(new FieldError("form", "email", "Registration failed!"));
+        }
+        model.addAttribute("form", form);
+        return "register";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "logout-success";
     }
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AccountResponse {
-    private int id;
+    private Long id;
     private String accountName;
     private int balance;
 }

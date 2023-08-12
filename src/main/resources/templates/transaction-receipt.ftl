@@ -7,10 +7,10 @@
 <body>
 <h1>Чек транзакции</h1>
 <p>Транзакция успешно совершена:</p>
-<p>Сумма перевода: ${transaction.amountPaid}</p>
+<p>Сумма перевода: ${transaction.sum}</p>
 <p>Дата и время: ${transaction.createdDate}</p>
-<p>От аккаунта: ${transaction.fromAccount.name}</p>
-<p>К аккаунту: ${transaction.toAccount.name}</p>
+<p>От аккаунта: ${transaction.sender}</p>
+<p>К аккаунту: ${transaction.recipient}</p>
 <p><a href="/transactions/transfer">Вернуться к переводам</a></p>
 </body>
 </html>

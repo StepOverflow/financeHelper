@@ -1,6 +1,7 @@
 package ru.shapovalov.dao;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.shapovalov.entity.User;
@@ -11,7 +12,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class UserDao {
     private final DataSource dataSource;
@@ -21,7 +22,7 @@ public class UserDao {
 
     public User findByEmailAndHash(String email, String hash) {
         try {
-            return em.createNamedQuery("Users.getByEmailAndPassword", User.class)
+            return em.createQuery("SELECT u FROM User AS u WHERE u.email = :email and u.password = :password", User.class)
                     .setParameter("email", email)
                     .setParameter("password", hash)
                     .getSingleResult();
@@ -42,7 +43,7 @@ public class UserDao {
     }
 
     public User findByUserId(Long userId) {
-        return em.createNamedQuery("Users.getById", User.class)
+        return em.createQuery("SELECT u FROM User AS u WHERE u.id = :id", User.class)
                 .setParameter("id", userId)
                 .getSingleResult();
     }

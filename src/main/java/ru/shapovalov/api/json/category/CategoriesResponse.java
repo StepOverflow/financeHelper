@@ -2,7 +2,7 @@ package ru.shapovalov.api.json.category;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import ru.shapovalov.entity.Category;
+import ru.shapovalov.service.CategoryDto;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoriesResponse {
     private final Long userId;
-    private final List<Category> categories;
+    private final List<CategoryDto> categories;
 }

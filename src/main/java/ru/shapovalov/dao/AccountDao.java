@@ -23,7 +23,7 @@ public class AccountDao {
 
     public List<Account> getAllByUserId(Long userId) {
         try {
-            return entityManager.createNamedQuery("Account.getAllByUserId", Account.class)
+            return entityManager.createQuery("SELECT a FROM Account AS a WHERE a.user.id = :user_id", Account.class)
                     .setParameter("user_id", userId)
                     .getResultList();
         } catch (Exception e) {

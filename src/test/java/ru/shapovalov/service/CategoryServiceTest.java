@@ -4,101 +4,94 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import ru.shapovalov.api.converter.CategoryModelToCategoryDtoConverter;
 import ru.shapovalov.dao.CategoryDao;
 import ru.shapovalov.entity.Category;
 import ru.shapovalov.entity.User;
+import ru.shapovalov.repository.CategoryRepository;
+import ru.shapovalov.repository.UserRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
+
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CategoryServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private CategoryDao categoryDao;
+
+    @Mock
+    private CategoryModelToCategoryDtoConverter categoryDtoConverter;
+
     @InjectMocks
-    CategoryService subj;
-
-    @Mock
-    CategoryDao categoryDao;
-
-    @Mock
-    CategoryModelToCategoryDtoConverter categoryDtoConverter;
+    private CategoryService categoryService;
 
     @Test
-    public void create_success() {
-        String categoryName = "newCategory";
+    public void testCreateCategory() {
+        Long userId = 1L;
+        String categoryName = "New Category";
         User user = new User();
-        user.setId(1L);
+        user.setId(userId);
 
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(categoryRepository.save(any(Category.class))).thenReturn(new Category());
+        when(categoryDtoConverter.convert(any(Category.class))).thenReturn(new CategoryDto());
+
+        CategoryDto categoryDto = categoryService.create(categoryName, userId);
+
+        assertNotNull(categoryDto);
+        verify(userRepository, times(1)).findById(userId);
+        verify(categoryRepository, times(1)).save(any(Category.class));
+        verify(categoryDtoConverter, times(1)).convert(any(Category.class));
+    }
+
+    @Test
+    public void testDeleteCategory() {
+        Long categoryId = 1L;
+        Long userId = 1L;
         Category category = new Category();
-        category.setName(categoryName);
-        category.setUser(user);
+        category.setUser(new User());
+        category.getUser().setId(userId);
 
-        CategoryDto expectedCategoryDto = new CategoryDto();
-        expectedCategoryDto.setId(category.getId());
-        expectedCategoryDto.setName(category.getName());
-        expectedCategoryDto.setUserId(category.getUser().getId());
+        when(categoryRepository.findByIdAndUserId(categoryId, userId)).thenReturn(category);
 
-        when(categoryDao.insert(categoryName, user.getId())).thenReturn(category);
-        when(categoryDtoConverter.convert(category)).thenReturn(expectedCategoryDto);
+        boolean result = categoryService.delete(categoryId, userId);
 
-        CategoryDto actualCategoryDto = subj.create(categoryName, user.getId());
-
-        assertEquals(expectedCategoryDto, actualCategoryDto);
-
-        verify(categoryDao, times(1)).insert(categoryName, user.getId());
-        verify(categoryDtoConverter, times(1)).convert(category);
+        assertTrue(result);
+        verify(categoryRepository, times(1)).findByIdAndUserId(categoryId, userId);
+        verify(categoryRepository, times(1)).delete(category);
     }
 
     @Test
-    public void delete_categoryDeleted() {
-        long id = 1;
-        long userId = 1;
-
-        when(categoryDao.delete(id, userId)).thenReturn(true);
-
-        assertTrue(categoryDao.delete(id, userId));
-
-        verify(categoryDao, times(1)).delete(id, userId);
-    }
-
-    @Test
-    public void delete_categoryNotDeleted() {
-        long id = 1;
-        long userId = 1;
-
-        when(categoryDao.delete(id, userId)).thenReturn(false);
-
-        assertFalse(categoryDao.delete(id, userId));
-
-        verify(categoryDao, times(1)).delete(id, userId);
-    }
-
-    @Test
-    public void edit() {
-        long id = 1;
-        String name = "newName";
-        User user = new User();
-        user.setId(1L);
-
+    public void testEditCategory() {
+        Long categoryId = 1L;
+        Long userId = 1L;
+        String newCategoryName = "Updated Category";
         Category category = new Category();
-        category.setId(id);
-        category.setName(name);
-        category.setUser(user);
+        category.setUser(new User());
+        category.getUser().setId(userId);
 
-        CategoryDto exceptedCategoryDto = new CategoryDto();
-        exceptedCategoryDto.setId(category.getId());
-        exceptedCategoryDto.setName(category.getName());
-        exceptedCategoryDto.setUserId(category.getUser().getId());
+        when(categoryRepository.findByIdAndUserId(categoryId, userId)).thenReturn(category);
+        when(categoryRepository.save(any(Category.class))).thenReturn(category);
+        when(categoryDtoConverter.convert(any(Category.class))).thenReturn(new CategoryDto());
 
-        when(categoryDao.edit(id, name, user.getId())).thenReturn(category);
-        when(categoryDtoConverter.convert(category)).thenReturn(exceptedCategoryDto);
+        CategoryDto updatedCategoryDto = categoryService.edit(categoryId, newCategoryName, userId);
 
-        CategoryDto actualCategoryDto = subj.edit(id, name, user.getId());
-
-        assertEquals(exceptedCategoryDto, actualCategoryDto);
-
-        verify(categoryDao, times(1)).edit(id, name, user.getId());
-        verify(categoryDtoConverter, times(1)).convert(category);
+        assertNotNull(updatedCategoryDto);
+        assertEquals(newCategoryName, category.getName());
+        verify(categoryRepository, times(1)).findByIdAndUserId(categoryId, userId);
+        verify(categoryRepository, times(1)).save(any(Category.class));
+        verify(categoryDtoConverter, times(1)).convert(any(Category.class));
     }
 }

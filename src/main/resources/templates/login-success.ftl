@@ -9,7 +9,9 @@
 <p>Вы вошли как: ${userDto.email}</p>
 <a href="/accounts/list">Аккаунты</a>
 <a href="/categories/list">Категории</a>
-<a href="/transactions/list">Транзакции</a>
+<a href="/transactions/transfer">Перевод</a>
+<a href="/transactions/income">Входящие транзакции</a>
+<a href="/transactions/expense">Исходящие транзакции</a>
 
 <a href="/">Перейти на главную страницу</a>
 <a href="/logout">Выйти</a>

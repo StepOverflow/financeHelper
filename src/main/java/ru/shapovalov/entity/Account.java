@@ -9,10 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "accounts")
-@NamedQueries({
-        @NamedQuery(name = "Account.getAllByUserId", query = "SELECT a FROM Account AS a WHERE a.user.id = :user_id"),
-        @NamedQuery(name = "Account.getBalance", query = "SELECT a FROM Account a WHERE  a.balance > :balance")
-})
+
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

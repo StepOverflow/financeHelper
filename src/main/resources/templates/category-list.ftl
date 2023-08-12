@@ -26,6 +26,6 @@
 <p><a href="/categories/create">Создать новую категорию</a></p>
 <p><a href="/categories/delete">Удалить категорию</a></p>
 <p><a href="/categories/edit">Редактировать категорию</a></p>
-<p><a href="/logout">Выйти</a></p>
+<a href="/">Вернуться на главную</a><br>
 </body>
 </html>

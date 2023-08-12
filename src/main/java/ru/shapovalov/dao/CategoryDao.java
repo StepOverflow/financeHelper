@@ -62,7 +62,7 @@ public class CategoryDao {
     }
 
     public List<Category> getAllByUserId(Long userId) {
-        return entityManager.createNamedQuery("Category.getAllByUserId", Category.class)
+        return entityManager.createQuery("SELECT c FROM Category AS c WHERE c.user.id = :user_id", Category.class)
                 .setParameter("user_id", userId)
                 .getResultList();
     }

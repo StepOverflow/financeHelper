@@ -10,7 +10,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TerminalView {
 
-    private final UserAuthService userAuthService;
+    private final UserService userAuthService;
     private final AccountService accountService;
     private final CategoryService categoryService;
     private final TransactionService transactionService;
@@ -185,4 +185,3 @@ public class TerminalView {
         return scanner.nextLong();
     }
 }
-

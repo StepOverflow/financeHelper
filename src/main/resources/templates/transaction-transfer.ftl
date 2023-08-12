@@ -2,25 +2,17 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Перевод денег</title>
+    <title>Перевод средств</title>
 </head>
 <body>
-<h1>Перевод денег</h1>
-<form action="/transactions/transfer" method="post">
-    <label for="fromAccountId">От аккаунта:</label>
-    <select id="fromAccountId" name="fromAccountId">
-        <#list userAccounts as account>
-            <option value="${account.id}">${account.name}</option>
-        </#list>
-    </select>
-    <br>
-    <label for="toAccountNumber">На аккаунт (номер):</label>
-    <input type="text" name="toAccountNumber" required><br>
-    <label for="sum">Сумма:</label>
-    <input type="number" id="sum" name="sum">
-    <br>
+<h2>Перевод средств</h2>
+<form method="post" action="/transactions/transfer">
+    <label>От счета (ID): <input type="text" name="fromAccountId"></label><br>
+    <label>На счет (ID): <input type="text" name="toAccountId"></label><br>
+    <label>Сумма: <input type="text" name="sum"></label><br>
+    <label>Категории (через запятую): <input type="text" name="categoryIds"></label><br>
     <button type="submit">Перевести</button>
 </form>
-<p><a href="/accounts/list">Назад к списку аккаунтов</a></p>
+<a href="/accounts/list">Вернуться к списку счетов</a>
 </body>
 </html>

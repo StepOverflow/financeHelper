@@ -1,41 +1,17 @@
-<#import "/spring.ftl" as spring />
-
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Registration</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <title>Регистрация</title>
 </head>
 <body>
-<br>
-<br>
-<br>
-<div class="container">
-    <div class="jumbotron">
-        <h3 class="text-center">Регистрация</h3>
-        <br>
-        <br>
-        <div class="row">
-            <div class="col-sm"></div>
-            <div class="col-sm">
-                <form action="/register" method="post">
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Пароль:</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-                </form>
-                <br>
-                <a class="btn btn-dark" href="/login" role="button">Уже есть аккаунт? Войти</a>
-            </div>
-            <div class="col-sm"></div>
-        </div>
-    </div>
-</div>
+<h2>Регистрация</h2>
+<form action="/register" method="post">
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email" required><br>
+    <label for="password">Пароль:</label>
+    <input type="password" id="password" name="password" required><br>
+    <button type="submit">Зарегистрироваться</button>
+</form>
+<p>Уже есть аккаунт? <a href="/login">Войти</a></p>
 </body>
 </html>
