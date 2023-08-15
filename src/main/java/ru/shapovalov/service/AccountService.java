@@ -5,11 +5,11 @@ import org.springframework.stereotype.Service;
 import ru.shapovalov.api.converter.AccountToAccountDtoConverter;
 import ru.shapovalov.entity.Account;
 import ru.shapovalov.entity.User;
+import ru.shapovalov.exception.CustomException;
 import ru.shapovalov.repository.AccountRepository;
 import ru.shapovalov.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -21,16 +21,16 @@ public class AccountService {
     private final AccountToAccountDtoConverter accountDtoConverter;
 
     public List<AccountDto> getAll(Long userId) {
-        return accountRepository.findAccountsByUserId(userId).stream()
+        return accountRepository.findAllByUserId(userId).stream()
                 .map(accountDtoConverter::convert)
                 .collect(toList());
     }
 
     public AccountDto create(String accountName, Long userId) {
-        Optional<User> user = userRepository.findById(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException("user not found"));
         Account account = new Account();
         account.setName(accountName);
-        account.setUser(user.get());
+        account.setUser(user);
         account.setBalance(0);
         account = accountRepository.save(account);
         return accountDtoConverter.convert(account);
@@ -55,12 +55,8 @@ public class AccountService {
         return false;
     }
 
-    public List<AccountDto> findAccountsByUserId(Long userId) {
-        return accountRepository.findAccountsByUserId(userId).stream()
+    public List<AccountDto> findAllByUserId(Long userId) {
+        return accountRepository.findAllByUserId(userId).stream()
                 .map(accountDtoConverter::convert).collect(toList());
-    }
-
-    public AccountDto findById(Long accountId) {
-        return accountDtoConverter.convert(accountRepository.findAccountById(accountId));
     }
 }

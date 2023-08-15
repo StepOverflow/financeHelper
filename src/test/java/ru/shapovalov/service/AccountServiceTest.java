@@ -42,13 +42,13 @@ public class AccountServiceTest {
         accounts.add(new Account());
         accounts.add(new Account());
 
-        when(accountRepository.findAccountsByUserId(userId)).thenReturn(accounts);
+        when(accountRepository.findAllByUserId(userId)).thenReturn(accounts);
         when(accountDtoConverter.convert(any(Account.class))).thenReturn(new AccountDto());
 
         List<AccountDto> accountDtos = accountService.getAll(userId);
 
         assertEquals(accounts.size(), accountDtos.size());
-        verify(accountRepository, times(1)).findAccountsByUserId(userId);
+        verify(accountRepository, times(1)).findAllByUserId(userId);
         verify(accountDtoConverter, times(accounts.size())).convert(any(Account.class));
     }
 

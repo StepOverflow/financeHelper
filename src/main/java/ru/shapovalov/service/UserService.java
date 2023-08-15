@@ -17,9 +17,8 @@ public class UserService {
 
     public Optional<UserDto> auth(String email, String password) {
         String hash = digestService.hex(password);
-        User source = userRepository.findByEmailAndPassword(email, hash);
-        return Optional.ofNullable(source)
-                .map(userDtoConverter::convert);
+        Optional<User> source = userRepository.findByEmailAndPassword(email, hash);
+        return Optional.ofNullable(userDtoConverter.convert(source.get()));
     }
 
     public UserDto registration(String email, String password) {
@@ -34,11 +33,6 @@ public class UserService {
     }
 
     public UserDto getByUserId(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        return user.map(userDtoConverter::convert).orElse(null);
-    }
-
-    public UserDto findById(Long userId) {
-        return userDtoConverter.convert(userRepository.findById(userId).get());
+        return userRepository.findById(userId).map(userDtoConverter::convert).orElse(null);
     }
 }

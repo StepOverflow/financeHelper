@@ -5,9 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import ru.shapovalov.api.converter.Converter;
 import ru.shapovalov.api.converter.UserToUserDtoConverter;
-import ru.shapovalov.dao.UserDao;
 import ru.shapovalov.entity.User;
 import ru.shapovalov.repository.UserRepository;
 
@@ -17,7 +15,6 @@ import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -51,7 +48,7 @@ public class UserServiceTest {
         userDto.setEmail(email);
 
         when(digestService.hex(password)).thenReturn(hashedPassword);
-        when(userRepository.findByEmailAndPassword(email, hashedPassword)).thenReturn(user);
+        when(userRepository.findByEmailAndPassword(email, hashedPassword)).thenReturn(Optional.of(user));
         when(userDtoConverter.convert(user)).thenReturn(userDto);
 
         Optional<UserDto> authResult = userService.auth(email, password);

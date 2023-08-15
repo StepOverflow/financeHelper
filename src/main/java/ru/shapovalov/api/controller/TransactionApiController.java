@@ -29,14 +29,9 @@ public class TransactionApiController {
     private final AccountService accountService;
     private final CategoryService categoryService;
 
-    @PostMapping("/user")
-    public ResponseEntity<List<TransactionDto>> getUserTransactions(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+    @PostMapping("/list")
+    public ResponseEntity<List<TransactionDto>> getUserTransactions(HttpServletRequest httpServletRequest) {
+        Long userId = getSessionUserId(httpServletRequest);
         List<AccountDto> userAccounts = accountService.getAll(userId);
         List<Long> accountIds = userAccounts.stream()
                 .map(AccountDto::getId)
@@ -47,24 +42,18 @@ public class TransactionApiController {
     }
 
     @PostMapping("/user/income")
-    public ResponseEntity<Map<String, Long>> getUserIncomeInPeriod(@RequestBody @Valid ReportRequest request, HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Map<String, Long>> getUserIncomeInPeriod(@RequestBody @Valid ReportRequest request,
+                                                                   HttpServletRequest httpServletRequest) {
+        Long userId = getSessionUserId(httpServletRequest);
         Map<String, Long> income = categoryService.getResultIncomeInPeriodByCategory(userId, request.getDays());
 
         return ok(income);
     }
 
     @PostMapping("/user/expense")
-    public ResponseEntity<Map<String, Long>> getUserExpenseInPeriod(@RequestBody @Valid ReportRequest request, HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Map<String, Long>> getUserExpenseInPeriod(@RequestBody @Valid ReportRequest request,
+                                                                    HttpServletRequest httpServletRequest) {
+        Long userId = getSessionUserId(httpServletRequest);
         Map<String, Long> expense = categoryService.getResultExpenseInPeriodByCategory(userId, request.getDays());
 
         return ok(expense);
@@ -73,11 +62,8 @@ public class TransactionApiController {
     @PostMapping("/transfer")
     public ResponseEntity<String> transfer(@RequestBody @Valid TransferRequest request,
                                            HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-        }
+
+        Long userId = getSessionUserId(httpServletRequest);
         TransactionDto transactionDto = transactionService.sendMoney(request.getFromAccountId(), request.getToAccountId(), request.getSum(), userId, request.getCategoryIds());
 
         if (transactionDto != null) {
@@ -85,5 +71,14 @@ public class TransactionApiController {
         } else {
             return status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to transfer");
         }
+    }
+
+    private Long getSessionUserId(HttpServletRequest httpServletRequest) {
+        HttpSession session = httpServletRequest.getSession();
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+        }
+        return userId;
     }
 }

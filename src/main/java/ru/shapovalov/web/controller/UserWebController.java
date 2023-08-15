@@ -35,10 +35,7 @@ public class UserWebController {
             session.removeAttribute("userId");
             return "redirect:/login";
         }
-        model.addAttribute("email", userDto.getEmail())
-                .addAttribute("id", userDto.getId())
-                .addAttribute("userDto", userDto)
-        ;
+        model.addAttribute("email", userDto.getEmail()).addAttribute("id", userDto.getId()).addAttribute("userDto", userDto);
         return "login-success";
     }
 
@@ -52,11 +49,8 @@ public class UserWebController {
 
     @PostMapping("/login")
     public String postLogin(@ModelAttribute("form") @Valid LoginForm form, BindingResult result, Model model, HttpServletRequest request) {
-
         if (!result.hasErrors()) {
-
             Optional<UserDto> user = authService.auth(form.getEmail(), form.getPassword());
-
             if (user.isPresent()) {
                 HttpSession session = request.getSession();
                 session.setAttribute("userId", user.get().getId());

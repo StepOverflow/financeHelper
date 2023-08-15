@@ -27,24 +27,16 @@ public class TransactionWebController {
 
     @GetMapping("/transfer")
     public String getTransfer(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/login";
-        }
-
+        Long userId = getUserId(request);
+        if (userId == null) return "redirect:/login";
         return "transaction-transfer";
     }
 
     @PostMapping("/transfer")
     public String postTransfer(@ModelAttribute("transferForm") @Valid TransferForm transferForm,
                                HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/login";
-        }
-
+        Long userId = getUserId(request);
+        if (userId == null) return "redirect:/login";
         TransactionDto transactionDto = transactionService.sendMoney(transferForm.getFromAccountId(), transferForm.getToAccountId(), transferForm.getSum(), userId, transferForm.getCategoryIds());
 
         model.addAttribute("transaction", transactionDto);
@@ -55,11 +47,8 @@ public class TransactionWebController {
     @GetMapping("/expense")
     public String expenseReport(@ModelAttribute("reportForm") @Valid ReportForm reportForm,
                                 HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/login";
-        }
+        Long userId = getUserId(request);
+        if (userId == null) return "redirect:/login";
         model.addAttribute("report", categoryService.getResultExpenseInPeriodByCategory(userId, reportForm.getDays()));
 
         return "transaction-expense";
@@ -68,13 +57,15 @@ public class TransactionWebController {
     @GetMapping("/income")
     public String incomeReport(@ModelAttribute("reportForm") @Valid ReportForm reportForm,
                                HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/login";
-        }
+        Long userId = getUserId(request);
+        if (userId == null) return "redirect:/login";
         model.addAttribute("report", categoryService.getResultIncomeInPeriodByCategory(userId, reportForm.getDays()));
 
         return "transaction-income";
+    }
+
+    private static Long getUserId(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        return (Long) session.getAttribute("userId");
     }
 }

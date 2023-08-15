@@ -6,7 +6,7 @@ import ru.shapovalov.entity.Account;
 import java.util.List;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    List<Account> findAccountsByUserId(Long id);
+    List<Account> findAllByUserId(Long id);
 
     Account findByIdAndUserId(Long accountId, Long userId);
 

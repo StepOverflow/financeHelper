@@ -29,9 +29,7 @@ public class UserApiController {
     private final ServiceUserToResponseConverter converter;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid UserRequest request,
-                                              HttpServletRequest httpServletRequest) {
-
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid UserRequest request, HttpServletRequest httpServletRequest) {
         Optional<UserDto> user = userService.auth(request.getEmail(), request.getPassword());
         if (user.isEmpty()) {
             return status(HttpStatus.UNAUTHORIZED).build();
@@ -44,12 +42,12 @@ public class UserApiController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid UserRequest request) {
+    public ResponseEntity<AuthResponse> register(@RequestBody @Valid UserRequest request) {
         UserDto userDto = userService.registration(request.getEmail(), request.getPassword());
         if (userDto != null) {
-            return ok("User registered successfully");
+            return ok(converter.convert(userDto));
         } else {
-            return status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user");
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

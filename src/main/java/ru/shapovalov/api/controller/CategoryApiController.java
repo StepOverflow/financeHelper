@@ -4,19 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.shapovalov.api.json.category.CategoriesResponse;
-import ru.shapovalov.api.json.category.CategoryIdRequest;
-import ru.shapovalov.api.json.category.CreateCategoryRequest;
-import ru.shapovalov.api.json.category.EditCategoryRequest;
+import ru.shapovalov.api.json.category.*;
 import ru.shapovalov.service.CategoryDto;
 import ru.shapovalov.service.CategoryService;
-import ru.shapovalov.service.UserDto;
-import ru.shapovalov.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.http.ResponseEntity.status;
@@ -26,71 +22,58 @@ import static org.springframework.http.ResponseEntity.status;
 @RequiredArgsConstructor
 public class CategoryApiController {
     private final CategoryService categoryService;
-    private final UserService userService;
 
-    @PostMapping("/user")
-    public ResponseEntity<CategoriesResponse> getAllCategoriesByUserId(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        List<CategoryDto> categories = categoryService.getAll(userId);
-        return ok(new CategoriesResponse(userId, categories));
+    @PostMapping("/list")
+    public ResponseEntity<List<CategoryResponse>> getAllByUserId(HttpServletRequest httpServletRequest) {
+        Long userId = getSessionUserId(httpServletRequest);
+
+        List<CategoryResponse> categoryResponses = categoryService.getAll(userId).stream()
+                .map(categoryDto -> new CategoryResponse(categoryDto.getId(), categoryDto.getName()))
+                .collect(Collectors.toList());
+        return ok(categoryResponses);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createCategory(@RequestBody @Valid CreateCategoryRequest request,
-                                                 HttpServletRequest httpServletRequest) {
-
-        HttpSession session = httpServletRequest.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-        }
-
-        UserDto userDto = userService.findById(userId);
-        if (userDto == null) {
-            return status(HttpStatus.BAD_REQUEST).body("Invalid userDto ID");
-        }
+    public ResponseEntity<CategoryResponse> create(@RequestBody @Valid CreateCategoryRequest request,
+                                                   HttpServletRequest httpServletRequest) {
+        Long userId = getSessionUserId(httpServletRequest);
         CategoryDto categoryDto = categoryService.create(request.getName(), userId);
-
         if (categoryDto != null) {
-            return ok("Category created successfully");
+            return ok(new CategoryResponse(categoryDto.getId(), categoryDto.getName()));
         }
-        return status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create category");
+        return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteCategory(@RequestBody CategoryIdRequest request,
-                                                 HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-        }
+    public ResponseEntity<DeleteCategoryResponse> delete(@RequestBody CategoryIdRequest request,
+                                                         HttpServletRequest httpServletRequest) {
+        Long userId = getSessionUserId(httpServletRequest);
         boolean delete = categoryService.delete(request.getCategoryId(), userId);
         if (delete) {
-            return ok("Category deleted successfully");
+            return ok(new DeleteCategoryResponse(true));
         } else {
-            return status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete category");
+            return ok(new DeleteCategoryResponse(false));
         }
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<String> editCategory(
-            @RequestBody @Valid EditCategoryRequest request,
-            HttpServletRequest httpServletRequest) {
+    public ResponseEntity<EditCategoryResponse> edit(@RequestBody @Valid EditCategoryRequest request,
+                                                     HttpServletRequest httpServletRequest) {
+        Long userId = getSessionUserId(httpServletRequest);
+        CategoryDto edit = categoryService.edit(request.getId(), request.getName(), userId);
+        if (edit != null) {
+            return ok(new EditCategoryResponse(request.getId(), request.getName()));
+        } else {
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private Long getSessionUserId(HttpServletRequest httpServletRequest) {
         HttpSession session = httpServletRequest.getSession();
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            status(HttpStatus.UNAUTHORIZED).body("User not logged in");
         }
-        CategoryDto edit = categoryService.edit(request.getId(), request.getName(), userId);
-        if (edit != null) {
-            return ok("Category deleted successfully");
-        } else {
-            return status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete category");
-        }
+        return userId;
     }
 }
