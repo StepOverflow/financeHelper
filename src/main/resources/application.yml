@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: Pattaya2023
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: true
+  liquibase:
+    change-log: classpath:liquibase.xml
+  freemarker:
+    template-loader-path: classpath:/templates
+    suffix: .ftl
+    cache: false
+server:
+  port: 8081

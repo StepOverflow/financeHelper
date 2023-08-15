@@ -9,15 +9,12 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "users")
-@NamedQueries({
-        @NamedQuery(name = "Users.getByEmailAndPassword", query = "SELECT u FROM User AS u WHERE u.email = :email and u.password = :password"),
-        @NamedQuery(name = "Users.getById", query = "SELECT u FROM User AS u WHERE u.id = :id")
-})
+
 public class User {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "email")
     private String email;

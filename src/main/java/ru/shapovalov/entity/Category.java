@@ -9,13 +9,10 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "categories")
-@NamedQueries({
-        @NamedQuery(name = "Category.getAllByUserId", query = "SELECT c FROM Category AS c WHERE c.user.id = :user_id")
-})
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
