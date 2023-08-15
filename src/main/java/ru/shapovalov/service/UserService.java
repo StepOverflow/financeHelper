@@ -17,8 +17,8 @@ public class UserService {
 
     public Optional<UserDto> auth(String email, String password) {
         String hash = digestService.hex(password);
-        Optional<User> source = userRepository.findByEmailAndPassword(email, hash);
-        return Optional.ofNullable(userDtoConverter.convert(source.get()));
+        return userRepository.findByEmailAndPassword(email, hash)
+                .map(userDtoConverter::convert);
     }
 
     public UserDto registration(String email, String password) {

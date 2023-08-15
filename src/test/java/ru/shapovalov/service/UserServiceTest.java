@@ -68,7 +68,7 @@ public class UserServiceTest {
         String hashedPassword = "hashedPassword";
 
         when(digestService.hex(password)).thenReturn(hashedPassword);
-        when(userRepository.findByEmailAndPassword(email, hashedPassword)).thenReturn(null);
+        when(userRepository.findByEmailAndPassword(email, hashedPassword)).thenReturn(Optional.empty());
 
         Optional<UserDto> authResult = userService.auth(email, password);
 
