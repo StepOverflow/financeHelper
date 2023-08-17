@@ -13,19 +13,18 @@ import ru.shapovalov.web.form.DeleteCategoryForm;
 import ru.shapovalov.web.form.EditCategoryForm;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/categories")
 @RequiredArgsConstructor
-public class CategoryWebController {
+public class CategoryWebController extends BaseWebController {
 
     private final CategoryService categoryService;
 
     @GetMapping("/list")
     public String getCategoryList(Model model, HttpServletRequest request) {
-        Long userId = getUserId(request);
+        Long userId = getSessionUserId(request);
         if (userId == null) return "redirect:/login";
         model.addAttribute("categories", categoryService.getAll(userId));
 
@@ -34,7 +33,7 @@ public class CategoryWebController {
 
     @GetMapping("/create")
     public String getCreateCategory(Model model, HttpServletRequest request) {
-        Long userId = getUserId(request);
+        Long userId = getSessionUserId(request);
         if (userId == null) return "redirect:/login";
         model.addAttribute("categoryForm", new CreateCategoryForm());
         return "category-create";
@@ -42,7 +41,7 @@ public class CategoryWebController {
 
     @PostMapping("/create")
     public String postCreateCategory(@ModelAttribute("categoryForm") @Valid CreateCategoryForm form, HttpServletRequest request) {
-        Long userId = getUserId(request);
+        Long userId = getSessionUserId(request);
         if (userId == null) return "redirect:/login";
         categoryService.create(form.getName(), userId);
         return "redirect:/categories/list";
@@ -50,7 +49,7 @@ public class CategoryWebController {
 
     @GetMapping("/delete")
     public String getDeleteCategory(Model model, HttpServletRequest request) {
-        Long userId = getUserId(request);
+        Long userId = getSessionUserId(request);
         if (userId == null) return "redirect:/login";
         model.addAttribute("categoryForm", new DeleteCategoryForm());
         return "category-delete";
@@ -58,7 +57,7 @@ public class CategoryWebController {
 
     @PostMapping("/delete")
     public String postDeleteCategory(@ModelAttribute("categoryForm") @Valid DeleteCategoryForm form, HttpServletRequest request) {
-        Long userId = getUserId(request);
+        Long userId = getSessionUserId(request);
         if (userId == null) return "redirect:/login";
         categoryService.delete(form.getCategoryId(), userId);
         return "redirect:/categories/list";
@@ -66,7 +65,7 @@ public class CategoryWebController {
 
     @GetMapping("/edit")
     public String getEditCategory(Model model, HttpServletRequest request) {
-        Long userId = getUserId(request);
+        Long userId = getSessionUserId(request);
         if (userId == null) return "redirect:/login";
         model.addAttribute("categoryForm", new EditCategoryForm());
         return "category-edit";
@@ -74,14 +73,9 @@ public class CategoryWebController {
 
     @PostMapping("/edit")
     public String postEditCategory(@ModelAttribute("categoryForm") @Valid EditCategoryForm form, HttpServletRequest request) {
-        Long userId = getUserId(request);
+        Long userId = getSessionUserId(request);
         if (userId == null) return "redirect:/login";
         categoryService.edit(form.getCategoryId(), form.getName(), userId);
         return "redirect:/categories/list";
-    }
-
-    private static Long getUserId(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        return (Long) session.getAttribute("userId");
     }
 }

@@ -24,7 +24,7 @@ import static org.springframework.http.ResponseEntity.status;
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
-public class TransactionApiController {
+public class TransactionApiController extends BaseApiController {
     private final TransactionService transactionService;
     private final AccountService accountService;
     private final CategoryService categoryService;
@@ -71,14 +71,5 @@ public class TransactionApiController {
         } else {
             return status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to transfer");
         }
-    }
-
-    private Long getSessionUserId(HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-        }
-        return userId;
     }
 }

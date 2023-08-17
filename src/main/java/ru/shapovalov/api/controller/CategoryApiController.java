@@ -9,7 +9,6 @@ import ru.shapovalov.service.CategoryDto;
 import ru.shapovalov.service.CategoryService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +19,7 @@ import static org.springframework.http.ResponseEntity.status;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
-public class CategoryApiController {
+public class CategoryApiController extends BaseApiController {
     private final CategoryService categoryService;
 
     @PostMapping("/list")
@@ -66,14 +65,5 @@ public class CategoryApiController {
         } else {
             return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    private Long getSessionUserId(HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-        }
-        return userId;
     }
 }

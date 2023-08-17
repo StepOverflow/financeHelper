@@ -9,7 +9,6 @@ import ru.shapovalov.service.AccountDto;
 import ru.shapovalov.service.AccountService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +19,7 @@ import static org.springframework.http.ResponseEntity.status;
 @RestController
 @RequestMapping("/api/accounts")
 @RequiredArgsConstructor
-public class AccountApiController {
+public class AccountApiController extends BaseApiController {
     private final AccountService accountService;
 
     @PostMapping("/list")
@@ -72,14 +71,5 @@ public class AccountApiController {
         } else {
             return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    private Long getSessionUserId(HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-        }
-        return userId;
     }
 }

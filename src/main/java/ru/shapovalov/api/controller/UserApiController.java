@@ -24,7 +24,7 @@ import static org.springframework.http.ResponseEntity.status;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class UserApiController {
+public class UserApiController extends BaseApiController {
     private final UserService userService;
     private final ServiceUserToResponseConverter converter;
 
@@ -64,8 +64,7 @@ public class UserApiController {
 
     @PostMapping("/info")
     public ResponseEntity<AuthResponse> getUserInfo(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = getSessionUserId(request);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
