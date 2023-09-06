@@ -10,31 +10,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.shapovalov.service.CategoryService;
 import ru.shapovalov.service.TransactionDto;
 import ru.shapovalov.service.TransactionService;
+import ru.shapovalov.service.UserService;
 import ru.shapovalov.web.form.ReportForm;
 import ru.shapovalov.web.form.TransferForm;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/transactions")
 @RequiredArgsConstructor
-public class TransactionWebController extends BaseWebController {
+public class TransactionWebController {
 
     private final TransactionService transactionService;
     private final CategoryService categoryService;
+    private final UserService userService;
 
     @GetMapping("/transfer")
-    public String getTransfer(HttpServletRequest request) {
-        Long userId = getSessionUserId(request);
+    public String getTransfer() {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
         return "transaction-transfer";
     }
 
     @PostMapping("/transfer")
-    public String postTransfer(@ModelAttribute("transferForm") @Valid TransferForm transferForm,
-                               HttpServletRequest request, Model model) {
-        Long userId = getSessionUserId(request);
+    public String postTransfer(@ModelAttribute("transferForm") @Valid TransferForm transferForm, Model model) {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
         TransactionDto transactionDto = transactionService.sendMoney(transferForm.getFromAccountId(), transferForm.getToAccountId(), transferForm.getSum(), userId, transferForm.getCategoryIds());
 
@@ -44,9 +44,8 @@ public class TransactionWebController extends BaseWebController {
     }
 
     @GetMapping("/expense")
-    public String expenseReport(@ModelAttribute("reportForm") @Valid ReportForm reportForm,
-                                HttpServletRequest request, Model model) {
-        Long userId = getSessionUserId(request);
+    public String expenseReport(@ModelAttribute("reportForm") @Valid ReportForm reportForm, Model model) {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
         model.addAttribute("report", categoryService.getResultExpenseInPeriodByCategory(userId, reportForm.getDays()));
 
@@ -54,9 +53,8 @@ public class TransactionWebController extends BaseWebController {
     }
 
     @GetMapping("/income")
-    public String incomeReport(@ModelAttribute("reportForm") @Valid ReportForm reportForm,
-                               HttpServletRequest request, Model model) {
-        Long userId = getSessionUserId(request);
+    public String incomeReport(@ModelAttribute("reportForm") @Valid ReportForm reportForm, Model model) {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
         model.addAttribute("report", categoryService.getResultIncomeInPeriodByCategory(userId, reportForm.getDays()));
 

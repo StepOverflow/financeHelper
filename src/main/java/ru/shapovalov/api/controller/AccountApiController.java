@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.shapovalov.api.json.account.*;
 import ru.shapovalov.service.AccountDto;
 import ru.shapovalov.service.AccountService;
+import ru.shapovalov.service.UserService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,12 +19,13 @@ import static org.springframework.http.ResponseEntity.status;
 @RestController
 @RequestMapping("/api/accounts")
 @RequiredArgsConstructor
-public class AccountApiController extends BaseApiController {
+public class AccountApiController {
     private final AccountService accountService;
+    private final UserService userService;
 
     @PostMapping("/list")
-    public ResponseEntity<List<AccountResponse>> getAllByUserId(HttpServletRequest httpServletRequest) {
-        Long userId = getSessionUserId(httpServletRequest);
+    public ResponseEntity<List<AccountResponse>> getAllByUserId() {
+        Long userId = userService.currentUser().getId();
 
         List<AccountResponse> accountResponses = accountService.findAllByUserId(userId).stream()
                 .map(account -> new AccountResponse(account.getId(), account.getAccountName(), account.getBalance()))
@@ -34,9 +35,8 @@ public class AccountApiController extends BaseApiController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AccountResponse> create(@RequestBody @Valid CreateAccountRequest request,
-                                                  HttpServletRequest httpServletRequest) {
-        Long userId = getSessionUserId(httpServletRequest);
+    public ResponseEntity<AccountResponse> create(@RequestBody @Valid CreateAccountRequest request) {
+        Long userId = userService.currentUser().getId();
 
         AccountDto accountDto = accountService.create(request.getName(), userId);
 
@@ -48,9 +48,8 @@ public class AccountApiController extends BaseApiController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<DeleteAccountResponse> delete(@RequestBody @Valid AccountIdRequest request,
-                                                        HttpServletRequest httpServletRequest) {
-        Long userId = getSessionUserId(httpServletRequest);
+    public ResponseEntity<DeleteAccountResponse> delete(@RequestBody @Valid AccountIdRequest request) {
+        Long userId = userService.currentUser().getId();
         boolean delete = accountService.delete(request.getAccountId(), userId);
 
         if (delete) {
@@ -61,9 +60,8 @@ public class AccountApiController extends BaseApiController {
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<EditAccountResponse> edit(@RequestBody @Valid EditAccountRequest request,
-                                                    HttpServletRequest httpServletRequest) {
-        Long userId = getSessionUserId(httpServletRequest);
+    public ResponseEntity<EditAccountResponse> edit(@RequestBody @Valid EditAccountRequest request) {
+        Long userId = userService.currentUser().getId();
         boolean edit = accountService.edit(request.getId(), request.getName(), userId);
 
         if (edit) {
