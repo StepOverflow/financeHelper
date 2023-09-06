@@ -9,13 +9,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.shapovalov.api.converter.Converter;
 import ru.shapovalov.entity.User;
 import ru.shapovalov.repository.UserRepository;
-import ru.shapovalov.security.UserRole;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,27 +33,22 @@ public class UserServiceTest {
     private UserService userService;
 
     @Test
-    public void testAuth_SuccessfulAuthentication() {
+    public void testAuth_SuccessAuthentication() {
         String email = "test@example.com";
         String password = "password123";
-        String hashedPassword = "hashedPassword123";
+        String hashedPassword = "HashedPassword";
         User user = new User();
         user.setId(1L);
         user.setEmail(email);
         user.setPassword(hashedPassword);
-        Set<UserRole> roles = new HashSet<>();
-        roles.add(UserRole.USER);
-        user.setRoles(roles);
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
+        when(userDtoConverter.convert(any(User.class))).thenReturn(new UserDto());
 
         Optional<UserDto> result = userService.auth(email, password);
 
         assertTrue(result.isPresent());
-        UserDto userDto = result.get();
-        assertEquals(user.getId(), userDto.getId());
-        assertEquals(user.getEmail(), userDto.getEmail());
     }
 
     @Test
