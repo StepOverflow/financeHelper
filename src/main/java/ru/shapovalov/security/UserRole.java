@@ -1,2 +1,6 @@
-package ru.shapovalov.security;public enum UserRole {
+package ru.shapovalov.security;
+
+public enum UserRole {
+    USER,
+    ADMIN
 }

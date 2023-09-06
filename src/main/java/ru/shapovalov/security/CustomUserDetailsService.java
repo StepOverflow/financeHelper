@@ -1,4 +1,4 @@
-package ru.dzhenenko.secuity;
+package ru.shapovalov.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

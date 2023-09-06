@@ -2,8 +2,10 @@ package ru.shapovalov.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.shapovalov.security.UserRole;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -21,6 +23,12 @@ public class User {
 
     @Column(name = "password")
     private String password;
+
+    @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_role")
+    @Column(name = "role")
+    private Set<UserRole> roles;
 
     @Override
     public String toString() {
