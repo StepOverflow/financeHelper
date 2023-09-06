@@ -92,4 +92,18 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="create_table_user_role" author="stepan">
+        <createTable tableName="user_role">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="user_role" baseColumnNames="user_id" constraintName="user_role_user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+    </changeSet>
 </databaseChangeLog>
