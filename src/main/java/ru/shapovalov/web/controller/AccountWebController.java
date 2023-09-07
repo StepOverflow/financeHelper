@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.shapovalov.service.AccountService;
+import ru.shapovalov.service.UserService;
 import ru.shapovalov.web.form.AccountForm;
 import ru.shapovalov.web.form.DeleteAccountForm;
 import ru.shapovalov.web.form.EditAccountForm;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
@@ -21,19 +20,21 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class AccountWebController {
     private final AccountService accountService;
+    private final UserService userService;
 
     @GetMapping("/list")
-    public String listAccounts(Model model, HttpServletRequest request) {
-        Long userId = getUserId(request);
+    public String listAccounts(Model model) {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
 
         model.addAttribute("accounts", accountService.getAll(userId));
 
         return "account-list";
     }
+
     @GetMapping("/create")
-    public String getCreateForm(Model model, HttpServletRequest request) {
-        Long userId = getUserId(request);
+    public String getCreateForm(Model model) {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
 
         model.addAttribute("accountForm", new AccountForm());
@@ -41,8 +42,8 @@ public class AccountWebController {
     }
 
     @PostMapping("/create")
-    public String postCreateAccount(@ModelAttribute("accountForm") @Valid AccountForm accountForm, HttpServletRequest request) {
-        Long userId = getUserId(request);
+    public String postCreateAccount(@ModelAttribute("accountForm") @Valid AccountForm accountForm) {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
 
         accountService.create(accountForm.getName(), userId);
@@ -50,8 +51,8 @@ public class AccountWebController {
     }
 
     @GetMapping("/delete")
-    public String getDeleteAccount(Model model, HttpServletRequest request) {
-        Long userId = getUserId(request);
+    public String getDeleteAccount(Model model) {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
 
         model.addAttribute("form", new DeleteAccountForm());
@@ -59,8 +60,8 @@ public class AccountWebController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteAccount(@ModelAttribute("form") @Valid DeleteAccountForm form, HttpServletRequest request) {
-        Long userId = getUserId(request);
+    public String postDeleteAccount(@ModelAttribute("form") @Valid DeleteAccountForm form) {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
 
         accountService.delete(form.getAccountId(), userId);
@@ -68,8 +69,8 @@ public class AccountWebController {
     }
 
     @GetMapping("/edit")
-    public String getEditAccount(Model model, HttpServletRequest request) {
-        Long userId = getUserId(request);
+    public String getEditAccount(Model model) {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
 
         model.addAttribute("accountForm", new EditAccountForm());
@@ -77,16 +78,11 @@ public class AccountWebController {
     }
 
     @PostMapping("/edit")
-    public String postEditAccount(@ModelAttribute("accountForm") @Valid EditAccountForm form, HttpServletRequest request) {
-        Long userId = getUserId(request);
+    public String postEditAccount(@ModelAttribute("accountForm") @Valid EditAccountForm form) {
+        Long userId = userService.currentUser().getId();
         if (userId == null) return "redirect:/login";
 
         accountService.edit(form.getAccountId(), form.getName(), userId);
         return "redirect:/accounts/list";
-    }
-
-    private static Long getUserId(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        return (Long) session.getAttribute("userId");
     }
 }

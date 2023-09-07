@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.shapovalov.api.json.category.*;
 import ru.shapovalov.service.CategoryDto;
 import ru.shapovalov.service.CategoryService;
+import ru.shapovalov.service.UserService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,10 +21,11 @@ import static org.springframework.http.ResponseEntity.status;
 @RequiredArgsConstructor
 public class CategoryApiController {
     private final CategoryService categoryService;
+    private final UserService userService;
 
     @PostMapping("/list")
-    public ResponseEntity<List<CategoryResponse>> getAllByUserId(HttpServletRequest httpServletRequest) {
-        Long userId = getSessionUserId(httpServletRequest);
+    public ResponseEntity<List<CategoryResponse>> getAllByUserId() {
+        Long userId = userService.currentUser().getId();
 
         List<CategoryResponse> categoryResponses = categoryService.getAll(userId).stream()
                 .map(categoryDto -> new CategoryResponse(categoryDto.getId(), categoryDto.getName()))
@@ -34,9 +34,8 @@ public class CategoryApiController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CategoryResponse> create(@RequestBody @Valid CreateCategoryRequest request,
-                                                   HttpServletRequest httpServletRequest) {
-        Long userId = getSessionUserId(httpServletRequest);
+    public ResponseEntity<CategoryResponse> create(@RequestBody @Valid CreateCategoryRequest request) {
+        Long userId = userService.currentUser().getId();
         CategoryDto categoryDto = categoryService.create(request.getName(), userId);
         if (categoryDto != null) {
             return ok(new CategoryResponse(categoryDto.getId(), categoryDto.getName()));
@@ -45,9 +44,8 @@ public class CategoryApiController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<DeleteCategoryResponse> delete(@RequestBody CategoryIdRequest request,
-                                                         HttpServletRequest httpServletRequest) {
-        Long userId = getSessionUserId(httpServletRequest);
+    public ResponseEntity<DeleteCategoryResponse> delete(@RequestBody CategoryIdRequest request) {
+        Long userId = userService.currentUser().getId();
         boolean delete = categoryService.delete(request.getCategoryId(), userId);
         if (delete) {
             return ok(new DeleteCategoryResponse(true));
@@ -57,23 +55,13 @@ public class CategoryApiController {
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<EditCategoryResponse> edit(@RequestBody @Valid EditCategoryRequest request,
-                                                     HttpServletRequest httpServletRequest) {
-        Long userId = getSessionUserId(httpServletRequest);
+    public ResponseEntity<EditCategoryResponse> edit(@RequestBody @Valid EditCategoryRequest request) {
+        Long userId = userService.currentUser().getId();
         CategoryDto edit = categoryService.edit(request.getId(), request.getName(), userId);
         if (edit != null) {
             return ok(new EditCategoryResponse(request.getId(), request.getName()));
         } else {
             return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    private Long getSessionUserId(HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-        }
-        return userId;
     }
 }
