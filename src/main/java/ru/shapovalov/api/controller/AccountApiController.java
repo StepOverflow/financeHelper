@@ -23,7 +23,7 @@ public class AccountApiController {
     private final AccountService accountService;
     private final UserService userService;
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     public ResponseEntity<List<AccountResponse>> getAllByUserId() {
         Long userId = userService.currentUser().getId();
 

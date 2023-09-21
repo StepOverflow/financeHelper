@@ -7,6 +7,6 @@ import ru.shapovalov.entity.Transaction;
 import java.util.List;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+public interface TransactionRepository extends JpaRepository<Transaction, Long>, TransactionRepositoryCustom {
     List<Transaction> findByFromAccountIdInOrToAccountIdIn(List<Long> accountIds, List<Long> accountIds1);
 }

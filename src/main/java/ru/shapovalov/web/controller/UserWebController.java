@@ -25,11 +25,13 @@ public class UserWebController {
         if (userDto == null) {
             return "redirect:/login";
         }
-        model.addAttribute("email", userDto.getEmail()).addAttribute("id", userDto.getId()).addAttribute("userDto", userDto);
-        return "personal-area";
+        model.addAttribute("email", userDto.getEmail())
+                .addAttribute("id", userDto.getId())
+                .addAttribute("userDto", userDto);
+        return "personal-area-form";
     }
 
-    @GetMapping("/")
+    @GetMapping("/*")
     public String redirectToPersonalArea() {
         UserDto userDto = authService.currentUser();
         if (userDto == null) {
@@ -46,7 +48,7 @@ public class UserWebController {
     @GetMapping("/register")
     public String getRegistration(Model model) {
         model.addAttribute("form", new LoginForm());
-        return "register";
+        return "register-form";
     }
 
     @PostMapping("/register")
@@ -60,11 +62,6 @@ public class UserWebController {
             result.addError(new FieldError("form", "email", "Registration failed!"));
         }
         model.addAttribute("form", form);
-        return "register";
-    }
-
-    @GetMapping("/logout-success")
-    public String logoutSuccess() {
-        return "logout-success";
+        return "register-form";
     }
 }

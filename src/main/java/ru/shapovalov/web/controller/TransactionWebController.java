@@ -44,20 +44,40 @@ public class TransactionWebController {
     }
 
     @GetMapping("/expense")
-    public String expenseReport(@ModelAttribute("reportForm") @Valid ReportForm reportForm, Model model) {
+    public String getExpense(@ModelAttribute("reportForm") ReportForm reportForm) {
         Long userId = userService.currentUser().getId();
-        if (userId == null) return "redirect:/login";
-        model.addAttribute("report", categoryService.getResultExpenseInPeriodByCategory(userId, reportForm.getDays()));
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        return "transaction-expense-form";
+    }
 
+    @PostMapping("/expense")
+    public String postExpense(@ModelAttribute("reportForm") @Valid ReportForm reportForm, Model model) {
+        Long userId = userService.currentUser().getId();
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("report", categoryService.getResultExpenseInPeriodByCategory(userId, reportForm.getDays()));
         return "transaction-expense";
     }
 
     @GetMapping("/income")
-    public String incomeReport(@ModelAttribute("reportForm") @Valid ReportForm reportForm, Model model) {
+    public String getIncome(@ModelAttribute("reportForm") ReportForm reportForm) {
         Long userId = userService.currentUser().getId();
-        if (userId == null) return "redirect:/login";
-        model.addAttribute("report", categoryService.getResultIncomeInPeriodByCategory(userId, reportForm.getDays()));
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        return "transaction-income-form";
+    }
 
+    @PostMapping("/income")
+    public String postIncome(@ModelAttribute("reportForm") @Valid ReportForm reportForm, Model model) {
+        Long userId = userService.currentUser().getId();
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("report", categoryService.getResultIncomeInPeriodByCategory(userId, reportForm.getDays()));
         return "transaction-income";
     }
 }

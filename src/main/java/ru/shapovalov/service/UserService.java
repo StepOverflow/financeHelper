@@ -1,8 +1,6 @@
 package ru.shapovalov.service;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,8 +18,6 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-
     private final UserRepository userRepository;
     private final Converter<User, UserDto> userDtoConverter;
 
@@ -69,12 +65,6 @@ public class UserService {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         Optional<User> userOptional = userRepository.findById(customUserDetails.getId());
 
-        if (userOptional.isEmpty()) {
-            return null;
-        }
-
-        logger.info("customUserDetails user with email: {}", customUserDetails.getUsername());
-
-        return userDtoConverter.convert(userOptional.get());
+        return userOptional.map(userDtoConverter::convert).orElse(null);
     }
 }

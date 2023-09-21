@@ -3,7 +3,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <include file="/db/changelog/liquibaseTest.xmluibaseTest.xml"/>
+    <include file="liquibaseTest.xml"/>
 
     <changeSet author="stepan" id="insert_users">
         <insert tableName="users">

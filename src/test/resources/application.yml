@@ -9,4 +9,4 @@ spring:
       ddl-auto: update
     show-sql: true
   liquibase:
-    change-log: classpath:liquibaseTest.xml
+    change-log: classpath:liquibase_transaction_dao_test.xml

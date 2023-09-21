@@ -17,11 +17,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/login-form", "/register", "/api/*").permitAll()
+                .antMatchers("/", "/login", "/register", "/api/register", "/api/login").permitAll()
                 .antMatchers("/personal-area", "/add-user").hasAnyRole(USER.name(), ADMIN.name())
                 .antMatchers("/account-create", "/account-delete", "/account-list").hasAnyRole(USER.name(), ADMIN.name())
                 .antMatchers("/category-create", "/category-delete", "/category-edit", "/category-list").hasAnyRole(USER.name(), ADMIN.name())
                 .antMatchers("/transaction-list", "/transaction-expense", "/transaction-income", "/transaction-list", "/transaction-receipt", "transaction-transfer").hasAnyRole(USER.name(), ADMIN.name())
+                .antMatchers("/api/*").hasAnyRole(USER.name(), ADMIN.name())
                 .and()
                 .formLogin()
                 .usernameParameter("email")
@@ -32,7 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/logout-success")
+                .logoutSuccessUrl("/login")
                 .and()
                 .httpBasic();
     }

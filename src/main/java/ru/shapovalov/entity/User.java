@@ -11,7 +11,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "users")
-
 public class User {
     @Id
     @Column(name = "id")

@@ -3,7 +3,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <include file="/db/changelog/liquibaseTest.xmluibaseTest.xml"/>
+    <include file="liquibaseTest.xml"/>
 
     <changeSet author="stepan" id="insert_users_categories">
         <insert tableName="users">
@@ -44,6 +44,19 @@
         <insert tableName="categories">
             <column name="name" value="travel"/>
             <column name="user_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="transactions">
+            <column name="from_account_id" valueNumeric="1"/>
+            <column name="to_account_id" valueNumeric="2"/>
+            <column name="amount_paid" valueNumeric="200"/>
+            <column name="created_date" valueDate="2023-09-07"/>
+        </insert>
+        <insert tableName="transactions">
+            <column name="from_account_id" valueNumeric="1"/>
+            <column name="to_account_id" valueNumeric="2"/>
+            <column name="amount_paid" valueNumeric="20"/>
+            <column name="created_date" valueDate="2023-09-07"/>
         </insert>
     </changeSet>
 
