@@ -1,5 +1,6 @@
 package ru.shapovalov.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.shapovalov.MockSecurityConfiguration;
 import ru.shapovalov.SecurityConfiguration;
+import ru.shapovalov.api.json.category.CategoryIdRequest;
+import ru.shapovalov.api.json.category.CreateCategoryRequest;
+import ru.shapovalov.api.json.category.EditCategoryRequest;
 import ru.shapovalov.service.CategoryDto;
 import ru.shapovalov.service.CategoryService;
 import ru.shapovalov.service.UserDto;
@@ -31,11 +35,15 @@ public class CategoryApiControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
     @MockBean
     UserService userService;
 
     @MockBean
     CategoryService categoryService;
+
+    @Autowired
+    ObjectMapper om;
 
     @Before
     public void setUp() {
@@ -55,6 +63,9 @@ public class CategoryApiControllerTest {
 
     @Test
     public void testCreateCategory() throws Exception {
+        CreateCategoryRequest createCategoryRequest = new CreateCategoryRequest();
+        createCategoryRequest.setName("NewCategoryName");
+
         when(categoryService.create("NewCategoryName", 1L))
                 .thenReturn(
                         new CategoryDto()
@@ -63,9 +74,8 @@ public class CategoryApiControllerTest {
                 );
         mockMvc.perform(post("/api/categories/create")
                         .contentType("application/json")
-                        .content("{\n" +
-                                "  \"name\": \"NewCategoryName\"\n" +
-                                "}"))
+                        .content(om.writeValueAsString(createCategoryRequest))
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("name").value("NewCategoryName"));
@@ -73,30 +83,35 @@ public class CategoryApiControllerTest {
 
     @Test
     public void testDeleteCategory() throws Exception {
+        CategoryIdRequest categoryIdRequest = new CategoryIdRequest();
+        categoryIdRequest.setCategoryId(1L);
+
         when(categoryService.delete(eq(1L), eq(1L))).thenReturn(true);
 
         mockMvc.perform(delete("/api/categories/delete")
                         .contentType("application/json")
-                        .content("{\n" +
-                                "  \"categoryId\": \"1\"\n" +
-                                "}"))
+                        .content(om.writeValueAsString(categoryIdRequest))
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("deleted").value(true));
     }
 
     @Test
     public void testEditCategory() throws Exception {
+        EditCategoryRequest editCategoryRequest = new EditCategoryRequest();
+        editCategoryRequest.setName("NewName");
+        editCategoryRequest.setId(1L);
+
         CategoryDto categoryDto = new CategoryDto()
                 .setId(1L)
                 .setName("Name");
+
         when(categoryService.edit(eq(1L), eq("NewName"), eq(1L))).thenReturn(categoryDto.setName("NewName"));
 
         mockMvc.perform(post("/api/categories/edit")
                         .contentType("application/json")
-                        .content("{\n" +
-                                "  \"id\": \"1\",\n" +
-                                "  \"name\" : \"NewName\"\n" +
-                                "}"))
+                        .content(om.writeValueAsString(editCategoryRequest))
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("NewName"));

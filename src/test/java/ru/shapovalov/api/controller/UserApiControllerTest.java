@@ -1,5 +1,6 @@
 package ru.shapovalov.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.shapovalov.MockSecurityConfiguration;
 import ru.shapovalov.SecurityConfiguration;
 import ru.shapovalov.api.converter.ServiceUserToResponseConverter;
+import ru.shapovalov.api.json.user.UserRequest;
 import ru.shapovalov.repository.UserRepository;
 import ru.shapovalov.service.UserDto;
 import ru.shapovalov.service.UserService;
@@ -41,6 +43,9 @@ public class UserApiControllerTest {
     @SpyBean
     ServiceUserToResponseConverter converter;
 
+    @Autowired
+    ObjectMapper om;
+
     @Before
     public void setUp() {
         UserDto userDto = new UserDto()
@@ -52,6 +57,10 @@ public class UserApiControllerTest {
 
     @Test
     public void register() throws Exception {
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail("new@example.com");
+        userRequest.setPassword("password");
+
         when(userService.registration("new@example.com", "password"))
                 .thenReturn(
                         new UserDto()
@@ -60,10 +69,7 @@ public class UserApiControllerTest {
 
         mockMvc.perform(post("/api/register")
                         .contentType("application/json")
-                        .content("{\n" +
-                                "  \"email\": \"new@example.com\",\n" +
-                                "  \"password\": \"password\"\n" +
-                                "}")
+                        .content(om.writeValueAsString(userRequest))
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(1))

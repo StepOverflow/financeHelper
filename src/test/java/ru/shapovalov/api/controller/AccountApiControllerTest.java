@@ -1,5 +1,6 @@
 package ru.shapovalov.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.shapovalov.MockSecurityConfiguration;
 import ru.shapovalov.SecurityConfiguration;
+import ru.shapovalov.api.json.account.AccountIdRequest;
+import ru.shapovalov.api.json.account.CreateAccountRequest;
+import ru.shapovalov.api.json.account.EditAccountRequest;
 import ru.shapovalov.service.AccountDto;
 import ru.shapovalov.service.AccountService;
 import ru.shapovalov.service.UserDto;
@@ -40,6 +44,9 @@ public class AccountApiControllerTest {
     @MockBean
     AccountService accountService;
 
+    @Autowired
+    ObjectMapper om;
+
     @Before
     public void setUp() {
         UserDto userDto = new UserDto()
@@ -55,6 +62,7 @@ public class AccountApiControllerTest {
                 new AccountDto().setId(1L).setAccountName("Account1").setBalance(100),
                 new AccountDto().setId(2L).setAccountName("Account2").setBalance(200)
         );
+
         when(accountService.findAllByUserId(1L)).thenReturn(mockAccounts);
 
         mockMvc.perform(get("/api/accounts/list"))
@@ -68,11 +76,14 @@ public class AccountApiControllerTest {
     @Test
     public void testCreate() throws Exception {
         AccountDto mockAccountDto = new AccountDto().setId(1L).setAccountName("NewAccount").setBalance(0);
+        CreateAccountRequest createAccountRequest = new CreateAccountRequest();
+        createAccountRequest.setName("NewAccount");
+
         when(accountService.create(Mockito.anyString(), eq(1L))).thenReturn(mockAccountDto);
 
         mockMvc.perform(post("/api/accounts/create")
                         .contentType("application/json")
-                        .content("{\"name\": \"NewAccount\"}")
+                        .content(om.writeValueAsString(createAccountRequest))
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(1))
@@ -82,13 +93,15 @@ public class AccountApiControllerTest {
 
     @Test
     public void testDeleteAccount() throws Exception {
+        AccountIdRequest accountIdRequest = new AccountIdRequest();
+        accountIdRequest.setAccountId(1L);
+
         when(accountService.delete(eq(1L), eq(1L))).thenReturn(true);
 
         mockMvc.perform(delete("/api/accounts/delete")
                         .contentType("application/json")
-                        .content("{\n" +
-                                "  \"accountId\": \"1\"\n" +
-                                "}"))
+                        .content(om.writeValueAsString(accountIdRequest))
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("deleted").value(true));
 
@@ -96,14 +109,16 @@ public class AccountApiControllerTest {
 
     @Test
     public void testEditAccount() throws Exception {
+        EditAccountRequest editAccountRequest = new EditAccountRequest();
+        editAccountRequest.setName("NewName");
+        editAccountRequest.setId(1L);
+
         when(accountService.edit(eq(1L), eq("NewName"), eq(1L))).thenReturn(true);
 
         mockMvc.perform(post("/api/accounts/edit")
                         .contentType("application/json")
-                        .content("{\n" +
-                                "  \"id\": \"1\",\n" +
-                                "  \"name\" : \"NewName\"\n" +
-                                "}"))
+                        .content(om.writeValueAsString(editAccountRequest))
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.accountName").value("NewName"));
